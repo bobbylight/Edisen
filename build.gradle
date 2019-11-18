@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'org.fife'
+version '0.1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compile 'com.fifesoft.rtext:fife.common:3.0.2'
+    compile 'com.fifesoft:rsyntaxtextarea:3.0.4'
+    compile 'com.fifesoft:autocomplete:3.0.2'
+
+    testCompile 'junit:junit:4.12'
+}
