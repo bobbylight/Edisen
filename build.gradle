@@ -1,3 +1,6 @@
+// export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-11.0.1.jdk/Contents/Home
+// export PATH=$JAVA_HOME/bin:$PATH
+
 plugins {
     id 'java'
 }
@@ -9,13 +12,25 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+
+wrapper {
+    version = '6.0.1'
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 dependencies {
 
-    compile 'com.fifesoft.rtext:fife.common:3.0.2'
-    compile 'com.fifesoft:rsyntaxtextarea:3.0.4'
-    compile 'com.fifesoft:autocomplete:3.0.2'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.10.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
 
-    testCompile 'junit:junit:4.12'
+    implementation 'com.fifesoft.rtext:fife.common:3.0.3-SNAPSHOT'
+    implementation 'com.fifesoft:rsyntaxtextarea:3.0.5-SNAPSHOT'
+    implementation 'com.fifesoft:autocomplete:3.0.3-SNAPSHOT'
+    implementation 'com.fifesoft:spellchecker:3.0.3-SNAPSHOT'
+
+    testImplementation 'junit:junit:4.12'
 }
