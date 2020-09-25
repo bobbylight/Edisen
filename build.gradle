@@ -8,7 +8,7 @@ plugins {
 group 'org.fife'
 version '0.1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 14
 
 repositories {
     mavenCentral()
@@ -18,7 +18,7 @@ repositories {
 }
 
 wrapper {
-    version = '6.0.1'
+    version = '6.6.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -27,10 +27,12 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.10.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.1'
 
-    implementation 'com.fifesoft.rtext:fife.common:3.0.3-SNAPSHOT'
-    implementation 'com.fifesoft:rsyntaxtextarea:3.0.5-SNAPSHOT'
-    implementation 'com.fifesoft:autocomplete:3.0.3-SNAPSHOT'
-    implementation 'com.fifesoft:spellchecker:3.0.3-SNAPSHOT'
+//    implementation 'com.fifesoft.rtext:fife.common:3.1.1'
+    implementation('com.fifesoft.rtext:fife.common:3.1.1') { changing = true }
+    implementation 'com.fifesoft:rsyntaxtextarea:3.1.1'
+    implementation 'com.fifesoft:autocomplete:3.0.4'
+    implementation 'com.fifesoft:rstaui:3.0.3'
+    implementation 'com.fifesoft:spellchecker:3.0.3'
 
     testImplementation 'junit:junit:4.12'
 }
