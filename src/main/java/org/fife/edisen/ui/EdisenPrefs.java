@@ -89,8 +89,8 @@ public class EdisenPrefs extends GUIApplicationPrefs<Edisen> {
             emulatorCommandLine = "open -a Nestopia ${rom}";
         }
         else {
-            assemblerCommandLine = "bar";
-            emulatorCommandLine = "D:/dev/emulation/nes/emulators/nestopia/nestopia.exe ${rom}";
+            assemblerCommandLine = "D:/cc65-snapshot-win32/bin/ca65 -o ${objfile} game.s -t nes && D:/cc65-snapshot-win32/bin/ld65 -o ${rom} ${objfile} -t nes";
+            emulatorCommandLine = "D:/emulation/nes/emulators/nestopia/nestopia.exe ${rom}";
         }
     }
 }

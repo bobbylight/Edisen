@@ -1,5 +1,6 @@
 package org.fife.edisen.ui;
 
+import com.formdev.flatlaf.FlatLightLaf;
 import org.fife.jgoodies.looks.common.ShadowPopupFactory;
 import org.fife.ui.UIUtil;
 import org.fife.ui.WebLookAndFeelUtils;
@@ -41,8 +42,9 @@ public class Main {
                 clazz = cl.loadClass(lafName);
             }
 
-            LookAndFeel laf = (LookAndFeel)clazz.getDeclaredConstructor().newInstance();
-            UIManager.setLookAndFeel(laf);
+            //LookAndFeel laf = (LookAndFeel)clazz.getDeclaredConstructor().newInstance();
+            //UIManager.setLookAndFeel(laf);
+            UIManager.setLookAndFeel(new FlatLightLaf());
             UIManager.getLookAndFeelDefaults().put("ClassLoader", cl);
             UIUtil.installOsSpecificLafTweaks();
         } catch (RuntimeException re) { // FindBugs

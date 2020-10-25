@@ -2,8 +2,6 @@ package org.fife.edisen.ui;
 
 import org.fife.edisen.model.EdisenProject;
 import org.fife.help.HelpDialog;
-import org.fife.io.ProcessRunner;
-import org.fife.io.ProcessRunnerOutputListener;
 import org.fife.ui.*;
 import org.fife.ui.SplashScreen;
 import org.fife.ui.app.AbstractPluggableGUIApplication;
@@ -18,12 +16,14 @@ import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
 import org.fife.ui.rtextfilechooser.filters.ExtensionFileFilter;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.Collections;
 
 public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
@@ -36,6 +36,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     public Edisen() {
         super("Edisen");
+        setIcons();
     }
 
     private void addSpellingParser() {
@@ -63,34 +64,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         System.out.println("Couldn't find dictionary for spell checking");
     }
 
-    public void compile() {
-
-        String rom = "game.nes";
-        String objFile = "game.o";
-
-        String commandLine = prefs.assemblerCommandLine;
-        commandLine = commandLine.replace("${rom}", '"' + rom + '"')
-            .replace("${objfile}", objFile);
-
-        ProcessRunner pr = new ProcessRunner(new String[] {
-                "/bin/sh", "-c", commandLine
-        });
-        pr.setDirectory(projectDir);
-        System.out.println("Running program: " + pr.getCommandLineString());
-
-        pr.setOutputListener(new ProcessRunnerOutputListener() {
-            @Override
-            public void outputWritten(Process p, String output, boolean stdout) {
-                System.out.println(output);
-            }
-
-            @Override
-            public void processCompleted(Process p, int rc, Throwable e) {
-                System.out.println("Process completed with return code: " + rc);
-            }
-        });
-
-        pr.run();
+    protected JDialog createAboutDialog() {
+        return new AboutDialog(this);
     }
 
     @Override
@@ -107,8 +82,13 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         addAction(Actions.COMPILE_ACTION_KEY, new Actions.CompileAction(this));
         addAction(Actions.EMULATE_ACTION_KEY, new Actions.EmulateAction(this));
 
-        addAction(HELP_ACTION_KEY, new HelpAction<>(this, "Action.Help"));
-        addAction(ABOUT_ACTION_KEY, new AboutAction<>(this, "Action.About"));
+        HelpAction<Edisen> helpAction = new HelpAction<>(this, "Action.Help");
+        helpAction.setIcon(Util.getSvgIcon("/images/help.svg", 16));
+        addAction(HELP_ACTION_KEY, helpAction);
+
+        AboutAction<Edisen> aboutAction = new AboutAction<>(this, "Action.About");
+        aboutAction.setIcon(Util.getSvgIcon("/images/about.svg", 16));
+        addAction(ABOUT_ACTION_KEY, aboutAction);
     }
 
     @Override
@@ -131,34 +111,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         return null;
     }
 
-    public void emulate() {
-
-        String rom = "game.nes";
-
-        String commandLine = prefs.emulatorCommandLine;
-        commandLine = commandLine.replace("${rom}", '"' + rom + '"');
-
-        ProcessRunner pr = new ProcessRunner(new String[] {
-                "/bin/sh", "-c", commandLine
-        });
-        pr.setDirectory(projectDir);
-        System.out.println("Running program: " + pr.getCommandLineString());
-
-        pr.setOutputListener(new ProcessRunnerOutputListener() {
-            @Override
-            public void outputWritten(Process p, String output, boolean stdout) {
-                System.out.println(output);
-            }
-
-            @Override
-            public void processCompleted(Process p, int rc, Throwable e) {
-                System.out.println("Process completed with return code: " + rc);
-            }
-        });
-
-        pr.run();
-    }
-
     public String getAssemblerCommandLine() {
         return prefs.assemblerCommandLine;
     }
@@ -169,6 +121,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     @Override
     public HelpDialog getHelpDialog() {
+        UIUtil.browse("https://github.com/bobbylight/Edisen");
         return null;
     }
 
@@ -180,9 +133,17 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         return optionsDialog;
     }
 
+    public EdisenPrefs getPreferences() {
+        return prefs;
+    }
+
     @Override
     protected String getPreferencesClassName() {
         return "org.fife.edisen.ui.EdisenPrefs";
+    }
+
+    public File getProjectRoot() {
+        return projectDir;
     }
 
     @Override
@@ -198,7 +159,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     private void initUI(EdisenPrefs prefs) throws IOException {
 
         EdisenProject project = EdisenProject.fromFile(
-                    Paths.get("/users/robert/dev/edisen/sample-project/sample-project.json"));
+                Paths.get("D:/dev/edisen/sample-project/sample-project.edisen.json"));
+                    //Paths.get("/users/robert/dev/edisen/sample-project/sample-project.edisen.json"));
 
         Container contentPane = getContentPane();
         DockableWindowPanel mainPanel = (DockableWindowPanel)mainContentPanel;
@@ -206,15 +168,29 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         JTree tree = new JTree();
         RScrollPane sp = new RScrollPane(tree);
 
-        DockableWindow wind = new DockableWindow("foo", new BorderLayout());
+        String title = getString("DockedWindow.project");
+        DockableWindow wind = new DockableWindow(title, new BorderLayout());
+        wind.setIcon(Util.getSvgIcon("/images/projectStructure.svg", 16));
         wind.setPosition(DockableWindow.LEFT);
         wind.setActive(true);
         wind.add(sp);
         mainPanel.addDockableWindow(wind);
         mainPanel.setDividerLocation(DockableWindowPanel.LEFT, 150);
+        mainPanel.setDockableWindowGroupExpanded(DockableWindow.LEFT, true);
+
+        title = getString("DockedWindow.log");
+        wind = new DockableWindow(title, new BorderLayout());
+        wind.setIcon(Util.getSvgIcon("/images/console.svg", 16));
+        wind.setPosition(DockableWindow.BOTTOM);
+        wind.setActive(true);
+        wind.add(sp);
+        mainPanel.addDockableWindow(wind);
+        mainPanel.setDividerLocation(DockableWindowPanel.BOTTOM, 240);
+        mainPanel.setDockableWindowGroupExpanded(DockableWindow.BOTTOM, true);
 
         textArea = new TextEditorPane();
         textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_6502);
+        textArea.setCodeFoldingEnabled(true);
         addSpellingParser();
         RTextScrollPane sp2 = new RTextScrollPane(textArea);
         contentPane.add(sp2);
@@ -238,8 +214,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         File startDir = new File(System.getProperty("user.dir"));
         RTextFileChooser chooser = new RTextFileChooser(false, startDir);
 
-        String desc = getResourceBundle().getString("FileType.JSON");
-        chooser.addChoosableFileFilter(new ExtensionFileFilter(desc, "json"));
+        String desc = getString("FileType.edisenJSON");
+        chooser.addChoosableFileFilter(new ExtensionFileFilter(desc, "edisen.json"));
 
         int rc = chooser.showOpenDialog(this);
 
@@ -286,5 +262,18 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     public void setEmulatorCommandLine(String commandLine) {
         prefs.emulatorCommandLine = commandLine;
+    }
+
+    private void setIcons() {
+
+        try {
+
+            Image image64 = ImageIO.read(getClass().getResource("/icons/Nintendo-NES-icon-64x64.png"));
+            setIconImages(Collections.singletonList(
+                    image64
+            ));
+        } catch (IOException ioe) {
+            displayException(ioe); // Never happens
+        }
     }
 }

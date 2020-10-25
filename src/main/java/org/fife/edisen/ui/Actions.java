@@ -1,8 +1,13 @@
 package org.fife.edisen.ui;
 
+import org.fife.io.ProcessRunner;
+import org.fife.io.ProcessRunnerOutputListener;
+import org.fife.ui.OS;
 import org.fife.ui.app.AppAction;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Actions used by the application.
@@ -29,7 +34,42 @@ public class Actions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            getApplication().compile();
+
+            String rom = "game.nes";
+            String objFile = "game.o";
+
+            Edisen app = getApplication();
+            String commandLine = app.getPreferences().assemblerCommandLine;
+            commandLine = commandLine.replace("${rom}", '"' + rom + '"')
+                    .replace("${objfile}", objFile);
+
+            List<String> command = new ArrayList<>();
+            if (OS.get() == OS.WINDOWS) {
+                command.add("cmd.exe");
+                command.add("/c");
+            }
+            else {
+                command.add("/bin/sh");
+                command.add("-c");
+            }
+            command.add(commandLine);
+            ProcessRunner pr = new ProcessRunner(command.toArray(new String[0]));
+            pr.setDirectory(app.getProjectRoot());
+            System.out.println("Running program: " + pr.getCommandLineString());
+
+            pr.setOutputListener(new ProcessRunnerOutputListener() {
+                @Override
+                public void outputWritten(Process p, String output, boolean stdout) {
+                    System.out.println(output);
+                }
+
+                @Override
+                public void processCompleted(Process p, int rc, Throwable e) {
+                    System.out.println("Process completed with return code: " + rc);
+                }
+            });
+
+            pr.run();
         }
     }
 
@@ -41,7 +81,43 @@ public class Actions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            getApplication().emulate();
+
+            Edisen app = getApplication();
+            EdisenPrefs prefs = app.getPreferences();
+
+            String rom = "game.nes";
+
+            String commandLine = prefs.emulatorCommandLine;
+            commandLine = commandLine.replace("${rom}", '"' + rom + '"');
+
+            List<String> command = new ArrayList<>();
+            if (OS.get() == OS.WINDOWS) {
+                command.add("cmd.exe");
+                command.add("/c");
+            }
+            else {
+                command.add("/bin/sh");
+                command.add("-c");
+            }
+            command.add(commandLine);
+            ProcessRunner pr = new ProcessRunner(command.toArray(new String[0]));
+
+            pr.setDirectory(app.getProjectRoot());
+            System.out.println("Running program: " + pr.getCommandLineString());
+
+            pr.setOutputListener(new ProcessRunnerOutputListener() {
+                @Override
+                public void outputWritten(Process p, String output, boolean stdout) {
+                    System.out.println(output);
+                }
+
+                @Override
+                public void processCompleted(Process p, int rc, Throwable e) {
+                    System.out.println("Process completed with return code: " + rc);
+                }
+            });
+
+            pr.run();
         }
     }
 
