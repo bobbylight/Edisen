@@ -2,6 +2,10 @@ package org.fife.edisen.ui;
 
 import org.fife.edisen.model.EdisenProject;
 import org.fife.help.HelpDialog;
+import org.fife.rsta.ui.search.FindDialog;
+import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.rsta.ui.search.SearchEvent;
+import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.*;
 import org.fife.ui.SplashScreen;
 import org.fife.ui.app.AbstractPluggableGUIApplication;
@@ -13,8 +17,10 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import org.fife.ui.rtextarea.SearchContext;
+import org.fife.ui.rtextarea.SearchEngine;
+import org.fife.ui.rtextfilechooser.FileSystemTree;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
-import org.fife.ui.rtextfilechooser.filters.ExtensionFileFilter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -28,9 +34,15 @@ import java.util.Collections;
 public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     private EdisenPrefs prefs;
-    private File projectDir;
+    private EdisenProject project;
     private TextEditorPane textArea;
     private EdisenOptionsDialog optionsDialog;
+
+    private SearchContext searchContext;
+    private FindDialog findDialog;
+    private ReplaceDialog replaceDialog;
+
+    private Listener listener;
 
     private static final String VERSION = "0.1.0-SNAPSHOT";
 
@@ -42,9 +54,9 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     private void addSpellingParser() {
 
         String[] zipFileLocations = {
-                "english_dic.zip", // production
-                "src/main/dist/english_dic.zip", // development
-                "edisen/src/main/dist/english_dic.zip" // alt development
+            "english_dic.zip", // production
+            "src/main/dist/english_dic.zip", // development
+            "edisen/src/main/dist/english_dic.zip" // alt development
         };
 
         try {
@@ -52,7 +64,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
                 File file = new File(location);
                 if (file.isFile()) {
                     SpellingParser parser = SpellingParser.createEnglishSpellingParser(
-                            file, true);
+                        file, true);
                     textArea.addParser(parser);
                     return;
                 }
@@ -77,6 +89,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         addAction(Actions.OPEN_ACTION_KEY, new Actions.OpenAction(this));
         addAction(EXIT_ACTION_KEY, new GUIApplication.ExitAction<>(this, "Action.Exit"));
 
+        addAction(Actions.FIND_ACTION_KEY, new Actions.FindAction(this));
+        addAction(Actions.REPLACE_ACTION_KEY, new Actions.ReplaceAction(this));
         addAction(Actions.OPTIONS_ACTION_KEY, new OptionsAction<>(this, "Action.Options"));
 
         addAction(Actions.COMPILE_ACTION_KEY, new Actions.CompileAction(this));
@@ -111,6 +125,19 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         return null;
     }
 
+    void find() {
+
+        if (searchContext == null) {
+            searchContext = new SearchContext();
+        }
+
+        if (findDialog == null) {
+            findDialog = new FindDialog(this, listener);
+        }
+
+        findDialog.setVisible(true);
+    }
+
     public String getAssemblerCommandLine() {
         return prefs.assemblerCommandLine;
     }
@@ -142,8 +169,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         return "org.fife.edisen.ui.EdisenPrefs";
     }
 
-    public File getProjectRoot() {
-        return projectDir;
+    public EdisenProject getProject() {
+        return project;
     }
 
     @Override
@@ -158,14 +185,21 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     private void initUI(EdisenPrefs prefs) throws IOException {
 
-        EdisenProject project = EdisenProject.fromFile(
-                Paths.get("D:/dev/edisen/sample-project/sample-project.edisen.json"));
-                    //Paths.get("/users/robert/dev/edisen/sample-project/sample-project.edisen.json"));
+        String path;
+        if (OS.get() == OS.WINDOWS) {
+            path = "D:/dev/edisen/sample-projects/01-blinking-screen/sample-project.edisen.json";
+        }
+        else {
+            path = "/users/robert/dev/edisen/sample-projects/01-blinking-screen/sample-project.edisen.json";
+        }
+        EdisenProject project = EdisenProject.fromFile(Paths.get(path));
 
         Container contentPane = getContentPane();
-        DockableWindowPanel mainPanel = (DockableWindowPanel)mainContentPanel;
+        DockableWindowPanel mainPanel = (DockableWindowPanel) mainContentPanel;
 
-        JTree tree = new JTree();
+        FileSystemTree tree = new FileSystemTree(project.getProjectFile().getParent().toFile());
+        tree.setRootVisible(false);
+        tree.setShowsRootHandles(false);
         RScrollPane sp = new RScrollPane(tree);
 
         String title = getString("DockedWindow.project");
@@ -174,6 +208,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         wind.setPosition(DockableWindow.LEFT);
         wind.setActive(true);
         wind.add(sp);
+        wind.add(tree);
         mainPanel.addDockableWindow(wind);
         mainPanel.setDividerLocation(DockableWindowPanel.LEFT, 150);
         mainPanel.setDockableWindowGroupExpanded(DockableWindow.LEFT, true);
@@ -183,7 +218,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         wind.setIcon(Util.getSvgIcon("/images/console.svg", 16));
         wind.setPosition(DockableWindow.BOTTOM);
         wind.setActive(true);
-        wind.add(sp);
         mainPanel.addDockableWindow(wind);
         mainPanel.setDividerLocation(DockableWindowPanel.BOTTOM, 240);
         mainPanel.setDockableWindowGroupExpanded(DockableWindow.BOTTOM, true);
@@ -193,17 +227,27 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         textArea.setCodeFoldingEnabled(true);
         addSpellingParser();
         RTextScrollPane sp2 = new RTextScrollPane(textArea);
-        contentPane.add(sp2);
 
-        openFile(project.getRoot().toFile());
+        JTabbedPane tabbedPane = new JTabbedPane();
+        contentPane.add(tabbedPane);
+
+        tabbedPane.addTab(project.getGameFile(), sp2);
+
+        openFile(project.getProjectFile().toFile());
     }
 
     @Override
     public void openFile(File file) {
+
         try {
-            textArea.load(FileLocation.create(new File(file.getParentFile(), "game.s")),
-                    StandardCharsets.UTF_8.name());
-            projectDir = file.getParentFile();
+
+            EdisenProject project = EdisenProject.fromFile(file.toPath());
+            File projectRoot = project.getProjectFile().getParent().toFile();
+            String gameFile = project.getGameFile();
+
+            textArea.load(FileLocation.create(new File(projectRoot, gameFile)),
+                StandardCharsets.UTF_8.name());
+            this.project = project;
         } catch (IOException ioe) {
             displayException(ioe);
         }
@@ -214,8 +258,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         File startDir = new File(System.getProperty("user.dir"));
         RTextFileChooser chooser = new RTextFileChooser(false, startDir);
 
-        String desc = getString("FileType.edisenJSON");
-        chooser.addChoosableFileFilter(new ExtensionFileFilter(desc, "edisen.json"));
+        chooser.addChoosableFileFilter(new EdisenConfigFileFilter(this));
 
         int rc = chooser.showOpenDialog(this);
 
@@ -233,6 +276,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     @Override
     protected void preDisplayInit(EdisenPrefs prefs, SplashScreen splashScreen) {
+
+        listener = new Listener();
 
         try {
             initUI(prefs);
@@ -256,6 +301,24 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     }
 
+    void refreshLookAndFeel() {
+
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
+    void replace() {
+
+        if (searchContext == null) {
+            searchContext = new SearchContext();
+        }
+
+        if (replaceDialog == null) {
+            replaceDialog = new ReplaceDialog(this, listener);
+        }
+
+        replaceDialog.setVisible(true);
+    }
+
     public void setAssemblerCommandLine(String commandLine) {
         prefs.assemblerCommandLine = commandLine;
     }
@@ -270,10 +333,31 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
             Image image64 = ImageIO.read(getClass().getResource("/icons/Nintendo-NES-icon-64x64.png"));
             setIconImages(Collections.singletonList(
-                    image64
+                image64
             ));
         } catch (IOException ioe) {
             displayException(ioe); // Never happens
+        }
+    }
+
+    private class Listener implements SearchListener {
+
+        @Override
+        public void searchEvent(SearchEvent e) {
+
+            SearchContext context = e.getSearchContext();
+
+            switch (e.getType()) {
+                case FIND -> SearchEngine.find(textArea, context);
+                case REPLACE -> SearchEngine.replace(textArea, context);
+                case REPLACE_ALL -> SearchEngine.replaceAll(textArea, context);
+                case MARK_ALL -> SearchEngine.markAll(textArea, context);
+            }
+        }
+
+        @Override
+        public String getSelectedText() {
+            return textArea.getSelectedText();
         }
     }
 }

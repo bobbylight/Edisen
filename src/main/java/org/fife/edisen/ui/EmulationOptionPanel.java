@@ -55,9 +55,9 @@ class EmulationOptionPanel extends OptionsDialogPanel {
         }
 
         UIUtil.makeSpringCompactGrid(topPanel,
-                2, 2,
-                0, 0,
-                5, 5);
+            2, 2,
+            0, 0,
+            5, 5);
     }
 
     private JPanel createAssistancePanel(JComponent comp) {
@@ -71,7 +71,7 @@ class EmulationOptionPanel extends OptionsDialogPanel {
     @Override
     protected void doApplyImpl(Frame owner) {
 
-        Edisen app = (Edisen)owner;
+        Edisen app = (Edisen) owner;
 
         app.setAssemblerCommandLine(assemblerCommandLineField.getText());
         app.setEmulatorCommandLine(emuCommandLineField.getText());
@@ -90,7 +90,7 @@ class EmulationOptionPanel extends OptionsDialogPanel {
     @Override
     protected void setValuesImpl(Frame owner) {
 
-        Edisen app = (Edisen)owner;
+        Edisen app = (Edisen) owner;
 
         assemblerCommandLineField.setText(app.getAssemblerCommandLine());
         emuCommandLineField.setText(app.getEmulatorCommandLine());

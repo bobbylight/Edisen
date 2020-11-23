@@ -21,6 +21,9 @@ public class AppMenuBar extends MenuBar {
         JMenu editMenu = createMenu(msg, "Menu.Edit");
         add(editMenu);
 
+        editMenu.add(createMenuItem(edisen.getAction(Actions.FIND_ACTION_KEY)));
+        editMenu.add(createMenuItem(edisen.getAction(Actions.REPLACE_ACTION_KEY)));
+
         editMenu.addSeparator();
         editMenu.add(createMenuItem(edisen.getAction(Actions.OPTIONS_ACTION_KEY)));
 

@@ -15,12 +15,13 @@ import java.nio.file.Path;
 public class EdisenProject {
 
     @JsonIgnore
-    private Path root;
+    private Path projectFile;
     private String name;
+    private String gameFile;
 
     public static EdisenProject fromFile(Path path) throws IOException {
         EdisenProject project = load(Files.newBufferedReader(path));
-        project.setRoot(path);
+        project.setProjectFile(path);
         return project;
     }
 
@@ -35,19 +36,27 @@ public class EdisenProject {
         return project;
     }
 
+    public String getGameFile() {
+        return gameFile;
+    }
+
     public String getName() {
         return name;
     }
 
-    public Path getRoot() {
-        return root;
+    public Path getProjectFile() {
+        return projectFile;
+    }
+
+    public void setGameFile(String gameFile) {
+        this.gameFile = gameFile;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setRoot(Path root) {
-        this.root = root;
+    public void setProjectFile(Path projectFile) {
+        this.projectFile = projectFile;
     }
 }

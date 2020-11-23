@@ -17,8 +17,8 @@ public class EdisenOptionsDialog extends OptionsDialog {
     private void createUI() {
 
         setOptionsPanels(Arrays.asList(
-                new EmulationOptionPanel(),
-                new UIOptionPanel()
+            new EmulationOptionPanel(),
+            new UIOptionPanel()
         ));
     }
 }

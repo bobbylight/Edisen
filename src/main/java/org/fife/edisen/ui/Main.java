@@ -16,7 +16,7 @@ public class Main {
 
         String rootDir = AbstractGUIApplication.getLocationOfJar();
         ThirdPartyLookAndFeelManager lafManager =
-                new ThirdPartyLookAndFeelManager(rootDir);
+            new ThirdPartyLookAndFeelManager(rootDir);
 
         try {
 

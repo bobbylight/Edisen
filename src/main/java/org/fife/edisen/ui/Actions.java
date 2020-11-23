@@ -16,8 +16,10 @@ public class Actions {
 
     public static final String COMPILE_ACTION_KEY = "compileAction";
     public static final String EMULATE_ACTION_KEY = "emulateAction";
+    public static final String FIND_ACTION_KEY = "findAction";
     public static final String OPEN_ACTION_KEY = "openAction";
     public static final String OPTIONS_ACTION_KEY = "optionsAction";
+    public static final String REPLACE_ACTION_KEY = "replaceAction";
 
     /**
      * Private constructor to prevent instantiation.
@@ -37,11 +39,13 @@ public class Actions {
 
             String rom = "game.nes";
             String objFile = "game.o";
+            String mainGameFile = getApplication().getProject().getGameFile();
 
             Edisen app = getApplication();
             String commandLine = app.getPreferences().assemblerCommandLine;
             commandLine = commandLine.replace("${rom}", '"' + rom + '"')
-                    .replace("${objfile}", objFile);
+                .replace("${gameFile}", mainGameFile)
+                .replace("${objfile}", objFile);
 
             List<String> command = new ArrayList<>();
             if (OS.get() == OS.WINDOWS) {
@@ -54,7 +58,7 @@ public class Actions {
             }
             command.add(commandLine);
             ProcessRunner pr = new ProcessRunner(command.toArray(new String[0]));
-            pr.setDirectory(app.getProjectRoot());
+            pr.setDirectory(app.getProject().getProjectFile().getParent().toFile());
             System.out.println("Running program: " + pr.getCommandLineString());
 
             pr.setOutputListener(new ProcessRunnerOutputListener() {
@@ -102,7 +106,7 @@ public class Actions {
             command.add(commandLine);
             ProcessRunner pr = new ProcessRunner(command.toArray(new String[0]));
 
-            pr.setDirectory(app.getProjectRoot());
+            pr.setDirectory(app.getProject().getProjectFile().getParent().toFile());
             System.out.println("Running program: " + pr.getCommandLineString());
 
             pr.setOutputListener(new ProcessRunnerOutputListener() {
@@ -121,6 +125,18 @@ public class Actions {
         }
     }
 
+    public static class FindAction extends AppAction<Edisen> {
+
+        public FindAction(Edisen app) {
+            super(app, "Action.Find");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getApplication().find();
+        }
+    }
+
     public static class OpenAction extends AppAction<Edisen> {
 
         public OpenAction(Edisen app) {
@@ -130,6 +146,18 @@ public class Actions {
         @Override
         public void actionPerformed(ActionEvent e) {
             getApplication().openProject();
+        }
+    }
+
+    public static class ReplaceAction extends AppAction<Edisen> {
+
+        public ReplaceAction(Edisen app) {
+            super(app, "Action.Replace");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getApplication().replace();
         }
     }
 }

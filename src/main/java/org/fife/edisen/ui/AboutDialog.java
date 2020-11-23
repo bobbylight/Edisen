@@ -67,9 +67,9 @@ class AboutDialog extends EscapableDialog {
         box2.add(Box.createVerticalStrut(5));
 
         SelectableLabel descLabel = new SelectableLabel(
-                app.getString("Dialog.About.Desc", app.getVersionString()));
+            app.getString("Dialog.About.Desc", app.getVersionString()));
         descLabel.addHyperlinkListener(e -> {
-            if (e.getEventType()==HyperlinkEvent.EventType.ACTIVATED) {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
                 UIUtil.browse(e.getURL().toString());
             }
         });
@@ -84,12 +84,14 @@ class AboutDialog extends EscapableDialog {
         SelectableLabel javaField = new SelectableLabel(System.getProperty("java.home"));
 
         if (getComponentOrientation().isLeftToRight()) {
-            temp.add(javaLabel);    temp.add(javaField);
+            temp.add(javaLabel);
+            temp.add(javaField);
         }
         else {
-            temp.add(javaField);    temp.add(javaLabel);
+            temp.add(javaField);
+            temp.add(javaLabel);
         }
-        UIUtil.makeSpringCompactGrid(temp, 1, 2, 5,5, 15,5);
+        UIUtil.makeSpringCompactGrid(temp, 1, 2, 5, 5, 15, 5);
         box.add(temp);
 
         box.add(Box.createVerticalStrut(10));
@@ -114,7 +116,7 @@ class AboutDialog extends EscapableDialog {
         // size, set preferred size on a random panel inside us to force a
         // minimum width (just to look a little nicer).
         Dimension size = temp.getPreferredSize();
-        if (size.width<420) {
+        if (size.width < 420) {
             size.width = 420;
             temp.setPreferredSize(size);
         }
@@ -153,11 +155,11 @@ class AboutDialog extends EscapableDialog {
         public void paintBorder(Component c, Graphics g, int x, int y,
                                 int width, int height) {
             Color color = UIManager.getColor("controlShadow");
-            if (color==null) {
+            if (color == null) {
                 color = SystemColor.controlShadow;
             }
             g.setColor(color);
-            g.drawLine(x,y+height-1, x+width,y+height-1);
+            g.drawLine(x, y + height - 1, x + width, y + height - 1);
         }
 
     }
@@ -187,18 +189,26 @@ class AboutDialog extends EscapableDialog {
             Hyperlink balloonLink = new Hyperlink("http://balloontip.dev.java.net");
 
             if (getComponentOrientation().isLeftToRight()) {
-                temp.add(jflexLabel);       temp.add(jflexLink);
-                temp.add(rtextLabel);       temp.add(rtextLink);
-                temp.add(migLabel);         temp.add(migLink);
-                temp.add(balloonLabel);     temp.add(balloonLink);
+                temp.add(jflexLabel);
+                temp.add(jflexLink);
+                temp.add(rtextLabel);
+                temp.add(rtextLink);
+                temp.add(migLabel);
+                temp.add(migLink);
+                temp.add(balloonLabel);
+                temp.add(balloonLink);
             }
             else {
-                temp.add(jflexLink);       temp.add(jflexLabel);
-                temp.add(rtextLink);       temp.add(rtextLabel);
-                temp.add(migLink);         temp.add(migLabel);
-                temp.add(balloonLink);     temp.add(balloonLabel);
+                temp.add(jflexLink);
+                temp.add(jflexLabel);
+                temp.add(rtextLink);
+                temp.add(rtextLabel);
+                temp.add(migLink);
+                temp.add(migLabel);
+                temp.add(balloonLink);
+                temp.add(balloonLabel);
             }
-            UIUtil.makeSpringCompactGrid(temp, 4, 2, 5,5, 15,5);
+            UIUtil.makeSpringCompactGrid(temp, 4, 2, 5, 5, 15, 5);
             cp.add(temp, BorderLayout.NORTH);
 
             setContentPane(cp);
