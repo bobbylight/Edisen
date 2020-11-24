@@ -30,7 +30,7 @@ class ThemeManager {
 
         try {
             UIManager.setLookAndFeel(laf);
-            app.refreshLookAndFeel();
+            app.refreshLookAndFeel(theme);
         } catch (UnsupportedLookAndFeelException e) {
             app.displayException(e);
         }

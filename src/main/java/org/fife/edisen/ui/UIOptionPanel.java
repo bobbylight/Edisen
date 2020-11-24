@@ -8,8 +8,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ResourceBundle;
 
 /**
@@ -41,7 +39,7 @@ class UIOptionPanel extends OptionsDialogPanel {
         for (Theme theme : Theme.values()) {
             themeCombo.addLabelValuePair(MSG.getString(theme.getKey()), theme);
         }
-        themeCombo.addItemListener(listener);
+        themeCombo.addActionListener(listener);
 
         if (getComponentOrientation().isLeftToRight()) {
             topPanel.add(themeLabel);
@@ -80,11 +78,12 @@ class UIOptionPanel extends OptionsDialogPanel {
         themeCombo.setSelectedValue(Theme.LIGHT);
     }
 
-    private class Listener implements ItemListener {
+    private class Listener implements ActionListener {
 
         @Override
-        public void itemStateChanged(ItemEvent e) {
+        public void actionPerformed(ActionEvent e) {
             setUnsavedChanges(true);
+            firePropertyChange("dummy", false, true);
         }
     }
 }

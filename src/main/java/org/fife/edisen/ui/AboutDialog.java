@@ -10,15 +10,7 @@ import java.awt.Graphics;
 import java.awt.Insets;
 import java.awt.SystemColor;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SpringLayout;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.event.HyperlinkEvent;
 
@@ -38,7 +30,7 @@ import org.fife.ui.UIUtil;
 class AboutDialog extends EscapableDialog {
 
     private Edisen app;
-
+    private Box box;
 
     AboutDialog(Edisen parent) {
 
@@ -48,34 +40,10 @@ class AboutDialog extends EscapableDialog {
         JPanel cp = new ResizableFrameContentPane(new BorderLayout());
         cp.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
 
-        Box box = Box.createVerticalBox();
+        box = Box.createVerticalBox();
 
-        // Don't use a Box, as some JVM's won't have the resulting component
-        // honor its opaque property.
-        JPanel box2 = new JPanel();
-        box2.setLayout(new BoxLayout(box2, BoxLayout.Y_AXIS));
-        box2.setOpaque(true);
-        box2.setBackground(Color.white);
-        box2.setBorder(new TopBorder());
-
-        JLabel label = new JLabel("Edisen");
-        label.setOpaque(true);
-        label.setBackground(Color.white);
-        Font labelFont = label.getFont();
-        label.setFont(labelFont.deriveFont(Font.BOLD, 20));
-        addLeftAligned(label, box2);
-        box2.add(Box.createVerticalStrut(5));
-
-        SelectableLabel descLabel = new SelectableLabel(
-            app.getString("Dialog.About.Desc", app.getVersionString()));
-        descLabel.addHyperlinkListener(e -> {
-            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                UIUtil.browse(e.getURL().toString());
-            }
-        });
-        box2.add(descLabel);
-
-        box.add(box2);
+        Container titleAndDescPanel = createTitleAndDescPanel(parent.getTheme());
+        box.add(titleAndDescPanel);
         box.add(Box.createVerticalStrut(5));
 
         SpringLayout sl = new SpringLayout();
@@ -125,7 +93,6 @@ class AboutDialog extends EscapableDialog {
 
     }
 
-
     private void addLeftAligned(Component toAdd, Container addTo) {
         JPanel temp = new JPanel(new BorderLayout());
         temp.setOpaque(false); // For ones on white background.
@@ -133,6 +100,47 @@ class AboutDialog extends EscapableDialog {
         addTo.add(temp);
     }
 
+    private Container createTitleAndDescPanel(Theme theme) {
+
+        Color descAreaBackground = theme == Theme.LIGHT ? Color.WHITE : new Color(48, 50, 52);
+
+        // Don't use a Box, as some JVM's won't have the resulting component
+        // honor its opaque property.
+        JPanel box = new JPanel();
+        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+        box.setOpaque(true);
+        box.setBackground(descAreaBackground);
+        box.setBorder(new TopBorder());
+
+        JLabel label = new JLabel("Edisen");
+        label.setOpaque(true);
+        label.setBackground(descAreaBackground);
+        Font labelFont = label.getFont();
+        label.setFont(labelFont.deriveFont(Font.BOLD, 20));
+        addLeftAligned(label, box);
+        box.add(Box.createVerticalStrut(5));
+
+        SelectableLabel descLabel = new SelectableLabel(
+                app.getString("Dialog.About.Desc", app.getVersionString()));
+        descLabel.addHyperlinkListener(e -> {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                UIUtil.browse(e.getURL().toString());
+            }
+        });
+        box.add(descLabel);
+
+        return box;
+    }
+
+    void refreshLookAndFeel(Theme theme) {
+
+        SwingUtilities.updateComponentTreeUI(this);
+
+        Container titleAndDescPanel = createTitleAndDescPanel(theme);
+        box.remove(0);
+        box.add(titleAndDescPanel, null, 0);
+        pack();
+    }
 
     /**
      * The border of the "top section" of the About dialog.

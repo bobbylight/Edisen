@@ -4,21 +4,13 @@ import org.fife.edisen.model.EdisenProject;
 import org.fife.help.HelpDialog;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
-import org.fife.rsta.ui.search.SearchEvent;
-import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.*;
 import org.fife.ui.SplashScreen;
 import org.fife.ui.app.AbstractPluggableGUIApplication;
 import org.fife.ui.app.GUIApplication;
 import org.fife.ui.dockablewindows.DockableWindow;
 import org.fife.ui.dockablewindows.DockableWindowPanel;
-import org.fife.ui.rsyntaxtextarea.FileLocation;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.fife.ui.rsyntaxtextarea.TextEditorPane;
-import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
-import org.fife.ui.rtextarea.RTextScrollPane;
 import org.fife.ui.rtextarea.SearchContext;
-import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextfilechooser.FileSystemTree;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
 
@@ -29,65 +21,31 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.util.Collections;
 
 public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
+    private GameFileTabbedPane tabbedPane;
+
     private EdisenPrefs prefs;
     private EdisenProject project;
-    private TextEditorPane textArea;
     private EdisenOptionsDialog optionsDialog;
 
     private SearchContext searchContext;
     private FindDialog findDialog;
     private ReplaceDialog replaceDialog;
-
-    private Listener listener;
+    private Theme theme;
 
     private static final String VERSION = "0.1.0-SNAPSHOT";
 
     public Edisen() {
         super("Edisen");
         setIcons();
+        theme = Theme.DARK;
     }
 
-    private void addEditorTab(File file) {
-
-        try {
-            textArea.load(FileLocation.create(file),
-                    StandardCharsets.UTF_8.name());
-        } catch (IOException ioe) {
-            displayException(ioe);
-        }
-    }
-
-    private void addSpellingParser() {
-
-        String[] zipFileLocations = {
-            "english_dic.zip", // production
-            "src/main/dist/english_dic.zip", // development
-            "edisen/src/main/dist/english_dic.zip" // alt development
-        };
-
-        try {
-            for (String location : zipFileLocations) {
-                File file = new File(location);
-                if (file.isFile()) {
-                    SpellingParser parser = SpellingParser.createEnglishSpellingParser(
-                        file, true);
-                    textArea.addParser(parser);
-                    return;
-                }
-            }
-        } catch (IOException ioe) {
-            displayException(ioe);
-        }
-
-        System.out.println("Couldn't find dictionary for spell checking");
-    }
-
+    @Override
     protected JDialog createAboutDialog() {
         return new AboutDialog(this);
     }
@@ -144,7 +102,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         }
 
         if (findDialog == null) {
-            findDialog = new FindDialog(this, listener);
+            findDialog = new FindDialog(this, tabbedPane.getSearchListener());
         }
 
         findDialog.setVisible(true);
@@ -188,6 +146,10 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     @Override
     public String getResourceBundleClassName() {
         return "org.fife.edisen.ui.Edisen";
+    }
+
+    Theme getTheme() {
+        return theme;
     }
 
     @Override
@@ -245,16 +207,11 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         mainPanel.setDividerLocation(DockableWindowPanel.BOTTOM, 240);
         mainPanel.setDockableWindowGroupExpanded(DockableWindow.BOTTOM, true);
 
-        textArea = new TextEditorPane();
-        textArea.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_6502);
-        textArea.setCodeFoldingEnabled(true);
-        addSpellingParser();
-        RTextScrollPane sp2 = new RTextScrollPane(textArea);
-
-        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new GameFileTabbedPane(this);
         contentPane.add(tabbedPane);
 
-        tabbedPane.addTab(project.getGameFile(), sp2);
+        File file = new File(project.getProjectFile().getParent().toFile(), project.getGameFile());
+        tabbedPane.addEditorTab(file);
 
         openFile(project.getProjectFile().toFile());
     }
@@ -268,7 +225,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
             File projectRoot = project.getProjectFile().getParent().toFile();
             String gameFile = project.getGameFile();
 
-            addEditorTab(new File(projectRoot, gameFile));
+            tabbedPane.addEditorTab(new File(projectRoot, gameFile));
             this.project = project;
         } catch (IOException ioe) {
             displayException(ioe);
@@ -279,14 +236,11 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
         String fileName = file.getName().toLowerCase();
 
-        if (fileName.endsWith(".s") || fileName.endsWith(".json")) {
-            addEditorTab(file);
-        }
-        else if (fileName.endsWith(".chr")) {
+        if (fileName.endsWith(".chr")) {
             viewChrData(file);
         }
-        else {
-            UIManager.getLookAndFeel().provideErrorFeedback(this);
+        else if (file.isFile()) { // i.e. not a directory
+            tabbedPane.addEditorTab(file);
         }
     }
 
@@ -314,8 +268,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     @Override
     protected void preDisplayInit(EdisenPrefs prefs, SplashScreen splashScreen) {
 
-        listener = new Listener();
-
         try {
             initUI(prefs);
         } catch (IOException ioe) {
@@ -338,9 +290,13 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     }
 
-    void refreshLookAndFeel() {
-
+    void refreshLookAndFeel(Theme theme) {
+        this.theme = theme;
         SwingUtilities.updateComponentTreeUI(this);
+        ((AboutDialog)getAboutDialog()).refreshLookAndFeel(theme);
+        if (optionsDialog != null) {
+            SwingUtilities.updateComponentTreeUI(optionsDialog);
+        }
     }
 
     void replace() {
@@ -350,7 +306,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         }
 
         if (replaceDialog == null) {
-            replaceDialog = new ReplaceDialog(this, listener);
+            replaceDialog = new ReplaceDialog(this, tabbedPane.getSearchListener());
         }
 
         replaceDialog.setVisible(true);
@@ -386,26 +342,5 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         dialog.add(viewer);
 
         dialog.setVisible(true);
-    }
-
-    private class Listener implements SearchListener {
-
-        @Override
-        public void searchEvent(SearchEvent e) {
-
-            SearchContext context = e.getSearchContext();
-
-            switch (e.getType()) {
-                case FIND -> SearchEngine.find(textArea, context);
-                case REPLACE -> SearchEngine.replace(textArea, context);
-                case REPLACE_ALL -> SearchEngine.replaceAll(textArea, context);
-                case MARK_ALL -> SearchEngine.markAll(textArea, context);
-            }
-        }
-
-        @Override
-        public String getSelectedText() {
-            return textArea.getSelectedText();
-        }
     }
 }
