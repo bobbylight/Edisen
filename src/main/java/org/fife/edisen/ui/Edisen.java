@@ -25,6 +25,8 @@ import org.fife.ui.rtextfilechooser.RTextFileChooser;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -49,6 +51,16 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     public Edisen() {
         super("Edisen");
         setIcons();
+    }
+
+    private void addEditorTab(File file) {
+
+        try {
+            textArea.load(FileLocation.create(file),
+                    StandardCharsets.UTF_8.name());
+        } catch (IOException ioe) {
+            displayException(ioe);
+        }
     }
 
     private void addSpellingParser() {
@@ -200,6 +212,17 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         FileSystemTree tree = new FileSystemTree(project.getProjectFile().getParent().toFile());
         tree.setRootVisible(false);
         tree.setShowsRootHandles(false);
+        tree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    File selection = tree.getSelectedFile();
+                    if (selection != null) {
+                        openFileForEditing(selection);
+                    }
+                }
+            }
+        });
         RScrollPane sp = new RScrollPane(tree);
 
         String title = getString("DockedWindow.project");
@@ -245,11 +268,25 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
             File projectRoot = project.getProjectFile().getParent().toFile();
             String gameFile = project.getGameFile();
 
-            textArea.load(FileLocation.create(new File(projectRoot, gameFile)),
-                StandardCharsets.UTF_8.name());
+            addEditorTab(new File(projectRoot, gameFile));
             this.project = project;
         } catch (IOException ioe) {
             displayException(ioe);
+        }
+    }
+
+    private void openFileForEditing(File file) {
+
+        String fileName = file.getName().toLowerCase();
+
+        if (fileName.endsWith(".s") || fileName.endsWith(".json")) {
+            addEditorTab(file);
+        }
+        else if (fileName.endsWith(".chr")) {
+            viewChrData(file);
+        }
+        else {
+            UIManager.getLookAndFeel().provideErrorFeedback(this);
         }
     }
 
@@ -338,6 +375,17 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         } catch (IOException ioe) {
             displayException(ioe); // Never happens
         }
+    }
+
+    private void viewChrData(File file) {
+
+        ChrRomViewer viewer = new ChrRomViewer(this, file);
+
+        String title = getString("Dialog.ChrData.Title");
+        EscapableDialog dialog = new EscapableDialog(this, title, true);
+        dialog.add(viewer);
+
+        dialog.setVisible(true);
     }
 
     private class Listener implements SearchListener {
