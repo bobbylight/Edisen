@@ -1,6 +1,7 @@
 package org.fife.edisen.ui;
 
 import org.fife.ui.app.MenuBar;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
 import javax.swing.*;
 import java.util.ResourceBundle;
@@ -21,6 +22,15 @@ public class AppMenuBar extends MenuBar {
         JMenu editMenu = createMenu(msg, "Menu.Edit");
         add(editMenu);
 
+        editMenu.add(createMenuItem(RSyntaxTextArea.getAction(RSyntaxTextArea.UNDO_ACTION)));
+        editMenu.add(createMenuItem(RSyntaxTextArea.getAction(RSyntaxTextArea.REDO_ACTION)));
+        editMenu.addSeparator();
+        editMenu.add(createMenuItem(RSyntaxTextArea.getAction(RSyntaxTextArea.CUT_ACTION)));
+        editMenu.add(createMenuItem(RSyntaxTextArea.getAction(RSyntaxTextArea.COPY_ACTION)));
+        editMenu.add(createMenuItem(RSyntaxTextArea.getAction(RSyntaxTextArea.PASTE_ACTION)));
+        editMenu.add(createMenuItem(RSyntaxTextArea.getAction(RSyntaxTextArea.DELETE_ACTION)));
+
+        editMenu.addSeparator();
         editMenu.add(createMenuItem(edisen.getAction(Actions.FIND_ACTION_KEY)));
         editMenu.add(createMenuItem(edisen.getAction(Actions.REPLACE_ACTION_KEY)));
 

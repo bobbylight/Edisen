@@ -1,6 +1,7 @@
 package org.fife.edisen.ui;
 
 import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.tabbedpane.GameFileTabbedPane;
 import org.fife.help.HelpDialog;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
@@ -10,27 +11,33 @@ import org.fife.ui.app.AbstractPluggableGUIApplication;
 import org.fife.ui.app.GUIApplication;
 import org.fife.ui.dockablewindows.DockableWindow;
 import org.fife.ui.dockablewindows.DockableWindowPanel;
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rtextarea.SearchContext;
-import org.fife.ui.rtextfilechooser.FileSystemTree;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Collections;
 
+/**
+ * The main window of the application.
+ */
 public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
+
+    public static final String PROPERTY_PROJECT = "edisen.project";
 
     private GameFileTabbedPane tabbedPane;
 
     private EdisenPrefs prefs;
     private EdisenProject project;
     private EdisenOptionsDialog optionsDialog;
+
+    private DockableWindow projectWindow;
+    private DockableWindow logWindow;
 
     private SearchContext searchContext;
     private FindDialog findDialog;
@@ -57,6 +64,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         super.createActions(prefs);
 
         addAction(Actions.OPEN_ACTION_KEY, new Actions.OpenAction(this));
+        Util.setIcon(Actions.OPEN_ACTION_KEY, "open.svg");
         addAction(EXIT_ACTION_KEY, new GUIApplication.ExitAction<>(this, "Action.Exit"));
 
         addAction(Actions.FIND_ACTION_KEY, new Actions.FindAction(this));
@@ -67,16 +75,20 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         addAction(Actions.EMULATE_ACTION_KEY, new Actions.EmulateAction(this));
 
         HelpAction<Edisen> helpAction = new HelpAction<>(this, "Action.Help");
-        helpAction.setIcon(Util.getSvgIcon("/images/help.svg", 16));
         addAction(HELP_ACTION_KEY, helpAction);
+        Util.setIcon(HELP_ACTION_KEY, "help.svg");
 
         AboutAction<Edisen> aboutAction = new AboutAction<>(this, "Action.About");
-        aboutAction.setIcon(Util.getSvgIcon("/images/about.svg", 16));
         addAction(ABOUT_ACTION_KEY, aboutAction);
+        Util.setIcon(ABOUT_ACTION_KEY, "about.svg");
     }
 
     @Override
     protected JMenuBar createMenuBar(EdisenPrefs prefs) {
+
+        // Ugh - needed to initialize RSTA's actions, which we shove into the menu bar
+        new RSyntaxTextArea();
+
         return new AppMenuBar(this);
     }
 
@@ -106,6 +118,15 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         }
 
         findDialog.setVisible(true);
+    }
+
+    /**
+     * Returns the singleton instance of this application.
+     *
+     * @return The singleton instance of this application.
+     */
+    public static Edisen get() {
+        return (Edisen)JFrame.getFrames()[0];
     }
 
     public String getAssemblerCommandLine() {
@@ -148,7 +169,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         return "org.fife.edisen.ui.Edisen";
     }
 
-    Theme getTheme() {
+    public Theme getTheme() {
         return theme;
     }
 
@@ -171,39 +192,24 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         Container contentPane = getContentPane();
         DockableWindowPanel mainPanel = (DockableWindowPanel) mainContentPanel;
 
-        FileSystemTree tree = new FileSystemTree(project.getProjectFile().getParent().toFile());
-        tree.setRootVisible(false);
-        tree.setShowsRootHandles(false);
-        tree.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    File selection = tree.getSelectedFile();
-                    if (selection != null) {
-                        openFileForEditing(selection);
-                    }
-                }
-            }
-        });
+        ProjectTree tree = new ProjectTree(this, project.getProjectFile().getParent());
         RScrollPane sp = new RScrollPane(tree);
 
         String title = getString("DockedWindow.project");
-        DockableWindow wind = new DockableWindow(title, new BorderLayout());
-        wind.setIcon(Util.getSvgIcon("/images/projectStructure.svg", 16));
-        wind.setPosition(DockableWindow.LEFT);
-        wind.setActive(true);
-        wind.add(sp);
-        wind.add(tree);
-        mainPanel.addDockableWindow(wind);
+        projectWindow = new DockableWindow(title, new BorderLayout());
+        projectWindow.setPosition(DockableWindow.LEFT);
+        projectWindow.setActive(true);
+        projectWindow.add(sp);
+        projectWindow.add(tree);
+        mainPanel.addDockableWindow(projectWindow);
         mainPanel.setDividerLocation(DockableWindowPanel.LEFT, 150);
         mainPanel.setDockableWindowGroupExpanded(DockableWindow.LEFT, true);
 
         title = getString("DockedWindow.log");
-        wind = new DockableWindow(title, new BorderLayout());
-        wind.setIcon(Util.getSvgIcon("/images/console.svg", 16));
-        wind.setPosition(DockableWindow.BOTTOM);
-        wind.setActive(true);
-        mainPanel.addDockableWindow(wind);
+        logWindow = new DockableWindow(title, new BorderLayout());
+        logWindow.setPosition(DockableWindow.BOTTOM);
+        logWindow.setActive(true);
+        mainPanel.addDockableWindow(logWindow);
         mainPanel.setDividerLocation(DockableWindowPanel.BOTTOM, 240);
         mainPanel.setDockableWindowGroupExpanded(DockableWindow.BOTTOM, true);
 
@@ -222,17 +228,16 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         try {
 
             EdisenProject project = EdisenProject.fromFile(file.toPath());
-            File projectRoot = project.getProjectFile().getParent().toFile();
-            String gameFile = project.getGameFile();
-
-            tabbedPane.addEditorTab(new File(projectRoot, gameFile));
+            EdisenProject previousProject = this.project;
             this.project = project;
+            refreshTitle();
+            firePropertyChange(PROPERTY_PROJECT, previousProject, project);
         } catch (IOException ioe) {
             displayException(ioe);
         }
     }
 
-    private void openFileForEditing(File file) {
+    void openFileForEditing(File file) {
 
         String fileName = file.getName().toLowerCase();
 
@@ -273,6 +278,11 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         } catch (IOException ioe) {
             displayException(ioe);
         }
+
+        // Really only the RSTA action icons need this...
+        refreshIcons();
+
+        tabbedPane.focusActiveEditor();
     }
 
     @Override
@@ -291,12 +301,46 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     }
 
     void refreshLookAndFeel(Theme theme) {
+
         this.theme = theme;
+
         SwingUtilities.updateComponentTreeUI(this);
         ((AboutDialog)getAboutDialog()).refreshLookAndFeel(theme);
         if (optionsDialog != null) {
             SwingUtilities.updateComponentTreeUI(optionsDialog);
         }
+
+        refreshIcons();
+    }
+
+    /**
+     * Refreshes icons used by the application to better match the current theme.
+     * Called after theme changes.
+     */
+    private void refreshIcons() {
+
+        Util.setIcon(Actions.OPEN_ACTION_KEY, "open.svg");
+
+        refreshTextAreaIcon(RSyntaxTextArea.UNDO_ACTION, "undo.svg");
+        refreshTextAreaIcon(RSyntaxTextArea.REDO_ACTION, "redo.svg");
+        refreshTextAreaIcon(RSyntaxTextArea.CUT_ACTION, "cut.svg");
+        refreshTextAreaIcon(RSyntaxTextArea.COPY_ACTION, "copy.svg");
+        refreshTextAreaIcon(RSyntaxTextArea.PASTE_ACTION, "paste.svg");
+
+        Util.setIcon(HELP_ACTION_KEY, "help.svg");
+        Util.setIcon(ABOUT_ACTION_KEY, "about.svg");
+
+        projectWindow.setIcon(Util.getSvgIcon("projectStructure.svg", 16));
+        logWindow.setIcon(Util.getSvgIcon("log.svg", 16));
+    }
+
+    private void refreshTextAreaIcon(int icon, String resource) {
+        Action action = RSyntaxTextArea.getAction(icon);
+        action.putValue(Action.SMALL_ICON, Util.getSvgIcon(resource, 16));
+    }
+
+    private void refreshTitle() {
+        setTitle(getString("MainWindow.Title", project.getName()));
     }
 
     void replace() {

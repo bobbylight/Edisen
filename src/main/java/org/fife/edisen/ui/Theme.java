@@ -3,7 +3,7 @@ package org.fife.edisen.ui;
 /**
  * An enumeration of themes for the application.
  */
-enum Theme {
+public enum Theme {
 
     LIGHT("Theme.Light", "/org/fife/ui/rsyntaxtextarea/themes/default-alt.xml"),
     DARK("Theme.Dark", "/org/fife/ui/rsyntaxtextarea/themes/dark.xml");
