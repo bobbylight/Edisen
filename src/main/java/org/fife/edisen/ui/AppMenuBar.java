@@ -1,5 +1,6 @@
 package org.fife.edisen.ui;
 
+import org.fife.ui.ComponentMover;
 import org.fife.ui.app.MenuBar;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 
@@ -31,11 +32,16 @@ public class AppMenuBar extends MenuBar {
         editMenu.add(createMenuItem(RSyntaxTextArea.getAction(RSyntaxTextArea.DELETE_ACTION)));
 
         editMenu.addSeparator();
-        editMenu.add(createMenuItem(edisen.getAction(Actions.FIND_ACTION_KEY)));
-        editMenu.add(createMenuItem(edisen.getAction(Actions.REPLACE_ACTION_KEY)));
-
-        editMenu.addSeparator();
         editMenu.add(createMenuItem(edisen.getAction(Actions.OPTIONS_ACTION_KEY)));
+
+        JMenu searchMenu = createMenu(msg, "Menu.Search");
+        add(searchMenu);
+
+        searchMenu.add(createMenuItem(edisen.getAction(Actions.FIND_ACTION_KEY)));
+        searchMenu.add(createMenuItem(edisen.getAction(Actions.REPLACE_ACTION_KEY)));
+
+        searchMenu.addSeparator();
+        searchMenu.add(createMenuItem(edisen.getAction(Actions.GOTO_ACTION_KEY)));
 
         JMenu compileMenu = createMenu(msg, "Menu.Compile");
         add(compileMenu);

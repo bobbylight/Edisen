@@ -31,6 +31,8 @@ public final class Util {
             BufferedImage image = ImageTranscodingUtil.rasterize(resource, in, size, size);
             return new ImageIcon(image);
         } catch (IOException ioe) {
+            System.out.println("Couldn't find icon: " + resource);
+            ioe.printStackTrace();
             return new EmptyIcon(size);
         }
     }

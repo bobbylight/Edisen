@@ -105,7 +105,7 @@ public class GameFileTabbedPane extends JTabbedPane {
      *
      * @return The currently focused text area.
      */
-    private TextEditorPane getCurrentTextArea() {
+    public TextEditorPane getCurrentTextArea() {
 
         TabbedPaneContent content = getCurrentContent();
         if (content instanceof CodeEditorTabbedPaneContent) {

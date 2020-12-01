@@ -3,6 +3,7 @@ package org.fife.edisen.ui.tabbedpane;
 import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.FileTypeManager;
 import org.fife.edisen.ui.Theme;
+import org.fife.ui.UIUtil;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
@@ -21,6 +22,10 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
 
     private final Edisen edisen;
     private final TextEditorPane textArea;
+    private SpellingParser parser;
+
+    private static final Color SPELLING_ERROR_SQUIGGLE_COLOR_DARK = new Color(224, 224, 255);
+    private static final Color SPELLING_ERROR_SQUIGGLE_COLOR_LIGHT = Color.BLUE;
 
     CodeEditorTabbedPaneContent(Edisen edisen, File file) {
 
@@ -48,28 +53,10 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
     }
 
     private void addSpellingParser(TextEditorPane textArea) {
-
-        String[] zipFileLocations = {
-                "english_dic.zip", // production
-                "src/main/dist/english_dic.zip", // development
-                "edisen/src/main/dist/english_dic.zip" // alt development
-        };
-
-        try {
-            for (String location : zipFileLocations) {
-                File file = new File(location);
-                if (file.isFile()) {
-                    SpellingParser parser = SpellingParser.createEnglishSpellingParser(
-                            file, true);
-                    textArea.addParser(parser);
-                    return;
-                }
-            }
-        } catch (IOException ioe) {
-            edisen.displayException(ioe);
+        possiblyCreateSpellingParser();
+        if (parser != null) {
+            textArea.addParser(parser);
         }
-
-        System.out.println("Couldn't find dictionary for spell checking");
     }
 
     private void applyThemeToTextArea(TextEditorPane textArea, Theme theme) {
@@ -82,12 +69,57 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
         }
     }
 
+    private static Color getSpellingErrorSquiggleColor() {
+        return UIUtil.isDarkLookAndFeel() ?
+                SPELLING_ERROR_SQUIGGLE_COLOR_DARK :
+                SPELLING_ERROR_SQUIGGLE_COLOR_LIGHT;
+    }
+
     TextEditorPane getTextArea() {
         return textArea;
+    }
+
+    private void possiblyCreateSpellingParser() {
+
+        if (parser != null) {
+            return;
+        }
+
+        String[] zipFileLocations = {
+                "english_dic.zip", // production
+                "src/main/dist/english_dic.zip", // development
+                "edisen/src/main/dist/english_dic.zip" // alt development
+        };
+
+        try {
+            for (String location : zipFileLocations) {
+                File file = new File(location);
+                if (file.isFile()) {
+                    parser = SpellingParser.createEnglishSpellingParser(
+                            file, true);
+                    parser.setSquiggleUnderlineColor(getSpellingErrorSquiggleColor());
+                    return;
+                }
+            }
+        } catch (IOException ioe) {
+            edisen.displayException(ioe);
+        }
+
+        System.out.println("Couldn't find dictionary for spell checking");
     }
 
     @Override
     public boolean requestFocusInWindow() {
         return textArea.requestFocusInWindow();
+    }
+
+    @Override
+    public void updateUI() {
+
+        super.updateUI();
+
+        if (parser != null) {
+            parser.setSquiggleUnderlineColor(getSpellingErrorSquiggleColor());
+        }
     }
 }

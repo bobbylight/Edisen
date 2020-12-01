@@ -3,6 +3,7 @@ package org.fife.edisen.ui;
 import org.fife.edisen.model.EdisenProject;
 import org.fife.edisen.ui.tabbedpane.GameFileTabbedPane;
 import org.fife.help.HelpDialog;
+import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.*;
@@ -12,11 +13,13 @@ import org.fife.ui.app.GUIApplication;
 import org.fife.ui.dockablewindows.DockableWindow;
 import org.fife.ui.dockablewindows.DockableWindowPanel;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -37,11 +40,14 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     private EdisenOptionsDialog optionsDialog;
 
     private DockableWindow projectWindow;
-    private DockableWindow logWindow;
+
+    private DockableWindow outputWindow;
+    private OutputTextPane outputTextArea;
 
     private SearchContext searchContext;
     private FindDialog findDialog;
     private ReplaceDialog replaceDialog;
+    private GoToDialog goToDialog;
     private Theme theme;
 
     private static final String VERSION = "0.1.0-SNAPSHOT";
@@ -69,6 +75,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
         addAction(Actions.FIND_ACTION_KEY, new Actions.FindAction(this));
         addAction(Actions.REPLACE_ACTION_KEY, new Actions.ReplaceAction(this));
+        addAction(Actions.GOTO_ACTION_KEY, new Actions.GoToAction(this));
         addAction(Actions.OPTIONS_ACTION_KEY, new OptionsAction<>(this, "Action.Options"));
 
         addAction(Actions.COMPILE_ACTION_KEY, new Actions.CompileAction(this));
@@ -178,6 +185,31 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         return VERSION;
     }
 
+    void goToLine() {
+
+        if (goToDialog == null) {
+            goToDialog = new GoToDialog(this);
+        }
+
+        TextEditorPane textArea = tabbedPane.getCurrentTextArea();
+        if (textArea == null) {
+            UIManager.getLookAndFeel().provideErrorFeedback(this);
+            return;
+        }
+
+        goToDialog.setMaxLineNumberAllowed(textArea.getLineCount());
+        goToDialog.setVisible(true);
+
+        int line = goToDialog.getLineNumber();
+        if (line > 0) {
+            try {
+                textArea.setCaretPosition(textArea.getLineStartOffset(line - 1));
+            } catch (BadLocationException ble) {
+                displayException(ble); // Never happens
+            }
+        }
+    }
+
     private void initUI(EdisenPrefs prefs) throws IOException {
 
         String path;
@@ -195,21 +227,22 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         ProjectTree tree = new ProjectTree(this, project.getProjectFile().getParent());
         RScrollPane sp = new RScrollPane(tree);
 
-        String title = getString("DockedWindow.project");
+        String title = getString("DockedWindow.Project");
         projectWindow = new DockableWindow(title, new BorderLayout());
         projectWindow.setPosition(DockableWindow.LEFT);
         projectWindow.setActive(true);
         projectWindow.add(sp);
-        projectWindow.add(tree);
         mainPanel.addDockableWindow(projectWindow);
         mainPanel.setDividerLocation(DockableWindowPanel.LEFT, 150);
         mainPanel.setDockableWindowGroupExpanded(DockableWindow.LEFT, true);
 
-        title = getString("DockedWindow.log");
-        logWindow = new DockableWindow(title, new BorderLayout());
-        logWindow.setPosition(DockableWindow.BOTTOM);
-        logWindow.setActive(true);
-        mainPanel.addDockableWindow(logWindow);
+        title = getString("DockedWindow.Output");
+        outputWindow = new DockableWindow(title, new BorderLayout());
+        outputWindow.setPosition(DockableWindow.BOTTOM);
+        outputWindow.setActive(true);
+        outputTextArea = new OutputTextPane(this);
+        outputWindow.add(new RScrollPane(outputTextArea));
+        mainPanel.addDockableWindow(outputWindow);
         mainPanel.setDividerLocation(DockableWindowPanel.BOTTOM, 240);
         mainPanel.setDockableWindowGroupExpanded(DockableWindow.BOTTOM, true);
 
@@ -220,6 +253,10 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         tabbedPane.addEditorTab(file);
 
         openFile(project.getProjectFile().toFile());
+    }
+
+    public void log(String level, String text, Object... arguments) {
+        outputTextArea.log(level, text, arguments);
     }
 
     @Override
@@ -283,6 +320,12 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         refreshIcons();
 
         tabbedPane.focusActiveEditor();
+
+        // Make the window draggable by the menu bar
+        JMenuBar menuBar = getJMenuBar();
+        StatusBar statusBar = getStatusBar();
+        ComponentMover mover = new ComponentMover(this, menuBar, tabbedPane, statusBar);
+        mover.setChangeCursor(false);
     }
 
     @Override
@@ -331,7 +374,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         Util.setIcon(ABOUT_ACTION_KEY, "about.svg");
 
         projectWindow.setIcon(Util.getSvgIcon("projectStructure.svg", 16));
-        logWindow.setIcon(Util.getSvgIcon("log.svg", 16));
+        outputWindow.setIcon(Util.getSvgIcon("console.svg", 16));
     }
 
     private void refreshTextAreaIcon(int icon, String resource) {
