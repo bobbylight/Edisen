@@ -23,8 +23,13 @@ public final class Util {
 
     public static Icon getSvgIcon(String resource, int size) {
 
-        Theme theme = Edisen.get().getTheme();
-        resource = "/images/" + theme.name().toLowerCase() + "/" + resource;
+        // Trust fully-qualified resources.  Non-fully qualified - assume
+        // they must match the theme.
+        if (!resource.startsWith("/")) {
+            Theme theme = Edisen.get().getTheme();
+            resource = "/images/" + theme.name().toLowerCase() + "/" + resource;
+        }
+
         InputStream in = Util.class.getResourceAsStream(resource);
 
         try {

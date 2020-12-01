@@ -3,12 +3,14 @@ package org.fife.edisen.ui.tabbedpane;
 import org.fife.edisen.model.EdisenProject;
 import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.Theme;
+import org.fife.edisen.ui.Util;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
+import org.fife.ui.rtextfilechooser.Utilities;
 
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
@@ -16,6 +18,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +56,7 @@ public class GameFileTabbedPane extends JTabbedPane {
         CodeEditorTabbedPaneContent content = new CodeEditorTabbedPaneContent(edisen, file);
 
         fileToTabIndex.put(file, getTabCount());
-        addTab(file.getName(), content);
+        addTab(file.getName(), getIconFor(file), content);
 
         setSelectedIndex(getTabCount() - 1);
         content.requestFocusInWindow();
@@ -116,6 +119,37 @@ public class GameFileTabbedPane extends JTabbedPane {
 
     public SearchListener getSearchListener() {
         return listener;
+    }
+
+    private Icon getIconFor(File file) {
+
+        // Default
+        String image = "plain.svg";
+
+        String extension = Utilities.getExtension(file.getName());
+        if (extension != null) {
+            URL url = getClass().getResource(getIconPath(extension + ".svg"));
+            if (url != null) {
+                image = extension + ".svg";
+            }
+            else {
+                url = getClass().getResource(getIconPath(extension + ".png"));
+                if (url != null) {
+                    image = extension + ".png";
+                }
+            }
+        }
+
+        if (image.endsWith(".svg")) {
+            return Util.getSvgIcon(getIconPath(image), 16);
+        }
+        else {
+            return new ImageIcon(getClass().getResource(getIconPath(image)));
+        }
+    }
+
+    private static String getIconPath(String icon) {
+        return "/icons/fileTypes/" + icon;
     }
 
     /**
