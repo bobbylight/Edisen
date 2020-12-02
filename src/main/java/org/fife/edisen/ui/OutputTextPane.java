@@ -28,8 +28,8 @@ class OutputTextPane extends AbstractConsoleTextArea {
 	OutputTextPane(Edisen edisen) {
 		this.edisen = edisen;
 		installDefaultStyles(false);
-		fixKeyboardShortcuts();
-		Listener listener = new Listener();
+        setEditable(false);
+        Listener listener = new Listener();
 		addMouseListener(listener);
 	}
 
@@ -43,33 +43,6 @@ class OutputTextPane extends AbstractConsoleTextArea {
 		popup.addSeparator();
 		popup.add(new JMenuItem(new ConfigureAction()));
 		return popup;
-	}
-
-
-	/**
-	 * Fixes the keyboard shortcuts for this text component so the user cannot
-	 * accidentally delete any stdout or stderr, only stdin.
-	 */
-	private void fixKeyboardShortcuts() {
-
-	    setEditable(false);
-//		InputMap im = getInputMap();
-//
-//		// backspace
-//		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0), "invalid");
-//
-//		// Just remove "delete previous word" for now, since DefaultEditorKit
-//		// doesn't expose the delegate for us to call into.
-//		int ctrl = InputEvent.CTRL_DOWN_MASK;
-//		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, ctrl), "invalid");
-//
-//		// delete
-//		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0), "invalid");
-//
-//		// Just remove "delete next word" for now, since DefaultEditorKit
-//		// doesn't expose the delegate for us to call into.
-//		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, ctrl), "invalid");
-
 	}
 
     /**

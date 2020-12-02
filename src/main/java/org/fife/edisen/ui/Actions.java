@@ -83,7 +83,8 @@ public class Actions {
                 }
             });
 
-            pr.run();
+            // TODO: Cache this and kill it if the user manually stops the process
+            new ProcessRunnerThread(pr).start();
         }
     }
 
@@ -99,7 +100,7 @@ public class Actions {
             Edisen app = getApplication();
             EdisenPrefs prefs = app.getPreferences();
 
-            String rom = "game.nes";
+            String rom = "./game.nes"; // "relative path" needed for Windows Nestopia
 
             String commandLine = prefs.emulatorCommandLine;
             commandLine = commandLine.replace("${rom}", '"' + rom + '"');
@@ -117,21 +118,25 @@ public class Actions {
             ProcessRunner pr = new ProcessRunner(command.toArray(new String[0]));
 
             pr.setDirectory(app.getProject().getProjectFile().getParent().toFile());
-            System.out.println("Running program: " + pr.getCommandLineString());
+
+            String dateTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
+            app.log("stdin", app.getString("Log.RunningProgram", dateTime));
+            app.log("stdout", pr.getCommandLineString());
 
             pr.setOutputListener(new ProcessRunnerOutputListener() {
                 @Override
                 public void outputWritten(Process p, String output, boolean stdout) {
-                    System.out.println(output);
+                    app.log(stdout ? "stdout" : "stderr", output);
                 }
 
                 @Override
                 public void processCompleted(Process p, int rc, Throwable e) {
-                    System.out.println("Process completed with return code: " + rc);
+                    app.log("stdin", app.getString("Log.ProcessCompleted", rc));
                 }
             });
 
-            pr.run();
+            // TODO: Cache this and kill it if the user manually stops the process
+            new ProcessRunnerThread(pr).start();
         }
     }
 
