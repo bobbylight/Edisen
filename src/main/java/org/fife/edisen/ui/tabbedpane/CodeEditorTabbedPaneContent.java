@@ -9,7 +9,10 @@ import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
+import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,10 +33,12 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
     CodeEditorTabbedPaneContent(Edisen edisen, File file) {
 
         this.edisen = edisen;
+        Listener listener = new Listener();
 
         textArea = new TextEditorPane();
         textArea.setSyntaxEditingStyle(FileTypeManager.get().get(file));
         textArea.setCodeFoldingEnabled(true);
+        textArea.addPropertyChangeListener(TextEditorPane.DIRTY_PROPERTY, listener);
         addSpellingParser(textArea);
 
         try {
@@ -75,6 +80,11 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
                 SPELLING_ERROR_SQUIGGLE_COLOR_LIGHT;
     }
 
+    @Override
+    String getTabName() {
+        return textArea.getFileName();
+    }
+
     TextEditorPane getTextArea() {
         return textArea;
     }
@@ -114,12 +124,35 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
     }
 
     @Override
+    public void saveChanges() throws IOException {
+        textArea.save();
+    }
+
+    @Override
     public void updateUI() {
 
         super.updateUI();
 
         if (parser != null) {
             parser.setSquiggleUnderlineColor(getSpellingErrorSquiggleColor());
+        }
+    }
+
+    /**
+     * Listens for events in this component.
+     */
+    private class Listener implements PropertyChangeListener {
+
+        @Override
+        public void propertyChange(PropertyChangeEvent e) {
+
+            String property = e.getPropertyName();
+
+            // When the editor's dirty state changes, percolate it up as this tab's
+            // dirty state changing
+            if (TextEditorPane.DIRTY_PROPERTY.equals(property)) {
+                setDirty((Boolean)e.getNewValue());
+            }
         }
     }
 }

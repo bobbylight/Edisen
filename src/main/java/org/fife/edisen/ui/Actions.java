@@ -24,6 +24,8 @@ public class Actions {
     public static final String OPEN_ACTION_KEY = "openAction";
     public static final String OPTIONS_ACTION_KEY = "optionsAction";
     public static final String REPLACE_ACTION_KEY = "replaceAction";
+    public static final String SAVE_ACTION_KEY = "saveAction";
+    public static final String SAVE_AS_ACTION_KEY = "saveAsAction";
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER =
             DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
@@ -185,6 +187,30 @@ public class Actions {
         @Override
         public void actionPerformed(ActionEvent e) {
             getApplication().replace();
+        }
+    }
+
+    public static class SaveAction extends AppAction<Edisen> {
+
+        public SaveAction(Edisen app) {
+            super(app, "Action.Save");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getApplication().saveCurrentFile();
+        }
+    }
+
+    public static class SaveAsAction extends AppAction<Edisen> {
+
+        public SaveAsAction(Edisen app) {
+            super(app, "Action.SaveAs");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getApplication().saveCurrentFileAs();
         }
     }
 }

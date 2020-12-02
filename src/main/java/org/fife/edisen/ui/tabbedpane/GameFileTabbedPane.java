@@ -54,9 +54,10 @@ public class GameFileTabbedPane extends JTabbedPane {
         }
 
         CodeEditorTabbedPaneContent content = new CodeEditorTabbedPaneContent(edisen, file);
+        content.addPropertyChangeListener(TabbedPaneContent.PROPERTY_DIRTY, listener);
 
         fileToTabIndex.put(file, getTabCount());
-        addTab(file.getName(), getIconFor(file), content);
+        addTab(content.getTabName(), getIconFor(file), content);
 
         setSelectedIndex(getTabCount() - 1);
         content.requestFocusInWindow();
@@ -166,10 +167,39 @@ public class GameFileTabbedPane extends JTabbedPane {
         addEditorTab(new File(projectRoot, gameFile));
     }
 
+    private void refreshTabName(TabbedPaneContent content) {
+
+        for (int i = 0; i < getTabCount(); i++) {
+
+            if (content == getComponentAt(i)) {
+
+                String tabName = content.getTabName();
+                if (content.isDirty()) {
+                    tabName += "*";
+                }
+                setTitleAt(i, tabName);
+                break;
+            }
+        }
+    }
+
     @Override
     public void removeAll() {
+
+        for (int i = 0; i < getTabCount(); i++) {
+            getComponentAt(i).removePropertyChangeListener(TabbedPaneContent.PROPERTY_DIRTY, listener);
+        }
+
         super.removeAll();
         fileToTabIndex.clear();
+    }
+
+    public void saveCurrentFile() {
+        try {
+            getCurrentContent().saveChanges();
+        } catch (IOException ioe) {
+            edisen.displayException(ioe);
+        }
     }
 
     @Override
@@ -192,8 +222,10 @@ public class GameFileTabbedPane extends JTabbedPane {
         @Override
         public void propertyChange(PropertyChangeEvent e) {
 
-            if (Edisen.PROPERTY_PROJECT.equals(e.getPropertyName())) {
-                openInitialTabsForProject((EdisenProject)e.getNewValue());
+
+            switch (e.getPropertyName()) {
+                case Edisen.PROPERTY_PROJECT -> openInitialTabsForProject((EdisenProject)e.getNewValue());
+                case TabbedPaneContent.PROPERTY_DIRTY -> refreshTabName((TabbedPaneContent)e.getSource());
             }
         }
 

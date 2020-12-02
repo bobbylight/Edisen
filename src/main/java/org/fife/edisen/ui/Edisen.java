@@ -71,6 +71,9 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
         addAction(Actions.OPEN_ACTION_KEY, new Actions.OpenAction(this));
         Util.setIcon(Actions.OPEN_ACTION_KEY, "open.svg");
+        addAction(Actions.SAVE_ACTION_KEY, new Actions.SaveAction(this));
+        Util.setIcon(Actions.SAVE_ACTION_KEY, "save.svg");
+        addAction(Actions.SAVE_AS_ACTION_KEY, new Actions.SaveAsAction(this));
         addAction(EXIT_ACTION_KEY, new GUIApplication.ExitAction<>(this, "Action.Exit"));
 
         addAction(Actions.FIND_ACTION_KEY, new Actions.FindAction(this));
@@ -397,6 +400,15 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         }
 
         replaceDialog.setVisible(true);
+    }
+
+    public void saveCurrentFile() {
+        tabbedPane.saveCurrentFile();
+    }
+
+    public void saveCurrentFileAs() {
+        JOptionPane.showMessageDialog(this, "Not yet implemented", "Error",
+                JOptionPane.ERROR_MESSAGE);
     }
 
     public void setAssemblerCommandLine(String commandLine) {
