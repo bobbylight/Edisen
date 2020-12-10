@@ -9,7 +9,7 @@ import java.io.*;
 /**
  * Renders CHR ROM.
  */
-class ChrRomViewer extends JComponent {
+public class ChrRomViewer extends JComponent {
 
     private Edisen edisen;
     private File chrFile;

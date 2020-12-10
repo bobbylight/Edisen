@@ -278,15 +278,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     }
 
     void openFileForEditing(File file) {
-
-        String fileName = file.getName().toLowerCase();
-
-        if (fileName.endsWith(".chr")) {
-            viewChrData(file);
-        }
-        else if (file.isFile()) { // i.e. not a directory
-            tabbedPane.addEditorTab(file);
-        }
+        tabbedPane.openFile(file);
     }
 
     void openProject() {
@@ -327,7 +319,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         // Make the window draggable by the menu bar
         JMenuBar menuBar = getJMenuBar();
         StatusBar statusBar = getStatusBar();
-        ComponentMover mover = new ComponentMover(this, menuBar, tabbedPane, statusBar);
+        ComponentMover mover = new ComponentMover(this, menuBar, statusBar);
         mover.setChangeCursor(false);
     }
 
@@ -430,16 +422,5 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
         } catch (IOException ioe) {
             displayException(ioe); // Never happens
         }
-    }
-
-    private void viewChrData(File file) {
-
-        ChrRomViewer viewer = new ChrRomViewer(this, file);
-
-        String title = getString("Dialog.ChrData.Title");
-        EscapableDialog dialog = new EscapableDialog(this, title, true);
-        dialog.add(viewer);
-
-        dialog.setVisible(true);
     }
 }

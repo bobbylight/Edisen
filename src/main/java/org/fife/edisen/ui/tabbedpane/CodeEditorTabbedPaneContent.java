@@ -9,7 +9,6 @@ import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
-import javax.swing.*;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -78,6 +77,11 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
         return UIUtil.isDarkLookAndFeel() ?
                 SPELLING_ERROR_SQUIGGLE_COLOR_DARK :
                 SPELLING_ERROR_SQUIGGLE_COLOR_LIGHT;
+    }
+
+    @Override
+    File getFile() {
+        return new File(textArea.getFileFullPath());
     }
 
     @Override

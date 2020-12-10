@@ -1,6 +1,7 @@
 package org.fife.edisen.ui.tabbedpane;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -15,6 +16,8 @@ abstract class TabbedPaneContent extends JPanel {
     public static final String PROPERTY_DIRTY = "TabbedPaneContent.dirty";
 
     private boolean dirty;
+
+    abstract File getFile();
 
     abstract String getTabName();
 

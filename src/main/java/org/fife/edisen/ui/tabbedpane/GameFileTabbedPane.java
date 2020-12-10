@@ -13,14 +13,13 @@ import org.fife.ui.rtextarea.SearchResult;
 import org.fife.ui.rtextfilechooser.Utilities;
 
 import javax.swing.*;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * A tabbed pane containing all open, editable game files.
@@ -28,7 +27,6 @@ import java.util.Map;
 public class GameFileTabbedPane extends JTabbedPane {
 
     private final Edisen edisen;
-    private final Map<File, Integer> fileToTabIndex;
     private final Listener listener;
 
     private static final TabbedPaneContent DUMMY_TABBED_PANE_CONTENT = new DummyTabbedPaneContent();
@@ -36,10 +34,24 @@ public class GameFileTabbedPane extends JTabbedPane {
     public GameFileTabbedPane(Edisen edisen) {
 
         this.edisen = edisen;
-        this.fileToTabIndex = new HashMap<>();
         this.listener = new Listener();
 
         edisen.addPropertyChangeListener(Edisen.PROPERTY_PROJECT, listener);
+    }
+
+    private void addChrDataTab(File file) {
+
+        if (focusTabFor(file)) {
+            return;
+        }
+
+        ChrRomTabbedPaneContent content = new ChrRomTabbedPaneContent(edisen, file);
+        content.addPropertyChangeListener(TabbedPaneContent.PROPERTY_DIRTY, listener);
+
+        addTab(content.getTabName(), getIconFor(file), content);
+
+        setSelectedIndex(getTabCount() - 1);
+        content.requestFocusInWindow();
     }
 
     /**
@@ -56,7 +68,6 @@ public class GameFileTabbedPane extends JTabbedPane {
         CodeEditorTabbedPaneContent content = new CodeEditorTabbedPaneContent(edisen, file);
         content.addPropertyChangeListener(TabbedPaneContent.PROPERTY_DIRTY, listener);
 
-        fileToTabIndex.put(file, getTabCount());
         addTab(content.getTabName(), getIconFor(file), content);
 
         setSelectedIndex(getTabCount() - 1);
@@ -78,17 +89,25 @@ public class GameFileTabbedPane extends JTabbedPane {
         }
     }
 
+    public void closeTab(int index) {
+
+        getComponentAt(index).removePropertyChangeListener(TabbedPaneContent.PROPERTY_DIRTY, listener);
+        removeTabAt(index);
+    }
+
     public void focusActiveEditor() {
         SwingUtilities.invokeLater(() -> getCurrentContent().requestFocusInWindow());
     }
 
     private boolean focusTabFor(File file) {
 
-        Integer index = fileToTabIndex.get(file);
-        if (index != null) {
-            setSelectedIndex(index);
-            getCurrentContent().requestFocusInWindow();
-            return true;
+        for (int i = 0; i < getTabCount(); i++) {
+            TabbedPaneContent content = (TabbedPaneContent)getComponentAt(i);
+            if (file.equals(content.getFile())) {
+                setSelectedIndex(i);
+                getCurrentContent().requestFocusInWindow();
+                return true;
+            }
         }
         return false;
     }
@@ -154,6 +173,28 @@ public class GameFileTabbedPane extends JTabbedPane {
     }
 
     /**
+     * Called by {@code JTabbedPane}'s methods such as {@code addTab()} to actually
+     * insert a tab.  Overridden to set the component to render the tab itself.
+     */
+    @Override
+    public void insertTab(String title, Icon icon, Component component, String tip, int index) {
+        super.insertTab(title, icon, component, tip, index);
+        setTabComponentAt(getTabCount() - 1, new TabRenderer());
+    }
+
+    public void openFile(File file) {
+
+        String fileName = file.getName().toLowerCase();
+
+        if (fileName.endsWith(".chr")) {
+            addChrDataTab(file);
+        }
+        else if (file.isFile()) { // i.e. not a directory
+            addEditorTab(file);
+        }
+    }
+
+    /**
      * Opens the set of initial tabs that should be open for a project.
      *
      * @param project The new project.
@@ -191,7 +232,6 @@ public class GameFileTabbedPane extends JTabbedPane {
         }
 
         super.removeAll();
-        fileToTabIndex.clear();
     }
 
     public void saveCurrentFile() {
@@ -272,6 +312,57 @@ public class GameFileTabbedPane extends JTabbedPane {
         public String getSelectedText() {
             TextEditorPane currentTextArea = getCurrentTextArea();
             return currentTextArea != null ? currentTextArea.getSelectedText() : null;
+        }
+    }
+
+    private class TabRenderer extends JPanel {
+
+        private final JLabel content;
+        private final Icon closeIcon = Util.getSvgIcon("close.svg", 16);
+        private final Icon rolloverIcon = Util.getSvgIcon("closeHovered.svg", 16);
+
+        public TabRenderer() {
+
+            setOpaque(false);
+
+            content = new JLabel("(loading)", SwingConstants.LEADING) {
+                public void addNotify() {
+                    super.addNotify();
+                    disableEvents(AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_MOTION_EVENT_MASK);
+                }
+            };
+            for (int i = 0; i < content.getMouseListeners().length; i++) {
+                System.out.println("Removing ML");
+                content.removeMouseListener(content.getMouseListeners()[i]);
+            }
+            for (int i = 0; i < content.getMouseMotionListeners().length; i++) {
+                System.out.println("Removing MML");
+                content.removeMouseMotionListener(content.getMouseMotionListeners()[i]);
+            }
+
+            setLayout(new BorderLayout());
+            setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            add(content);
+
+            JButton closeButton = new JButton(closeIcon);
+            closeButton.setUI(new javax.swing.plaf.basic.BasicButtonUI());
+            closeButton.setRolloverEnabled(true);
+            closeButton.setBorderPainted(false);
+            closeButton.setContentAreaFilled(false);
+            closeButton.setFocusable(false);
+            closeButton.setOpaque(false);
+            closeButton.setRolloverIcon(rolloverIcon);
+            closeButton.setPressedIcon(rolloverIcon);
+            closeButton.addActionListener((e) -> closeTab(indexOfTabComponent(this)));
+            add(closeButton, BorderLayout.LINE_END);
+        }
+
+        @Override
+        public void addNotify() {
+            int index = indexOfTabComponent(this);
+            content.setText(getTitleAt(index));
+            content.setIcon(getIconAt(index));
+            super.addNotify();
         }
     }
 }
