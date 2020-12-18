@@ -52,8 +52,9 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     private static final String VERSION = "0.1.0-SNAPSHOT";
 
-    public Edisen() {
-        super("Edisen");
+    public Edisen(EdisenAppContext context, EdisenPrefs prefs) {
+        super(context, "Edisen", prefs);
+        this.prefs = prefs;
         setIcons();
         theme = Theme.DARK;
     }
@@ -66,7 +67,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     @Override
     protected void createActions(EdisenPrefs prefs) {
 
-        this.prefs = prefs;
         super.createActions(prefs);
 
         addAction(Actions.OPEN_ACTION_KEY, new Actions.OpenAction(this));
@@ -163,11 +163,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     public EdisenPrefs getPreferences() {
         return prefs;
-    }
-
-    @Override
-    protected String getPreferencesClassName() {
-        return "org.fife.edisen.ui.EdisenPrefs";
     }
 
     public EdisenProject getProject() {

@@ -1,13 +1,13 @@
 package org.fife.edisen.ui;
 
 import org.fife.ui.OS;
-import org.fife.ui.app.GUIApplicationPrefs;
+import org.fife.ui.app.prefs.AppPrefs;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.prefs.Preferences;
 
-public class EdisenPrefs extends GUIApplicationPrefs<Edisen> {
+public class EdisenPrefs extends AppPrefs {
 
     public String assemblerCommandLine;
     public String emulatorCommandLine;
@@ -32,46 +32,7 @@ public class EdisenPrefs extends GUIApplicationPrefs<Edisen> {
     }
 
     @Override
-    public GUIApplicationPrefs<Edisen> load() {
-
-        try {
-
-            Preferences prefs = Preferences.userNodeForPackage(Edisen.class);
-            loadCommonPreferences(prefs);
-
-            // Load app-specific preferences
-            // If anything at all goes wrong, just use default property values.
-        } catch (RuntimeException re) {
-            throw re; // Let RuntimeExceptions through (FindBugs warning)
-        } catch (Exception e) {
-            e.printStackTrace();
-            setDefaults();
-        }
-
-        return this;
-    }
-
-    @Override
-    public GUIApplicationPrefs<Edisen> populate(Edisen app) {
-
-        populateCommonPreferences(app);
-
-        // populate app-specific preferences from the app to this object
-
-        return this;
-    }
-
-    @Override
-    public void save() {
-
-        Preferences prefs = Preferences.userNodeForPackage(Edisen.class);
-        saveCommonPreferences(prefs);
-
-        // Put any app-specific preferences here
-    }
-
-    @Override
-    protected void setDefaults() {
+    public void setDefaults() {
 
         // Common preferences
         location = new Point(0, 0);
@@ -79,6 +40,7 @@ public class EdisenPrefs extends GUIApplicationPrefs<Edisen> {
         toolbarVisible = true;
         statusBarVisible = true;
         language = "en";
+        lookAndFeel = "com.formdev.flatlaf.FlatDarkLaf";
 
         // App-specific preferences
         if (OS.get() == OS.MAC_OS_X) {
