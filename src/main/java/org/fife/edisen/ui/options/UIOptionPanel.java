@@ -1,5 +1,8 @@
-package org.fife.edisen.ui;
+package org.fife.edisen.ui.options;
 
+import org.fife.edisen.ui.Edisen;
+import org.fife.edisen.ui.Theme;
+import org.fife.edisen.ui.ThemeManager;
 import org.fife.ui.LabelValueComboBox;
 import org.fife.ui.OptionsDialogPanel;
 import org.fife.ui.UIUtil;
@@ -27,9 +30,11 @@ class UIOptionPanel extends OptionsDialogPanel {
     private void createUI() {
 
         Listener listener = new Listener();
+        setBorder(UIUtil.getEmpty5Border());
         setLayout(new BorderLayout());
 
         JPanel topPanel = new JPanel();
+        topPanel.setBorder(new OptionPanelBorder(MSG.getString("Options.UI.Category.Appearance")));
         SpringLayout layout = new SpringLayout();
         topPanel.setLayout(layout);
         add(topPanel, BorderLayout.NORTH);

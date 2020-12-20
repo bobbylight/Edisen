@@ -60,7 +60,7 @@ clrmem:
   LDA #$FE
   STA $0300, x ; Set 0x0300 - 0x03ff to 0xfe via loop (why)
   INX
-  BNE clrmem ; Loop whle x != 0
+  BNE clrmem ; Loop while x != 0
 
   LDA #%10001000
   STA flag

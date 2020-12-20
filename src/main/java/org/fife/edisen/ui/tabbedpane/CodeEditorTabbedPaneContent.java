@@ -48,6 +48,7 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
         }
 
         RTextScrollPane scrollPane = new RTextScrollPane(textArea);
+        UIUtil.removeTabbedPaneFocusTraversalKeyBindings(scrollPane);
 
         setLayout(new BorderLayout());
         add(scrollPane);

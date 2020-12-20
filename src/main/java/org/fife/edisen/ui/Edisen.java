@@ -1,6 +1,7 @@
 package org.fife.edisen.ui;
 
 import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.options.EdisenOptionsDialog;
 import org.fife.edisen.ui.tabbedpane.GameFileTabbedPane;
 import org.fife.help.HelpDialog;
 import org.fife.rsta.ui.GoToDialog;
@@ -15,6 +16,7 @@ import org.fife.ui.dockablewindows.DockableWindowPanel;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.SearchContext;
+import org.fife.ui.rtextfilechooser.FileChooserOwner;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
 
 import javax.imageio.ImageIO;
@@ -29,7 +31,8 @@ import java.util.Collections;
 /**
  * The main window of the application.
  */
-public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
+public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
+        implements FileChooserOwner {
 
     public static final String PROPERTY_PROJECT = "edisen.project";
 
@@ -38,6 +41,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
     private EdisenPrefs prefs;
     private EdisenProject project;
     private EdisenOptionsDialog optionsDialog;
+
+    private RTextFileChooser chooser;
 
     private DockableWindow projectWindow;
 
@@ -145,6 +150,18 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     public String getEmulatorCommandLine() {
         return prefs.emulatorCommandLine;
+    }
+
+    @Override
+    public RTextFileChooser getFileChooser() {
+
+        if (chooser == null) {
+            File startDir = new File(System.getProperty("user.dir"));
+            chooser = new RTextFileChooser(false, startDir);
+            chooser.addChoosableFileFilter(new EdisenConfigFileFilter(this));
+        }
+
+        return chooser;
     }
 
     @Override
@@ -278,11 +295,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs> {
 
     void openProject() {
 
-        File startDir = new File(System.getProperty("user.dir"));
-        RTextFileChooser chooser = new RTextFileChooser(false, startDir);
-
-        chooser.addChoosableFileFilter(new EdisenConfigFileFilter(this));
-
+        RTextFileChooser chooser = getFileChooser();
         int rc = chooser.showOpenDialog(this);
 
         if (rc == RTextFileChooser.APPROVE_OPTION) {

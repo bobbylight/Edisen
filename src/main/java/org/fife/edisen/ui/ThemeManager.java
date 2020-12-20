@@ -12,7 +12,7 @@ import javax.swing.*;
  * @author Robert Futrell
  * @version 1.0
  */
-class ThemeManager {
+public class ThemeManager {
 
     public static void apply(Edisen app, Theme theme) {
 

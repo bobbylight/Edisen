@@ -3,6 +3,7 @@ package org.fife.edisen.ui.tabbedpane;
 import org.fife.edisen.ui.ChrRomViewer;
 import org.fife.edisen.ui.Edisen;
 import org.fife.ui.RScrollPane;
+import org.fife.ui.UIUtil;
 
 import java.awt.*;
 import java.io.File;
@@ -36,6 +37,8 @@ class ChrRomTabbedPaneContent extends TabbedPaneContent {
         setLayout(new BorderLayout());
 
         ChrRomViewer viewer = new ChrRomViewer(edisen, chrFile);
-        add(new RScrollPane(viewer));
+        RScrollPane scrollPane = new RScrollPane(viewer);
+        UIUtil.removeTabbedPaneFocusTraversalKeyBindings(scrollPane);
+        add(scrollPane);
     }
 }

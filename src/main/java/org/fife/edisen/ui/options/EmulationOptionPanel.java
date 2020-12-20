@@ -1,5 +1,6 @@
-package org.fife.edisen.ui;
+package org.fife.edisen.ui.options;
 
+import org.fife.edisen.ui.Edisen;
 import org.fife.rsta.ui.AssistanceIconPanel;
 import org.fife.ui.OptionsDialogPanel;
 import org.fife.ui.UIUtil;
@@ -11,24 +12,25 @@ import java.util.ResourceBundle;
 /**
  * General compile/emulation options.
  */
-class EmulationOptionPanel extends OptionsDialogPanel {
+public class EmulationOptionPanel extends OptionsDialogPanel {
 
     private JTextField assemblerCommandLineField;
     private JTextField emuCommandLineField;
 
     private static final ResourceBundle MSG = ResourceBundle.getBundle("org.fife.edisen.ui.Edisen");
 
-    EmulationOptionPanel() {
-
+    public EmulationOptionPanel() {
         setName(MSG.getString("Options.EmuOptions"));
         createUI();
     }
 
     private void createUI() {
 
+        setBorder(UIUtil.getEmpty5Border());
         setLayout(new BorderLayout());
 
         JPanel topPanel = new JPanel();
+        topPanel.setBorder(new OptionPanelBorder(MSG.getString("Options.EmuOptions.Category.General")));
         SpringLayout layout = new SpringLayout();
         topPanel.setLayout(layout);
         add(topPanel, BorderLayout.NORTH);
