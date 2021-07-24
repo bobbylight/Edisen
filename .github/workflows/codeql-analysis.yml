@@ -67,3 +67,6 @@ jobs:
 
     - name: Build
       run: ./gradlew build --warning-mode all
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
