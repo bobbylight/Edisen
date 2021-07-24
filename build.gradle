@@ -1,17 +1,21 @@
 import org.apache.tools.ant.taskdefs.condition.Os
+import static org.gradle.api.JavaVersion.*
 
 // export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-11.0.1.jdk/Contents/Home
 // export PATH=$JAVA_HOME/bin:$PATH
 
 plugins {
     id 'java'
+    id 'jacoco'
     id 'distribution'
 }
+
+// There is no isJava14Compatible() method yet, even though we require 14
+assert current().isJava12Compatible()
 
 group 'org.fife'
 
 sourceCompatibility = project.javaVersion
-
 
 repositories {
     mavenCentral()
@@ -23,6 +27,18 @@ repositories {
 wrapper {
     gradleVersion '7.1.1'
     distributionType = Wrapper.DistributionType.ALL
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true // codecov depends on xml format report
+        html.required = true
+    }
 }
 
 dependencies {

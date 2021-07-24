@@ -14,7 +14,11 @@ The beginnings of a simple NES IDE.
 ## Building the Native Applications
 `Edisen` packages are available for both Windows and Mac.
 
-Windows:
+### Windows
+[launch4j](http://launch4j.sourceforge.net/) is used to generate an executable.
+Configure launch4j's location in `settings.gradle` before running the following
+command:
+
 ```bash
 ./gradlew clean generateWindowsStarterExe
 
@@ -22,7 +26,10 @@ Windows:
 ./build/install/edisen/edisen.exe
 ```
 
-Mac:
+### Mac
+On Macs, an app bundle and DMG image are both generated with the standard JDK
+tools, so no third-party library is necessary:
+
 ```bash
 ./gradlew clean generateMacApp
 
