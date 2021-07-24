@@ -12,6 +12,7 @@ import org.fife.ui.SplashScreen;
 import org.fife.ui.app.AbstractPluggableGUIApplication;
 import org.fife.ui.app.GUIApplication;
 import org.fife.ui.dockablewindows.DockableWindow;
+import org.fife.ui.dockablewindows.DockableWindowConstants;
 import org.fife.ui.dockablewindows.DockableWindowPanel;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
@@ -244,22 +245,24 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         String title = getString("DockedWindow.Project");
         projectWindow = new DockableWindow(title, new BorderLayout());
-        projectWindow.setPosition(DockableWindow.LEFT);
+        projectWindow.setIcon(Util.getSvgIcon("projectStructure.svg", 16));
+        projectWindow.setPosition(DockableWindowConstants.LEFT);
         projectWindow.setActive(true);
         projectWindow.add(sp);
         mainPanel.addDockableWindow(projectWindow);
         mainPanel.setDividerLocation(DockableWindowPanel.LEFT, 150);
-        mainPanel.setDockableWindowGroupExpanded(DockableWindow.LEFT, true);
+        mainPanel.setDockableWindowGroupExpanded(DockableWindowConstants.LEFT, true);
 
         title = getString("DockedWindow.Output");
         outputWindow = new DockableWindow(title, new BorderLayout());
-        outputWindow.setPosition(DockableWindow.BOTTOM);
+        outputWindow.setIcon(Util.getSvgIcon("console.svg", 16));
+        outputWindow.setPosition(DockableWindowConstants.BOTTOM);
         outputWindow.setActive(true);
         outputTextArea = new OutputTextPane(this);
         outputWindow.add(new RScrollPane(outputTextArea));
         mainPanel.addDockableWindow(outputWindow);
         mainPanel.setDividerLocation(DockableWindowPanel.BOTTOM, 240);
-        mainPanel.setDockableWindowGroupExpanded(DockableWindow.BOTTOM, true);
+        mainPanel.setDockableWindowGroupExpanded(DockableWindowConstants.BOTTOM, true);
 
         tabbedPane = new GameFileTabbedPane(this);
         contentPane.add(tabbedPane);

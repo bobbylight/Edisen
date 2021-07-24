@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.function.BiConsumer;
 
 /**
  * A tabbed pane containing all open, editable game files.
@@ -36,7 +37,17 @@ public class GameFileTabbedPane extends JTabbedPane {
         this.edisen = edisen;
         this.listener = new Listener();
 
+        // FlatLaF-specific stuff
+        putClientProperty("JTabbedPane.tabClosable", true);
+        UIManager.put("TabbedPane.closeArc", 999);
+        UIManager.put("TabbedPane.closeCrossFilledSize", 5.5f);
+        putClientProperty("JTabbedPane.tabCloseCallback",
+            (BiConsumer<JTabbedPane, Integer>)(tabbedPane, tabIndex) -> {
+                closeTab(tabIndex);
+            });
+
         edisen.addPropertyChangeListener(Edisen.PROPERTY_PROJECT, listener);
+        setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
     }
 
     private void addChrDataTab(File file) {
@@ -172,14 +183,9 @@ public class GameFileTabbedPane extends JTabbedPane {
         return "/icons/fileTypes/" + icon;
     }
 
-    /**
-     * Called by {@code JTabbedPane}'s methods such as {@code addTab()} to actually
-     * insert a tab.  Overridden to set the component to render the tab itself.
-     */
     @Override
     public void insertTab(String title, Icon icon, Component component, String tip, int index) {
         super.insertTab(title, icon, component, tip, index);
-        setTabComponentAt(getTabCount() - 1, new TabRenderer());
     }
 
     public void openFile(File file) {
@@ -312,57 +318,6 @@ public class GameFileTabbedPane extends JTabbedPane {
         public String getSelectedText() {
             TextEditorPane currentTextArea = getCurrentTextArea();
             return currentTextArea != null ? currentTextArea.getSelectedText() : null;
-        }
-    }
-
-    private class TabRenderer extends JPanel {
-
-        private final JLabel content;
-        private final Icon closeIcon = Util.getSvgIcon("close.svg", 16);
-        private final Icon rolloverIcon = Util.getSvgIcon("closeHovered.svg", 16);
-
-        public TabRenderer() {
-
-            setOpaque(false);
-
-            content = new JLabel("(loading)", SwingConstants.LEADING) {
-                public void addNotify() {
-                    super.addNotify();
-                    disableEvents(AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_MOTION_EVENT_MASK);
-                }
-            };
-            for (int i = 0; i < content.getMouseListeners().length; i++) {
-                System.out.println("Removing ML");
-                content.removeMouseListener(content.getMouseListeners()[i]);
-            }
-            for (int i = 0; i < content.getMouseMotionListeners().length; i++) {
-                System.out.println("Removing MML");
-                content.removeMouseMotionListener(content.getMouseMotionListeners()[i]);
-            }
-
-            setLayout(new BorderLayout());
-            setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
-            add(content);
-
-            JButton closeButton = new JButton(closeIcon);
-            closeButton.setUI(new javax.swing.plaf.basic.BasicButtonUI());
-            closeButton.setRolloverEnabled(true);
-            closeButton.setBorderPainted(false);
-            closeButton.setContentAreaFilled(false);
-            closeButton.setFocusable(false);
-            closeButton.setOpaque(false);
-            closeButton.setRolloverIcon(rolloverIcon);
-            closeButton.setPressedIcon(rolloverIcon);
-            closeButton.addActionListener((e) -> closeTab(indexOfTabComponent(this)));
-            add(closeButton, BorderLayout.LINE_END);
-        }
-
-        @Override
-        public void addNotify() {
-            int index = indexOfTabComponent(this);
-            content.setText(getTitleAt(index));
-            content.setIcon(getIconAt(index));
-            super.addNotify();
         }
     }
 }
