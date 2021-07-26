@@ -2,7 +2,9 @@ package org.fife.edisen.ui;
 
 import org.fife.ui.app.AppContext;
 
+import javax.swing.*;
 import java.io.File;
+import java.io.IOException;
 
 public class EdisenAppContext extends AppContext<Edisen, EdisenPrefs> {
 
@@ -31,12 +33,25 @@ public class EdisenAppContext extends AppContext<Edisen, EdisenPrefs> {
 
 
     @Override
-    protected void populatePrefsFromApplication(Edisen rtext, EdisenPrefs prefs) {
+    protected void populatePrefsFromApplication(Edisen edisen, EdisenPrefs prefs) {
 
         // The "common" preferences
-        super.populatePrefsFromApplication(rtext, prefs);
+        super.populatePrefsFromApplication(edisen, prefs);
 
-        // Stuff specific to this application.
-        // todo
+        // Stuff specific to this application
+        prefs.lookAndFeel = UIManager.getLookAndFeel().getClass().getName();
+        prefs.theme = edisen.getTheme().getKey();
+    }
+
+    @Override
+    public void savePreferences(Edisen edisen) throws IOException {
+
+        // TODO: Move this check into FifeCommon
+        File dir = getPreferencesDir();
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        super.savePreferences(edisen);
     }
 }

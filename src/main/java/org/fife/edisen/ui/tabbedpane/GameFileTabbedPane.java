@@ -123,6 +123,10 @@ public class GameFileTabbedPane extends JTabbedPane {
         return false;
     }
 
+    public TabbedPaneContent getContentAt(int index) {
+        return (TabbedPaneContent)getComponentAt(index);
+    }
+
     /**
      * Returns the currently focused content.
      *
@@ -198,6 +202,10 @@ public class GameFileTabbedPane extends JTabbedPane {
         else if (file.isFile()) { // i.e. not a directory
             addEditorTab(file);
         }
+    }
+
+    public boolean isDirty(int index) {
+        return getContentAt(index).isDirty();
     }
 
     /**

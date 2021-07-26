@@ -62,7 +62,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         super(context, "Edisen", prefs);
         this.prefs = prefs;
         setIcons();
-        theme = Theme.DARK;
+        theme = Theme.fromKey(prefs.theme);
     }
 
     @Override
@@ -134,6 +134,23 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         }
 
         findDialog.setVisible(true);
+    }
+
+    @Override
+    public void doExit() {
+
+        // TODO: Prompt to save, ignore or cancel
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+            if (tabbedPane.isDirty(i)) {
+                tabbedPane.setSelectedIndex(i);
+                tabbedPane.focusActiveEditor();
+                UIManager.getLookAndFeel().provideErrorFeedback(tabbedPane);
+                return;
+            }
+        }
+
+        savePreferences();
+        super.doExit();
     }
 
     /**

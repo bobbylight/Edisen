@@ -80,7 +80,10 @@ class UIOptionPanel extends OptionsDialogPanel {
 
     @Override
     protected void setValuesImpl(Frame owner) {
-        themeCombo.setSelectedValue(Theme.LIGHT);
+
+        Edisen app = (Edisen)owner;
+
+        themeCombo.setSelectedValue(app.getTheme());
     }
 
     private class Listener implements ActionListener {

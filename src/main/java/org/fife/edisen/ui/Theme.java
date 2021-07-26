@@ -1,5 +1,7 @@
 package org.fife.edisen.ui;
 
+import java.util.Objects;
+
 /**
  * An enumeration of themes for the application.
  */
@@ -14,6 +16,15 @@ public enum Theme {
     Theme(String key, String rstaTheme) {
         this.key = key;
         this.rstaTheme = rstaTheme;
+    }
+
+    public static Theme fromKey(String key) {
+        for (Theme theme : Theme.values()) {
+            if (Objects.equals(key, theme.key)) {
+                return theme;
+            }
+        }
+        return Theme.DARK;
     }
 
     public String getKey() {

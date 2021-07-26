@@ -16,17 +16,10 @@ public class ThemeManager {
 
     public static void apply(Edisen app, Theme theme) {
 
-        LookAndFeel laf;
-
-        switch (theme) {
-            case DARK:
-                laf = new FlatDarkLaf();
-                break;
-            default:
-            case LIGHT:
-                laf = new FlatLightLaf();
-                break;
-        }
+        LookAndFeel laf = switch (theme) {
+            case DARK -> new FlatDarkLaf();
+            case LIGHT -> new FlatLightLaf();
+        };
 
         try {
             UIManager.setLookAndFeel(laf);
