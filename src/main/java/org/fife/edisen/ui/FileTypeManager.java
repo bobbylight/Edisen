@@ -63,7 +63,9 @@ public class FileTypeManager {
 
     private void initializeMap() {
 
-        map.put("s", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_6502);
+        map.put("ini", SyntaxConstants.SYNTAX_STYLE_INI);
         map.put("json", SyntaxConstants.SYNTAX_STYLE_JSON);
+        map.put("md", SyntaxConstants.SYNTAX_STYLE_MARKDOWN);
+        map.put("s", SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_6502);
     }
 }
