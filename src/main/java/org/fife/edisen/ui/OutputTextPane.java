@@ -150,7 +150,7 @@ class OutputTextPane extends AbstractConsoleTextArea {
 		public void actionPerformed(ActionEvent e) {
 			OptionsDialog od = edisen.getOptionsDialog();
 			od.initialize();
-			od.setSelectedOptionsPanel(edisen.getString("Plugin.Name"));
+			//od.setSelectedOptionsPanel(edisen.getString("Plugin.Name"));
 			od.setVisible(true);
 		}
 

@@ -1,21 +1,12 @@
 package org.fife.edisen.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Insets;
-import java.awt.SystemColor;
+import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
 import javax.swing.event.HyperlinkEvent;
 
 import org.fife.ui.EscapableDialog;
-import org.fife.ui.Hyperlink;
 import org.fife.ui.ResizableFrameContentPane;
 import org.fife.ui.SelectableLabel;
 import org.fife.ui.UIUtil;
@@ -48,18 +39,12 @@ class AboutDialog extends EscapableDialog {
 
         SpringLayout sl = new SpringLayout();
         JPanel temp = new JPanel(sl);
-        JLabel javaLabel = new JLabel(app.getString("Dialog.About.JavaHome"));
-        SelectableLabel javaField = new SelectableLabel(System.getProperty("java.home"));
+        addLabelValuePairs(temp, getComponentOrientation(),
+            app.getString("Dialog.About.InstallRoot"), app.getInstallLocation(),
+            app.getString("Desc.About.BuildVersion"), app.getVersionString(),
+            app.getString("Desc.About.BuildDate"), new java.util.Date().toString());
 
-        if (getComponentOrientation().isLeftToRight()) {
-            temp.add(javaLabel);
-            temp.add(javaField);
-        }
-        else {
-            temp.add(javaField);
-            temp.add(javaLabel);
-        }
-        UIUtil.makeSpringCompactGrid(temp, 1, 2, 5, 5, 15, 5);
+        UIUtil.makeSpringCompactGrid(temp, 3, 2, 5, 5, 15, 5);
         box.add(temp);
 
         box.add(Box.createVerticalStrut(10));
@@ -69,9 +54,7 @@ class AboutDialog extends EscapableDialog {
 
         JButton okButton = UIUtil.newButton(app.getResourceBundle(), "Button.OK");
         okButton.addActionListener(e -> escapePressed());
-        JButton libButton = new JButton(app.getString("Dialog.About.Libraries"));
-        libButton.addActionListener(e -> new LibrariesDialog().setVisible(true));
-        Container buttons = UIUtil.createButtonFooter(okButton, libButton);
+        Container buttons = UIUtil.createButtonFooter(okButton);
         cp.add(buttons, BorderLayout.SOUTH);
 
         getRootPane().setDefaultButton(okButton);
@@ -93,32 +76,24 @@ class AboutDialog extends EscapableDialog {
 
     }
 
-    private void addLeftAligned(Component toAdd, Container addTo) {
-        JPanel temp = new JPanel(new BorderLayout());
-        temp.setOpaque(false); // For ones on white background.
-        temp.add(toAdd, BorderLayout.LINE_START);
-        addTo.add(temp);
+    private static void addLabelValuePairs(Container parent, ComponentOrientation o, String... pairs) {
+        if (o.isLeftToRight()) {
+            for (int i = 0; i < pairs.length; i += 2) {
+                parent.add(new JLabel(pairs[i]));
+                parent.add(new SelectableLabel(pairs[i + 1]));
+            }
+        }
+        else {
+            for (int i = 0; i < pairs.length; i += 2) {
+                parent.add(new SelectableLabel(pairs[i]));
+                parent.add(new JLabel(pairs[i + 1]));
+            }
+        }
     }
 
     private Container createTitleAndDescPanel(Theme theme) {
 
         Color descAreaBackground = theme == Theme.LIGHT ? Color.WHITE : new Color(48, 50, 52);
-
-        // Don't use a Box, as some JVM's won't have the resulting component
-        // honor its opaque property.
-        JPanel box = new JPanel();
-        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-        box.setOpaque(true);
-        box.setBackground(descAreaBackground);
-        box.setBorder(new TopBorder());
-
-        JLabel label = new JLabel("Edisen");
-        label.setOpaque(true);
-        label.setBackground(descAreaBackground);
-        Font labelFont = label.getFont();
-        label.setFont(labelFont.deriveFont(Font.BOLD, 20));
-        addLeftAligned(label, box);
-        box.add(Box.createVerticalStrut(5));
 
         SelectableLabel descLabel = new SelectableLabel(
                 app.getString("Dialog.About.Desc", app.getVersionString()));
@@ -127,8 +102,20 @@ class AboutDialog extends EscapableDialog {
                 UIUtil.browse(e.getURL().toString());
             }
         });
-        box.add(descLabel);
+        this.box.add(descLabel);
 
+        Box box = Box.createHorizontalBox();
+
+        Icon icon = new ImageIcon(getClass().getResource("/icons/Nintendo-NES-icon-64x64.png"));
+        box.add(new JLabel(icon));
+        box.add(Box.createHorizontalStrut(15));
+
+        box.add(descLabel);
+        box.add(Box.createHorizontalGlue());
+
+        box.setOpaque(true);
+        box.setBackground(descAreaBackground);
+        box.setBorder(new TopBorder());
         return box;
     }
 
@@ -171,64 +158,4 @@ class AboutDialog extends EscapableDialog {
         }
 
     }
-
-
-    /**
-     * A dialog that displays the libraries used by this application.
-     */
-    private class LibrariesDialog extends EscapableDialog {
-
-        LibrariesDialog() {
-
-            super(AboutDialog.this);
-
-            JPanel cp = new ResizableFrameContentPane(new BorderLayout());
-            cp.setBorder(UIUtil.getEmpty5Border());
-
-            SpringLayout sl = new SpringLayout();
-            JPanel temp = new JPanel(sl);
-            JLabel jflexLabel = new JLabel("JFlex:");
-            Hyperlink jflexLink = new Hyperlink("http://jflex.de");
-            JLabel rtextLabel = new JLabel("RText:");
-            Hyperlink rtextLink = new Hyperlink("http://bobbylight.github.io/RText/");
-            JLabel migLabel = new JLabel("MigLayout:");
-            Hyperlink migLink = new Hyperlink("http://miglayout.com");
-            JLabel balloonLabel = new JLabel("BalloonTips:");
-            Hyperlink balloonLink = new Hyperlink("http://balloontip.dev.java.net");
-
-            if (getComponentOrientation().isLeftToRight()) {
-                temp.add(jflexLabel);
-                temp.add(jflexLink);
-                temp.add(rtextLabel);
-                temp.add(rtextLink);
-                temp.add(migLabel);
-                temp.add(migLink);
-                temp.add(balloonLabel);
-                temp.add(balloonLink);
-            }
-            else {
-                temp.add(jflexLink);
-                temp.add(jflexLabel);
-                temp.add(rtextLink);
-                temp.add(rtextLabel);
-                temp.add(migLink);
-                temp.add(migLabel);
-                temp.add(balloonLink);
-                temp.add(balloonLabel);
-            }
-            UIUtil.makeSpringCompactGrid(temp, 4, 2, 5, 5, 15, 5);
-            cp.add(temp, BorderLayout.NORTH);
-
-            setContentPane(cp);
-            setTitle(app.getString("Dialog.Libraries.Title"));
-            setModal(true);
-            pack();
-            setLocationRelativeTo(AboutDialog.this);
-            setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
-        }
-
-    }
-
-
 }
