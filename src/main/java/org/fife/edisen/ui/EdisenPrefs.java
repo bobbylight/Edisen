@@ -9,6 +9,7 @@ public class EdisenPrefs extends AppPrefs {
 
     public String assemblerCommandLine;
     public String emulatorCommandLine;
+    public String[] recentProjects;
     public String theme;
 
     public EdisenPrefs() {
@@ -40,6 +41,7 @@ public class EdisenPrefs extends AppPrefs {
             emulatorCommandLine = "D:/emulation/nes/emulators/nestopia/nestopia.exe ${rom}";
         }
 
+        recentProjects = new String[0];
         theme = Theme.DARK.getKey();
     }
 }

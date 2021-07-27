@@ -8,7 +8,7 @@ import java.io.IOException;
  * An interface denoting tabbed pane content.  For example, a code editor, a CHR viewer,
  * etc.
  */
-abstract class TabbedPaneContent extends JPanel {
+public abstract class TabbedPaneContent extends JPanel {
 
     /**
      * Property fired when this tab's content is dirtied or saved.
@@ -17,7 +17,7 @@ abstract class TabbedPaneContent extends JPanel {
 
     private boolean dirty;
 
-    abstract File getFile();
+    public abstract File getFile();
 
     abstract String getTabName();
 

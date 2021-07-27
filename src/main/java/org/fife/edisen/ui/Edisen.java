@@ -3,6 +3,7 @@ package org.fife.edisen.ui;
 import org.fife.edisen.model.EdisenProject;
 import org.fife.edisen.ui.options.EdisenOptionsDialog;
 import org.fife.edisen.ui.tabbedpane.GameFileTabbedPane;
+import org.fife.edisen.ui.tabbedpane.TabbedPaneContent;
 import org.fife.help.HelpDialog;
 import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.search.FindDialog;
@@ -14,6 +15,7 @@ import org.fife.ui.app.GUIApplication;
 import org.fife.ui.dockablewindows.DockableWindow;
 import org.fife.ui.dockablewindows.DockableWindowConstants;
 import org.fife.ui.dockablewindows.DockableWindowPanel;
+import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.SearchContext;
@@ -27,7 +29,10 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * The main window of the application.
@@ -44,6 +49,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     private EdisenOptionsDialog optionsDialog;
 
     private RTextFileChooser chooser;
+    private RecentFileManager recentFileManager;
 
     private DockableWindow projectWindow;
 
@@ -54,6 +60,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     private FindDialog findDialog;
     private ReplaceDialog replaceDialog;
     private GoToDialog goToDialog;
+
     private Theme theme;
 
     private static final String VERSION = "0.1.0-SNAPSHOT";
@@ -63,6 +70,19 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         this.prefs = prefs;
         setIcons();
         theme = Theme.fromKey(prefs.theme);
+    }
+
+    public boolean closeTab(int index) {
+
+        TabbedPaneContent content = tabbedPane.getContentAt(index);
+        if (content.isDirty()) {
+            if (!isTabOkToClose(index)) {
+                return false;
+            }
+        }
+
+        tabbedPane.closeTab(index);
+        return true;
     }
 
     @Override
@@ -80,6 +100,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         addAction(Actions.SAVE_ACTION_KEY, new Actions.SaveAction(this));
         Util.setIcon(Actions.SAVE_ACTION_KEY, "save.svg");
         addAction(Actions.SAVE_AS_ACTION_KEY, new Actions.SaveAsAction(this));
+        addAction(Actions.CLOSE_ACTION_KEY, new Actions.CloseAction(this));
         addAction(EXIT_ACTION_KEY, new GUIApplication.ExitAction<>(this, "Action.Exit"));
 
         addAction(Actions.FIND_ACTION_KEY, new Actions.FindAction(this));
@@ -204,9 +225,25 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         return project;
     }
 
+
+    /**
+     * Returns the list of most recently opened files, least-recently opened
+     * first.
+     *
+     * @return The list of files.  This may be empty but will never be
+     *         <code>null</code>.
+     */
+    List<FileLocation> getRecentFiles() {
+        return recentFileManager.getRecentFiles();
+    }
+
     @Override
     public String getResourceBundleClassName() {
         return "org.fife.edisen.ui.Edisen";
+    }
+
+    public int getSelectedTabIndex() {
+        return tabbedPane.getSelectedIndex();
     }
 
     public Theme getTheme() {
@@ -243,11 +280,26 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         }
     }
 
+    /**
+     * Initializes the "recent files" manager.
+     *
+     * @param prefs The preferences for the application.
+     */
+    private void initRecentFileManager(EdisenPrefs prefs) {
+
+        String[] recentProjects = prefs.recentProjects;
+        List<String> projectFiles = recentProjects == null ?
+            Collections.emptyList() :
+            new ArrayList<>(Arrays.asList(recentProjects));
+
+        recentFileManager = new RecentFileManager(this, projectFiles);
+    }
+
     private void initUI(EdisenPrefs prefs) throws IOException {
 
         String path;
         if (OS.get() == OS.WINDOWS) {
-            path = "D:/dev/edisen/sample-projects/01-blinking-screen/sample-project.edisen.json";
+            path = "D:/dev/Edisen/sample-projects/01-blinking-screen/sample-project.edisen.json";
         }
         else {
             path = "/users/robert/dev/edisen/sample-projects/01-blinking-screen/sample-project.edisen.json";
@@ -290,12 +342,65 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         openFile(project.getProjectFile().toFile());
     }
 
+    public boolean isTabOkToClose(int index) {
+
+        boolean okToClose = true;
+
+        UIManager.getLookAndFeel().provideErrorFeedback(this);
+        TabbedPaneContent content = tabbedPane.getContentAt(index);
+        tabbedPane.setSelectedIndex(index);
+
+        int rc = JOptionPane.showConfirmDialog(this,
+            getString("Prompt.DirtyFile", content.getFile().getName()),
+            "Edisen",
+            JOptionPane.YES_NO_CANCEL_OPTION);
+
+        switch (rc) {
+            case JOptionPane.YES_OPTION:
+
+                try {
+                    content.saveChanges();
+                    content.setDirty(false);
+                } catch (IOException ioe) {
+                    displayException(ioe);
+                    okToClose = false;
+                }
+                break;
+            case JOptionPane.NO_OPTION:
+                break;
+            default: // CANCEL_OPTION
+                okToClose = false;
+                break;
+        }
+
+        return okToClose;
+    }
+
     public void log(String level, String text, Object... arguments) {
         outputTextArea.log(level, text, arguments);
     }
 
     @Override
     public void openFile(File file) {
+
+        // Don't let the user open a new project if any open files aren't saved
+        if (tabbedPane.hasDirtyFiles()) {
+            int rc = JOptionPane.showConfirmDialog(this,
+                getString("Prompt.DirtyFiles"),
+                "Edisen",
+                JOptionPane.YES_NO_CANCEL_OPTION);
+            switch (rc) {
+                case JOptionPane.YES_OPTION:
+                    if (!saveAllDirtyFiles()) {
+                        return;
+                    }
+                    break;
+                case JOptionPane.NO_OPTION:
+                    break;
+                default: // CANCEL_OPTION
+                    return;
+            }
+        }
 
         try {
 
@@ -333,6 +438,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     @Override
     protected void preDisplayInit(EdisenPrefs prefs, SplashScreen splashScreen) {
 
+        setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
         try {
             initUI(prefs);
         } catch (IOException ioe) {
@@ -353,7 +460,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     @Override
     protected void preMenuBarInit(EdisenPrefs prefs, SplashScreen splashScreen) {
-
+        initRecentFileManager(prefs);
     }
 
     @Override
@@ -420,6 +527,26 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         }
 
         replaceDialog.setVisible(true);
+    }
+
+    public boolean saveAllDirtyFiles() {
+
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+
+            TabbedPaneContent content = tabbedPane.getContentAt(i);
+            if (content.isDirty()) {
+
+                try {
+                    content.saveChanges();
+                    content.setDirty(false);
+                } catch (IOException ioe) {
+                    displayException(ioe);
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public void saveCurrentFile() {

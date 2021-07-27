@@ -23,7 +23,7 @@ class ChrRomTabbedPaneContent extends TabbedPaneContent {
     }
 
     @Override
-    File getFile() {
+    public File getFile() {
         return chrFile;
     }
 

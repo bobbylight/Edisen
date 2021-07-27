@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class Actions {
 
+    public static final String CLOSE_ACTION_KEY = "closeAction";
     public static final String COMPILE_ACTION_KEY = "compileAction";
     public static final String EMULATE_ACTION_KEY = "emulateAction";
     public static final String FIND_ACTION_KEY = "findAction";
@@ -35,6 +36,18 @@ public class Actions {
      */
     private Actions() {
         // Do nothing (comment for Sonar)
+    }
+
+    public static class CloseAction extends AppAction<Edisen> {
+
+        public CloseAction(Edisen app) {
+            super(app, "Action.Close");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getApplication().closeTab(getApplication().getSelectedTabIndex());
+        }
     }
 
     public static class CompileAction extends AppAction<Edisen> {

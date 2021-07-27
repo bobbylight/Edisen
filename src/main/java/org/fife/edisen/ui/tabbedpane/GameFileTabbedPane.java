@@ -43,7 +43,7 @@ public class GameFileTabbedPane extends JTabbedPane {
         UIManager.put("TabbedPane.closeCrossFilledSize", 5.5f);
         putClientProperty("JTabbedPane.tabCloseCallback",
             (BiConsumer<JTabbedPane, Integer>)(tabbedPane, tabIndex) -> {
-                closeTab(tabIndex);
+                edisen.closeTab(tabIndex);
             });
 
         edisen.addPropertyChangeListener(Edisen.PROPERTY_PROJECT, listener);
@@ -101,7 +101,6 @@ public class GameFileTabbedPane extends JTabbedPane {
     }
 
     public void closeTab(int index) {
-
         getComponentAt(index).removePropertyChangeListener(TabbedPaneContent.PROPERTY_DIRTY, listener);
         removeTabAt(index);
     }
@@ -187,9 +186,22 @@ public class GameFileTabbedPane extends JTabbedPane {
         return "/icons/fileTypes/" + icon;
     }
 
+    public boolean hasDirtyFiles() {
+        for (int i = 0; i < getTabCount(); i++) {
+            if (isDirty(i)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void insertTab(String title, Icon icon, Component component, String tip, int index) {
         super.insertTab(title, icon, component, tip, index);
+    }
+
+    public boolean isDirty(int index) {
+        return getContentAt(index).isDirty();
     }
 
     public void openFile(File file) {
@@ -202,10 +214,6 @@ public class GameFileTabbedPane extends JTabbedPane {
         else if (file.isFile()) { // i.e. not a directory
             addEditorTab(file);
         }
-    }
-
-    public boolean isDirty(int index) {
-        return getContentAt(index).isDirty();
     }
 
     /**

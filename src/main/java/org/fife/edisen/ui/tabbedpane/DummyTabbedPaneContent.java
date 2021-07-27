@@ -8,7 +8,7 @@ import java.io.File;
 class DummyTabbedPaneContent extends TabbedPaneContent {
 
     @Override
-    File getFile() {
+    public File getFile() {
         return null;
     }
 

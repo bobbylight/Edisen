@@ -81,7 +81,7 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
     }
 
     @Override
-    File getFile() {
+    public File getFile() {
         return new File(textArea.getFileFullPath());
     }
 

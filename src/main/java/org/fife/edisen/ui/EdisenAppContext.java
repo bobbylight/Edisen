@@ -1,6 +1,7 @@
 package org.fife.edisen.ui;
 
 import org.fife.ui.app.AppContext;
+import org.fife.ui.rsyntaxtextarea.FileLocation;
 
 import javax.swing.*;
 import java.io.File;
@@ -37,9 +38,12 @@ public class EdisenAppContext extends AppContext<Edisen, EdisenPrefs> {
 
         // The "common" preferences
         super.populatePrefsFromApplication(edisen, prefs);
+        prefs.lookAndFeel = UIManager.getLookAndFeel().getClass().getName(); // Must be overridden (!)
 
         // Stuff specific to this application
-        prefs.lookAndFeel = UIManager.getLookAndFeel().getClass().getName();
+        prefs.recentProjects = edisen.getRecentFiles().stream()
+            .map(FileLocation::getFileFullPath)
+            .toArray(String[]::new);
         prefs.theme = edisen.getTheme().getKey();
     }
 
