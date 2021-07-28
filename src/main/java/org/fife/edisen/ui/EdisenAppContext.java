@@ -41,7 +41,10 @@ public class EdisenAppContext extends AppContext<Edisen, EdisenPrefs> {
         prefs.lookAndFeel = UIManager.getLookAndFeel().getClass().getName(); // Must be overridden (!)
 
         // Stuff specific to this application
-        prefs.recentProjects = edisen.getRecentFiles().stream()
+        prefs.recentFiles = edisen.getRecentFiles().stream()
+            .map(FileLocation::getFileFullPath)
+            .toArray(String[]::new);
+        prefs.recentProjects = edisen.getRecentProjects().stream()
             .map(FileLocation::getFileFullPath)
             .toArray(String[]::new);
         prefs.theme = edisen.getTheme().getKey();

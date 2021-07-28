@@ -40,6 +40,7 @@ import java.util.List;
 public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         implements FileChooserOwner {
 
+    public static final String PROPERTY_FILE_OPENED = "edisen.fileOpened";
     public static final String PROPERTY_PROJECT = "edisen.project";
 
     private GameFileTabbedPane tabbedPane;
@@ -50,6 +51,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     private RTextFileChooser chooser;
     private RecentFileManager recentFileManager;
+    private RecentFileManager recentProjectManager;
 
     private DockableWindow projectWindow;
 
@@ -225,7 +227,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         return project;
     }
 
-
     /**
      * Returns the list of most recently opened files, least-recently opened
      * first.
@@ -235,6 +236,17 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
      */
     List<FileLocation> getRecentFiles() {
         return recentFileManager.getRecentFiles();
+    }
+
+    /**
+     * Returns the list of most recently opened projects, least-recently opened
+     * first.
+     *
+     * @return The list of files.  This may be empty but will never be
+     *         <code>null</code>.
+     */
+    List<FileLocation> getRecentProjects() {
+        return recentProjectManager.getRecentFiles();
     }
 
     @Override
@@ -287,12 +299,27 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
      */
     private void initRecentFileManager(EdisenPrefs prefs) {
 
+        String[] recentFiles = prefs.recentFiles;
+        List<String> files = recentFiles == null ?
+            Collections.emptyList() :
+            new ArrayList<>(Arrays.asList(recentFiles));
+
+        recentFileManager = new RecentFileManager(this, files);
+    }
+
+    /**
+     * Initializes the "recent projects" manager.
+     *
+     * @param prefs The preferences for the application.
+     */
+    private void initRecentProjectManager(EdisenPrefs prefs) {
+
         String[] recentProjects = prefs.recentProjects;
         List<String> projectFiles = recentProjects == null ?
             Collections.emptyList() :
             new ArrayList<>(Arrays.asList(recentProjects));
 
-        recentFileManager = new RecentFileManager(this, projectFiles);
+        recentProjectManager = new RecentFileManager(this, projectFiles);
     }
 
     private void initUI(EdisenPrefs prefs) throws IOException {
@@ -461,6 +488,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     @Override
     protected void preMenuBarInit(EdisenPrefs prefs, SplashScreen splashScreen) {
         initRecentFileManager(prefs);
+        initRecentProjectManager(prefs);
     }
 
     @Override

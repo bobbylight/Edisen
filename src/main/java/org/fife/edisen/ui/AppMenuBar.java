@@ -17,12 +17,14 @@ import java.util.ResourceBundle;
 public class AppMenuBar extends MenuBar implements PropertyChangeListener {
 
     private Edisen edisen;
+    private RecentFilesMenu recentProjectsMenu;
     private RecentFilesMenu recentFilesMenu;
 
     public AppMenuBar(Edisen edisen) {
 
         this.edisen = edisen;
         edisen.addPropertyChangeListener(Edisen.PROPERTY_PROJECT, this);
+        edisen.addPropertyChangeListener(Edisen.PROPERTY_FILE_OPENED, this);
         ResourceBundle msg = edisen.getResourceBundle();
 
         JMenu fileMenu = createMenu(msg, "Menu.File");
@@ -36,7 +38,19 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
         fileMenu.add(createMenuItem(edisen.getAction(Actions.CLOSE_ACTION_KEY)));
         fileMenu.addSeparator();
 
-        recentFilesMenu = new RecentFilesMenu(edisen.getString("Menu.RecentProjects")) {
+        recentProjectsMenu = new RecentFilesMenu(edisen.getString("Menu.RecentProjects")) {
+            @Override
+            protected Action createOpenAction(String fileFullPath) {
+                OpenFileFromHistoryAction action =
+                    new OpenFileFromHistoryAction(edisen);
+                // TODO: Share abbreviated path code in fife.common
+                action.setName(fileFullPath);//getDisplayPath(fileFullPath));
+                action.setFileFullPath(fileFullPath);
+                return action;
+            }
+        };
+        fileMenu.add(recentProjectsMenu);
+        recentFilesMenu = new RecentFilesMenu(edisen.getString("Menu.RecentFiles")) {
             @Override
             protected Action createOpenAction(String fileFullPath) {
                 OpenFileFromHistoryAction action =
@@ -95,7 +109,7 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
      * @param fileFullPath Full path to a file to add to the file history in
      *        the File menu.
      */
-    private void addFileToFileHistory(String fileFullPath) {
+    private void addProjectToProjectHistory(String fileFullPath) {
 //        // We don't remember just-created empty text files.
 //        // Also, due to the Preferences API needing a non-null key for all
 //        // values, a "-" filename means no files were found for the file
@@ -104,7 +118,7 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
 //            fileFullPath.equals("-")) {
 //            return;
 //        }
-        recentFilesMenu.addFileToFileHistory(fileFullPath);
+        recentProjectsMenu.addFileToFileHistory(fileFullPath);
     }
 
     @Override
@@ -112,11 +126,11 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
 
         super.addNotify();
 
-        List<FileLocation> recentFiles = edisen.getRecentFiles();
+        List<FileLocation> recentFiles = edisen.getRecentProjects();
         List<FileLocation> recentFilesCopy = new ArrayList<>(recentFiles);
         Collections.reverse(recentFilesCopy);
         for (FileLocation file : recentFilesCopy) {
-            recentFilesMenu.addFileToFileHistory(file.getFileFullPath());
+            recentProjectsMenu.addFileToFileHistory(file.getFileFullPath());
         }
     }
 
@@ -126,7 +140,7 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
      * @return The list of files in the "recent files" menu.
      */
     public List<String> getFileHistory() {
-        return recentFilesMenu.getFileHistory();
+        return recentProjectsMenu.getFileHistory();
     }
 
     /**
@@ -137,9 +151,15 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
 
         String prop = e.getPropertyName();
 
-        if (prop.equals(Edisen.PROPERTY_PROJECT)) {
-            EdisenProject project = (EdisenProject)e.getNewValue();
-            addFileToFileHistory(project.getProjectFile().toString());
+        switch (prop) {
+
+            case Edisen.PROPERTY_PROJECT:
+                EdisenProject project = (EdisenProject)e.getNewValue();
+                addProjectToProjectHistory(project.getProjectFile().toString());
+                break;
+
+            case Edisen.PROPERTY_FILE_OPENED:
+                break;
         }
     }
 }

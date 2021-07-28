@@ -9,6 +9,7 @@ public class EdisenPrefs extends AppPrefs {
 
     public String assemblerCommandLine;
     public String emulatorCommandLine;
+    public String[] recentFiles;
     public String[] recentProjects;
     public String theme;
 
