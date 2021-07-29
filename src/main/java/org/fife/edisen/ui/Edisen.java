@@ -1,5 +1,6 @@
 package org.fife.edisen.ui;
 
+import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 import org.fife.edisen.model.EdisenProject;
 import org.fife.edisen.ui.options.EdisenOptionsDialog;
 import org.fife.edisen.ui.tabbedpane.GameFileTabbedPane;
@@ -509,6 +510,12 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         ((AboutDialog)getAboutDialog()).refreshLookAndFeel(theme);
         if (optionsDialog != null) {
             SwingUtilities.updateComponentTreeUI(optionsDialog);
+        }
+        if (findDialog != null) {
+            SwingUtilities.updateComponentTreeUI(findDialog);
+        }
+        if (replaceDialog != null) {
+            SwingUtilities.updateComponentTreeUI(replaceDialog);
         }
 
         refreshIcons();

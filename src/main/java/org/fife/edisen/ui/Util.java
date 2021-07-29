@@ -27,7 +27,7 @@ public final class Util {
         // they must match the theme.
         if (!resource.startsWith("/")) {
             Theme theme = Edisen.get().getTheme();
-            resource = "/images/" + theme.name().toLowerCase() + "/" + resource;
+            resource = "/images/" + theme.getImageRoot() + "/" + resource;
         }
 
         InputStream in = Util.class.getResourceAsStream(resource);

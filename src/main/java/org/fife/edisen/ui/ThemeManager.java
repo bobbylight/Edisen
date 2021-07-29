@@ -2,6 +2,7 @@ package org.fife.edisen.ui;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.intellijthemes.*;
 
 import javax.swing.*;
 
@@ -19,6 +20,7 @@ public class ThemeManager {
         LookAndFeel laf = switch (theme) {
             case DARK -> new FlatDarkLaf();
             case LIGHT -> new FlatLightLaf();
+            case NORD -> new FlatNordIJTheme();
         };
 
         try {

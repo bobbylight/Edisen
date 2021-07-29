@@ -7,14 +7,17 @@ import java.util.Objects;
  */
 public enum Theme {
 
-    LIGHT("Theme.Light", "/org/fife/ui/rsyntaxtextarea/themes/default-alt.xml"),
-    DARK("Theme.Dark", "/org/fife/ui/rsyntaxtextarea/themes/dark.xml");
+    LIGHT("Theme.Light", "light", "/org/fife/ui/rsyntaxtextarea/themes/default-alt.xml"),
+    DARK("Theme.Dark", "light", "/org/fife/ui/rsyntaxtextarea/themes/dark.xml"),
+    NORD("Theme.Nord", "light", "/org/fife/ui/rsyntaxtextarea/themes/dark.xml");
 
     private final String key;
+    private final String imageRoot;
     private final String rstaTheme;
 
-    Theme(String key, String rstaTheme) {
+    Theme(String key, String imageRoot, String rstaTheme) {
         this.key = key;
+        this.imageRoot = imageRoot;
         this.rstaTheme = rstaTheme;
     }
 
@@ -25,6 +28,10 @@ public enum Theme {
             }
         }
         return Theme.DARK;
+    }
+
+    public String getImageRoot() {
+        return imageRoot;
     }
 
     public String getKey() {
