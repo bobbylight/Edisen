@@ -1,6 +1,8 @@
 package org.fife.edisen.ui;
 
 import java.awt.*;
+import java.text.DateFormat;
+import java.util.Date;
 
 import javax.swing.*;
 import javax.swing.border.AbstractBorder;
@@ -42,7 +44,7 @@ class AboutDialog extends EscapableDialog {
         addLabelValuePairs(temp, getComponentOrientation(),
             app.getString("Dialog.About.InstallRoot"), app.getInstallLocation(),
             app.getString("Desc.About.BuildVersion"), app.getVersionString(),
-            app.getString("Desc.About.BuildDate"), new java.util.Date().toString());
+            app.getString("Desc.About.BuildDate"), getBuildDateString());
 
         UIUtil.makeSpringCompactGrid(temp, 3, 2, 5, 5, 15, 5);
         box.add(temp);
@@ -117,6 +119,15 @@ class AboutDialog extends EscapableDialog {
         box.setBackground(descAreaBackground);
         box.setBorder(new TopBorder());
         return box;
+    }
+
+    private String getBuildDateString() {
+        Date buildDate = app.getBuildDate();
+        if (buildDate != null) {
+            DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM);
+            return df.format(buildDate);
+        }
+        return "(unknown)"; // Dev builds won't have a build date
     }
 
     void refreshLookAndFeel(Theme theme) {
