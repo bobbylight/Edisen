@@ -2,7 +2,7 @@
 <launch4jConfig>
   <dontWrapJar>true</dontWrapJar>
   <headerType>gui</headerType>
-  <jar>lib\edisen-0.1.0-SNAPSHOT.jar</jar>
+  <jar>lib\edisen-1.0.0.jar</jar>
   <outfile>build\install\edisen\edisen.exe</outfile>
   <errTitle></errTitle>
   <cmdLine></cmdLine>

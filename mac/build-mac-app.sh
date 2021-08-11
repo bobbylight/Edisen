@@ -8,7 +8,7 @@
 
 # The version of edisen you're building.  This appears in the generated
 # .dmg file name.
-APP_VERSION=0.1.0-SNAPSHOT
+APP_VERSION=1.0.0
 
 #
 # You probably don't want to change anything below this line.

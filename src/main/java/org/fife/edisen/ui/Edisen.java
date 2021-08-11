@@ -66,7 +66,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     private Theme theme;
 
-    private static final String VERSION = "0.1.0-SNAPSHOT";
+    private static final String VERSION = "1.0.0";
 
     public Edisen(EdisenAppContext context, EdisenPrefs prefs) {
         super(context, "Edisen", prefs);

@@ -76,6 +76,7 @@ jar {
 
 distTar.dependsOn(jar)
 distZip.dependsOn(jar)
+installDist.dependsOn(jar)
 
 distributions {
     main {

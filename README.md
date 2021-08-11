@@ -33,8 +33,8 @@ tools, so no third-party library is necessary:
 ```bash
 ./gradlew clean generateMacApp
 
-# Running the built application:
-open -a ./build/install/edisen/Edisen.app
+# Either mount the built DMG manually or run this command:
+hdiutil attach ./build/install/Edisen-1.0.0.app
 ```
 
 ## What's Done
