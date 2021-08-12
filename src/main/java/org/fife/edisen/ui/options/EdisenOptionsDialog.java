@@ -22,10 +22,12 @@ public class EdisenOptionsDialog extends OptionsDialog {
         RTextFileChooserOptionPanel chooserOptionPanel = new RTextFileChooserOptionPanel();
         chooserOptionPanel.addChildPanel(new FileChooserFavoritesOptionPanel());
 
+        Edisen edisen = Edisen.get();
+
         setOptionsPanels(Arrays.asList(
-            new EmulationOptionPanel(),
+            new EmulationOptionPanel(edisen),
             chooserOptionPanel,
-            new UIOptionPanel()
+            new UIOptionPanel(edisen)
         ));
     }
 }

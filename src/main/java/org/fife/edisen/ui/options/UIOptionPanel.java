@@ -4,7 +4,6 @@ import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.Theme;
 import org.fife.edisen.ui.ThemeManager;
 import org.fife.ui.LabelValueComboBox;
-import org.fife.ui.OptionsDialogPanel;
 import org.fife.ui.UIUtil;
 
 import javax.swing.*;
@@ -16,14 +15,14 @@ import java.util.ResourceBundle;
 /**
  * Options pertaining to the user interface.
  */
-class UIOptionPanel extends OptionsDialogPanel {
+class UIOptionPanel extends AbstractEdisenOptionPanel {
 
     private LabelValueComboBox<String, Theme> themeCombo;
 
     private static final ResourceBundle MSG = ResourceBundle.getBundle("org.fife.edisen.ui.Edisen");
 
-    UIOptionPanel() {
-        setName(MSG.getString("Options.UI"));
+    UIOptionPanel(Edisen parent) {
+        super(parent, "Options.UI");
         createUI();
     }
 
@@ -33,11 +32,10 @@ class UIOptionPanel extends OptionsDialogPanel {
         setBorder(UIUtil.getEmpty5Border());
         setLayout(new BorderLayout());
 
-        JPanel topPanel = new JPanel();
-        topPanel.setBorder(new OptionPanelBorder(MSG.getString("Options.UI.Category.Appearance")));
+        JPanel appearancePanel = new JPanel();
+        appearancePanel.setBorder(new OptionPanelBorder(MSG.getString("Options.UI.Category.Appearance")));
         SpringLayout layout = new SpringLayout();
-        topPanel.setLayout(layout);
-        add(topPanel, BorderLayout.NORTH);
+        appearancePanel.setLayout(layout);
 
         JLabel themeLabel = new JLabel(MSG.getString("Options.UI.Theme"));
         themeCombo = new LabelValueComboBox<>();
@@ -46,19 +44,20 @@ class UIOptionPanel extends OptionsDialogPanel {
         }
         themeCombo.addActionListener(listener);
 
-        if (getComponentOrientation().isLeftToRight()) {
-            topPanel.add(themeLabel);
-            topPanel.add(themeCombo);
-        }
-        else {
-            topPanel.add(themeCombo);
-            topPanel.add(themeLabel);
-        }
+        addLabelValuePairs(appearancePanel, getComponentOrientation(),
+            themeLabel, themeCombo);
 
-        UIUtil.makeSpringCompactGrid(topPanel,
+        UIUtil.makeSpringCompactGrid(appearancePanel,
             1, 2,
             0, 0,
             5, 5);
+
+        Box topPanel = Box.createVerticalBox();
+        topPanel.add(appearancePanel);
+        topPanel.add(Box.createVerticalStrut(10));
+        addRestoreDefaultsButton(topPanel);
+        topPanel.add(Box.createVerticalGlue());
+        add(topPanel, BorderLayout.NORTH);
     }
 
     @Override
@@ -79,6 +78,11 @@ class UIOptionPanel extends OptionsDialogPanel {
     }
 
     @Override
+    boolean restoreDefaults() {
+        return false;
+    }
+
+    @Override
     protected void setValuesImpl(Frame owner) {
 
         Edisen app = (Edisen)owner;
@@ -90,8 +94,7 @@ class UIOptionPanel extends OptionsDialogPanel {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            setUnsavedChanges(true);
-            firePropertyChange("dummy", false, true);
+            setDirty(true);
         }
     }
 }

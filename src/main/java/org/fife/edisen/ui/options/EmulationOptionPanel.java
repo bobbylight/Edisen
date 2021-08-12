@@ -2,7 +2,6 @@ package org.fife.edisen.ui.options;
 
 import org.fife.edisen.ui.Edisen;
 import org.fife.rsta.ui.AssistanceIconPanel;
-import org.fife.ui.OptionsDialogPanel;
 import org.fife.ui.UIUtil;
 
 import javax.swing.*;
@@ -12,15 +11,15 @@ import java.util.ResourceBundle;
 /**
  * General compile/emulation options.
  */
-public class EmulationOptionPanel extends OptionsDialogPanel {
+public class EmulationOptionPanel extends AbstractEdisenOptionPanel {
 
     private JTextField assemblerCommandLineField;
     private JTextField emuCommandLineField;
 
     private static final ResourceBundle MSG = ResourceBundle.getBundle("org.fife.edisen.ui.Edisen");
 
-    public EmulationOptionPanel() {
-        setName(MSG.getString("Options.EmuOptions"));
+    public EmulationOptionPanel(Edisen parent) {
+        super(parent, "Options.EmuOptions");
         createUI();
     }
 
@@ -29,11 +28,10 @@ public class EmulationOptionPanel extends OptionsDialogPanel {
         setBorder(UIUtil.getEmpty5Border());
         setLayout(new BorderLayout());
 
-        JPanel topPanel = new JPanel();
-        topPanel.setBorder(new OptionPanelBorder(MSG.getString("Options.EmuOptions.Category.General")));
+        JPanel generalPanel = new JPanel();
+        generalPanel.setBorder(new OptionPanelBorder(MSG.getString("Options.EmuOptions.Category.General")));
         SpringLayout layout = new SpringLayout();
-        topPanel.setLayout(layout);
-        add(topPanel, BorderLayout.NORTH);
+        generalPanel.setLayout(layout);
 
         JLabel assemblerCommandLineLabel = new JLabel(MSG.getString("Options.EmuOptions.AssemblerCommandLine"));
         assemblerCommandLineField = new JTextField();
@@ -43,23 +41,21 @@ public class EmulationOptionPanel extends OptionsDialogPanel {
         emuCommandLineField = new JTextField();
         JPanel emuFieldPanel = createAssistancePanel(emuCommandLineField);
 
-        if (getComponentOrientation().isLeftToRight()) {
-            topPanel.add(assemblerCommandLineLabel);
-            topPanel.add(assemblerFieldPanel);
-            topPanel.add(emuCommandLineLabel);
-            topPanel.add(emuFieldPanel);
-        }
-        else {
-            topPanel.add(assemblerFieldPanel);
-            topPanel.add(assemblerCommandLineLabel);
-            topPanel.add(emuFieldPanel);
-            topPanel.add(emuCommandLineLabel);
-        }
+        addLabelValuePairs(generalPanel, getComponentOrientation(),
+            assemblerCommandLineLabel, assemblerFieldPanel,
+            emuCommandLineLabel, emuFieldPanel);
 
-        UIUtil.makeSpringCompactGrid(topPanel,
+        UIUtil.makeSpringCompactGrid(generalPanel,
             2, 2,
             0, 0,
             5, 5);
+
+        Box topPanel = Box.createVerticalBox();
+        topPanel.add(generalPanel);
+        topPanel.add(Box.createVerticalStrut(10));
+        addRestoreDefaultsButton(topPanel);
+        topPanel.add(Box.createVerticalGlue());
+        add(topPanel, BorderLayout.NORTH);
     }
 
     private JPanel createAssistancePanel(JComponent comp) {
@@ -87,6 +83,11 @@ public class EmulationOptionPanel extends OptionsDialogPanel {
     @Override
     public JComponent getTopJComponent() {
         return assemblerCommandLineField;
+    }
+
+    @Override
+    boolean restoreDefaults() {
+        return false;
     }
 
     @Override
