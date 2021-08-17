@@ -64,7 +64,7 @@ public class Actions {
             String mainGameFile = getApplication().getProject().getGameFile();
 
             Edisen app = getApplication();
-            String commandLine = app.getPreferences().assemblerCommandLine;
+            String commandLine = app.getAssemblerCommandLine();
             commandLine = commandLine.replace("${rom}", '"' + rom + '"')
                 .replace("${gameFile}", mainGameFile)
                 .replace("${objfile}", objFile);
@@ -117,7 +117,7 @@ public class Actions {
 
             String rom = "./game.nes"; // "relative path" needed for Windows Nestopia
 
-            String commandLine = prefs.emulatorCommandLine;
+            String commandLine = app.getEmulatorCommandLine();
             commandLine = commandLine.replace("${rom}", '"' + rom + '"');
 
             List<String> command = new ArrayList<>();

@@ -1,6 +1,7 @@
 package org.fife.edisen.ui.options;
 
 import org.fife.edisen.ui.Edisen;
+import org.fife.edisen.ui.Util;
 import org.fife.rsta.ui.AssistanceIconPanel;
 import org.fife.ui.UIUtil;
 
@@ -73,6 +74,8 @@ public class EmulationOptionPanel extends AbstractEdisenOptionPanel {
 
         app.setAssemblerCommandLine(assemblerCommandLineField.getText());
         app.setEmulatorCommandLine(emuCommandLineField.getText());
+
+        app.saveProject();
     }
 
     @Override
@@ -87,6 +90,18 @@ public class EmulationOptionPanel extends AbstractEdisenOptionPanel {
 
     @Override
     boolean restoreDefaults() {
+
+        String defaultAssemblerCommandLine = Util.getDefaultAssemblerCommandLine();
+        String defaultEmulatorCommandLine = Util.getDefaultEmulatorCommandLine();
+
+        if (!defaultAssemblerCommandLine.equals(assemblerCommandLineField.getText()) ||
+                !defaultEmulatorCommandLine.equals(emuCommandLineField.getText())) {
+
+            assemblerCommandLineField.setText(defaultAssemblerCommandLine);
+            emuCommandLineField.setText(defaultEmulatorCommandLine);
+            return true;
+        }
+
         return false;
     }
 

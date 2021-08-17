@@ -17,7 +17,12 @@ public class EdisenProject {
     @JsonIgnore
     private Path projectFile;
     private String name;
+
     private String gameFile;
+    private String assembleCommandLine;
+    private String linkCommandLine;
+    private String emulatorCommandLine;
+
 
     public static EdisenProject fromFile(Path path) throws IOException {
         EdisenProject project = load(Files.newBufferedReader(path));
@@ -25,6 +30,14 @@ public class EdisenProject {
         return project;
     }
 
+    /**
+     * Loads a project.
+     *
+     * @param r The project to load.
+     * @return The project.
+     * @throws IOException If an IO error occurs.
+     * @see #save()
+     */
     public static EdisenProject load(Reader r) throws IOException {
 
         EdisenProject project;
@@ -36,8 +49,16 @@ public class EdisenProject {
         return project;
     }
 
+    public String getAssembleCommandLine() {
+        return assembleCommandLine;
+    }
+
     public String getGameFile() {
         return gameFile;
+    }
+
+    public String getLinkCommandLine() {
+        return linkCommandLine;
     }
 
     public String getName() {
@@ -48,8 +69,27 @@ public class EdisenProject {
         return projectFile;
     }
 
+    /**
+     * Saves this project file.  Note this only saves the project JSON file;
+     * source files, etc. are not saved or updated.
+     *
+     * @throws IOException If an IO error occurs.
+     * @see #load(Reader)
+     */
+    public void save() throws IOException {
+        new ObjectMapper().writerFor(EdisenProject.class).writeValue(getProjectFile().toFile(), this);
+    }
+
+    public void setAssembleCommandLine(String assembleCommandLine) {
+        this.assembleCommandLine = assembleCommandLine;
+    }
+
     public void setGameFile(String gameFile) {
         this.gameFile = gameFile;
+    }
+
+    public void setLinkCommandLine(String linkCommandLine) {
+        this.linkCommandLine = linkCommandLine;
     }
 
     public void setName(String name) {
@@ -58,5 +98,13 @@ public class EdisenProject {
 
     public void setProjectFile(Path projectFile) {
         this.projectFile = projectFile;
+    }
+
+    public String getEmulatorCommandLine() {
+        return emulatorCommandLine;
+    }
+
+    public void setEmulatorCommandLine(String emulatorCommandLine) {
+        this.emulatorCommandLine = emulatorCommandLine;
     }
 }

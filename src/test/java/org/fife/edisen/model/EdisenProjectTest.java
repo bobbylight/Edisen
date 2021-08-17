@@ -14,7 +14,9 @@ public class EdisenProjectTest {
 
         String projectJson = "{\n" +
             "  \"name\": \"Test Project\",\n" +
-            "  \"gameFile\": \"test.s\"\n" +
+            "  \"gameFile\": \"test.s\",\n" +
+            "  \"assembleCommandLine\": \"ca65 test.nes\",\n" +
+            "  \"linkCommandLine\": \"ld65 test.o\"\n" +
             "}\n";
 
         Path tempProject = Files.createTempFile("edisen", ".json");
@@ -24,6 +26,8 @@ public class EdisenProjectTest {
             EdisenProject project = EdisenProject.fromFile(tempProject);
             Assertions.assertEquals("Test Project", project.getName());
             Assertions.assertEquals("test.s", project.getGameFile());
+            Assertions.assertEquals("ca65 test.nes", project.getAssembleCommandLine());
+            Assertions.assertEquals("ld65 test.o", project.getLinkCommandLine());
             Assertions.assertEquals(tempProject, project.getProjectFile());
         } finally {
             Files.delete(tempProject);
@@ -46,11 +50,27 @@ public class EdisenProjectTest {
     }
 
     @Test
+    public void testGetSetAssembleCommandLine() {
+        EdisenProject project = new EdisenProject();
+        Assertions.assertNull(project.getAssembleCommandLine());
+        project.setAssembleCommandLine("foo");
+        Assertions.assertEquals("foo", project.getAssembleCommandLine());
+    }
+
+    @Test
     public void testGetSetGameFile() {
         EdisenProject project = new EdisenProject();
         Assertions.assertNull(project.getGameFile());
         project.setGameFile("test.nes");
         Assertions.assertEquals("test.nes", project.getGameFile());
+    }
+
+    @Test
+    public void testGetSetLinkCommandLine() {
+        EdisenProject project = new EdisenProject();
+        Assertions.assertNull(project.getLinkCommandLine());
+        project.setLinkCommandLine("foo");
+        Assertions.assertEquals("foo", project.getLinkCommandLine());
     }
 
     @Test

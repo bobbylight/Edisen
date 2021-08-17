@@ -1,6 +1,5 @@
 package org.fife.edisen.ui;
 
-import com.formdev.flatlaf.intellijthemes.FlatArcOrangeIJTheme;
 import org.fife.edisen.model.EdisenProject;
 import org.fife.edisen.ui.options.EdisenOptionsDialog;
 import org.fife.edisen.ui.tabbedpane.GameFileTabbedPane;
@@ -187,11 +186,11 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     }
 
     public String getAssemblerCommandLine() {
-        return prefs.assemblerCommandLine;
+        return project.getAssembleCommandLine();
     }
 
     public String getEmulatorCommandLine() {
-        return prefs.emulatorCommandLine;
+        return project.getEmulatorCommandLine();
     }
 
     @Override
@@ -436,6 +435,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
             EdisenProject previousProject = this.project;
             this.project = project;
             refreshTitle();
+            setAssemblerCommandLine(project.getAssembleCommandLine());
+            setEmulatorCommandLine(project.getEmulatorCommandLine());
             firePropertyChange(PROPERTY_PROJECT, previousProject, project);
         } catch (IOException ioe) {
             displayException(ioe);
@@ -460,7 +461,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     @Override
     public void preferences() {
-
+        getAction(Actions.OPTIONS_ACTION_KEY).actionPerformed(null);
     }
 
     @Override
@@ -593,12 +594,23 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
                 JOptionPane.ERROR_MESSAGE);
     }
 
+    public void saveProject() {
+
+        // TODO: Update *.edisen.json if it's open in a tab
+
+        try {
+            project.save();
+        } catch (IOException ioe) {
+            displayException(ioe);
+        }
+    }
+
     public void setAssemblerCommandLine(String commandLine) {
-        prefs.assemblerCommandLine = commandLine;
+        project.setAssembleCommandLine(commandLine);
     }
 
     public void setEmulatorCommandLine(String commandLine) {
-        prefs.emulatorCommandLine = commandLine;
+        project.setEmulatorCommandLine(commandLine);
     }
 
     private void setIcons() {
