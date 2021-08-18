@@ -19,7 +19,7 @@ public class EdisenProject {
     private String name;
 
     private String gameFile;
-    private String assembleCommandLine;
+    private String assemblerCommandLine;
     private String linkCommandLine;
     private String emulatorCommandLine;
 
@@ -49,8 +49,8 @@ public class EdisenProject {
         return project;
     }
 
-    public String getAssembleCommandLine() {
-        return assembleCommandLine;
+    public String getAssemblerCommandLine() {
+        return assemblerCommandLine;
     }
 
     public String getGameFile() {
@@ -77,11 +77,13 @@ public class EdisenProject {
      * @see #load(Reader)
      */
     public void save() throws IOException {
-        new ObjectMapper().writerFor(EdisenProject.class).writeValue(getProjectFile().toFile(), this);
+        new ObjectMapper().writerFor(EdisenProject.class)
+            .withDefaultPrettyPrinter()
+            .writeValue(getProjectFile().toFile(), this);
     }
 
-    public void setAssembleCommandLine(String assembleCommandLine) {
-        this.assembleCommandLine = assembleCommandLine;
+    public void setAssemblerCommandLine(String assemblerCommandLine) {
+        this.assemblerCommandLine = assemblerCommandLine;
     }
 
     public void setGameFile(String gameFile) {

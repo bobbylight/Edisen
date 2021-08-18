@@ -110,7 +110,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         addAction(Actions.GOTO_ACTION_KEY, new Actions.GoToAction(this));
         addAction(Actions.OPTIONS_ACTION_KEY, new OptionsAction<>(this, "Action.Options"));
 
-        addAction(Actions.COMPILE_ACTION_KEY, new Actions.CompileAction(this));
+        addAction(Actions.COMPILE_ACTION_KEY, new Actions.BuildAction(this));
         addAction(Actions.EMULATE_ACTION_KEY, new Actions.EmulateAction(this));
 
         HelpAction<Edisen> helpAction = new HelpAction<>(this, "Action.Help");
@@ -186,7 +186,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     }
 
     public String getAssemblerCommandLine() {
-        return project.getAssembleCommandLine();
+        return project.getAssemblerCommandLine();
     }
 
     public String getEmulatorCommandLine() {
@@ -209,6 +209,10 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     public HelpDialog getHelpDialog() {
         UIUtil.browse("https://github.com/bobbylight/Edisen");
         return null;
+    }
+
+    public String getLinkerCommandLine() {
+        return project.getLinkCommandLine();
     }
 
     @Override
@@ -435,7 +439,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
             EdisenProject previousProject = this.project;
             this.project = project;
             refreshTitle();
-            setAssemblerCommandLine(project.getAssembleCommandLine());
+            setAssemblerCommandLine(project.getAssemblerCommandLine());
             setEmulatorCommandLine(project.getEmulatorCommandLine());
             firePropertyChange(PROPERTY_PROJECT, previousProject, project);
         } catch (IOException ioe) {
@@ -606,7 +610,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     }
 
     public void setAssemblerCommandLine(String commandLine) {
-        project.setAssembleCommandLine(commandLine);
+        project.setAssemblerCommandLine(commandLine);
     }
 
     public void setEmulatorCommandLine(String commandLine) {
@@ -624,5 +628,9 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         } catch (IOException ioe) {
             displayException(ioe); // Never happens
         }
+    }
+
+    public void setLinkerCommandLine(String commandLine) {
+        project.setLinkCommandLine(commandLine);
     }
 }

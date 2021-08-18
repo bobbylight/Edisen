@@ -2,6 +2,7 @@ package org.fife.edisen.ui;
 
 import org.fife.io.ProcessRunner;
 import org.fife.io.ProcessRunnerOutputListener;
+import org.fife.ui.GUIWorkerThread;
 import org.fife.ui.OS;
 import org.fife.ui.app.AppAction;
 
@@ -50,21 +51,46 @@ public class Actions {
         }
     }
 
-    public static class CompileAction extends AppAction<Edisen> {
+    public static class BuildAction extends AppAction<Edisen> {
 
-        public CompileAction(Edisen app) {
+        public BuildAction(Edisen app) {
             super(app, "Action.Compile");
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            String rom = "game.nes";
-            String objFile = "game.o";
-            String mainGameFile = getApplication().getProject().getGameFile();
+            Edisen app = getApplication();
+
+            // TODO: Cache this and kill it if the user manually stops the process
+            GUIWorkerThread<Object> thread = new GUIWorkerThread<>() {
+                @Override
+                public Object construct() {
+
+                    ProcessRunner pr = createProcessRunner(app.getAssemblerCommandLine(), "Log.CompilingAt");
+                    pr.run();
+
+                    if (pr.getReturnCode() != 0 || pr.getLastError() != null) {
+                        return null;
+                    }
+
+                    pr = createProcessRunner(app.getLinkerCommandLine(), "Log.LinkingAt");
+                    pr.run();
+
+                    return null;
+                }
+            };
+
+            thread.start();
+        }
+
+        private ProcessRunner createProcessRunner(String commandLine, String logKey) {
 
             Edisen app = getApplication();
-            String commandLine = app.getAssemblerCommandLine();
+            String rom = "game.nes";
+            String objFile = "game.o";
+            String mainGameFile = app.getProject().getGameFile();
+
             commandLine = commandLine.replace("${rom}", '"' + rom + '"')
                 .replace("${gameFile}", mainGameFile)
                 .replace("${objfile}", objFile);
@@ -83,7 +109,7 @@ public class Actions {
             pr.setDirectory(app.getProject().getProjectFile().getParent().toFile());
 
             String dateTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
-            app.log("stdin", app.getString("Log.CompilingAt", dateTime));
+            app.log("stdin", app.getString(logKey, dateTime));
             app.log("stdout", pr.getCommandLineString());
 
             pr.setOutputListener(new ProcessRunnerOutputListener() {
@@ -98,8 +124,7 @@ public class Actions {
                 }
             });
 
-            // TODO: Cache this and kill it if the user manually stops the process
-            new ProcessRunnerThread(pr).start();
+            return pr;
         }
     }
 

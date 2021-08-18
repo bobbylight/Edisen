@@ -26,7 +26,7 @@ public class EdisenProjectTest {
             EdisenProject project = EdisenProject.fromFile(tempProject);
             Assertions.assertEquals("Test Project", project.getName());
             Assertions.assertEquals("test.s", project.getGameFile());
-            Assertions.assertEquals("ca65 test.nes", project.getAssembleCommandLine());
+            Assertions.assertEquals("ca65 test.nes", project.getAssemblerCommandLine());
             Assertions.assertEquals("ld65 test.o", project.getLinkCommandLine());
             Assertions.assertEquals(tempProject, project.getProjectFile());
         } finally {
@@ -52,9 +52,9 @@ public class EdisenProjectTest {
     @Test
     public void testGetSetAssembleCommandLine() {
         EdisenProject project = new EdisenProject();
-        Assertions.assertNull(project.getAssembleCommandLine());
-        project.setAssembleCommandLine("foo");
-        Assertions.assertEquals("foo", project.getAssembleCommandLine());
+        Assertions.assertNull(project.getAssemblerCommandLine());
+        project.setAssemblerCommandLine("foo");
+        Assertions.assertEquals("foo", project.getAssemblerCommandLine());
     }
 
     @Test

@@ -6,6 +6,7 @@ import org.fife.ui.app.AppAction;
 import org.fife.ui.autocomplete.EmptyIcon;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,15 +23,37 @@ public final class Util {
         // Do nothing (comment for Sonar)
     }
 
+    public static Image getDarkLookAndFeelContentAssistImage() {
+
+        Image image = null;
+        InputStream in = Util.class.getResourceAsStream("images/dark/intentionBulb.svg");
+
+        try {
+            image = ImageTranscodingUtil.rasterize("bulb", in, 12, 12);
+        } catch (IOException ioe) { // Never happens
+            ioe.printStackTrace();
+        }
+
+        return image;
+    }
+
     public static String getDefaultAssemblerCommandLine() {
         if (OS.get() == OS.MAC_OS_X) {
             // For some reason the combined cl65 doesn't seem to generate the same
             // .o files, and the generated .nes files don't run in Nestopia
             //return "cl65 -o ${rom} ${gameFile} -t nes";
-            return "ca65 -o ${objfile} ${gameFile} -t nes && ld65 -o ${rom} ${objfile} -t nes";
-//            return "ca65 -o ${objfile} ${gameFile} -t nes && ld65 -o ${rom} ${objfile} -C nesfile.ini";
+            return "ca65 -o ${objfile} ${gameFile} -t nes";
+//            return "ca65 -o ${objfile} ${gameFile} -t nes";
         }
-        return "D:/cc65-snapshot-win32/bin/ca65 -o ${objfile} ${gameFile} -t nes && D:/cc65-snapshot-win32/bin/ld65 -o ${rom} ${objfile} -t nes";
+        return "D:/cc65-snapshot-win32/bin/ca65 -o ${objfile} ${gameFile} -t nes";
+    }
+
+    public static String getDefaultLinkerCommandLine() {
+        if (OS.get() == OS.MAC_OS_X) {
+            return "ld65 -o ${rom} ${objfile} -t nes";
+//            return "ld65 -o ${rom} ${objfile} -C nesfile.ini";
+        }
+        return "D:/cc65-snapshot-win32/bin/ld65 -o ${rom} ${objfile} -t nes";
     }
 
     public static String getDefaultEmulatorCommandLine() {

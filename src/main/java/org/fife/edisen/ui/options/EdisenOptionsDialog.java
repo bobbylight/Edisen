@@ -25,7 +25,7 @@ public class EdisenOptionsDialog extends OptionsDialog {
         Edisen edisen = Edisen.get();
 
         setOptionsPanels(Arrays.asList(
-            new EmulationOptionPanel(edisen),
+            new ProjectOptionPanel(edisen),
             chooserOptionPanel,
             new UIOptionPanel(edisen)
         ));
