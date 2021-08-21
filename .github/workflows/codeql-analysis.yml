@@ -65,8 +65,11 @@ jobs:
     #    and modify them (or add more) to build your code if your project
     #    uses a compiled language
 
-    - name: Build
-      run: ./gradlew build --warning-mode all
+    - name: Build with Gradle
+      #run: ./gradlew build --warning-mode all
+      uses: GabrielBB/xvfb-action@v1
+      with:
+        run: ./gradlew build --warning-mode all
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
