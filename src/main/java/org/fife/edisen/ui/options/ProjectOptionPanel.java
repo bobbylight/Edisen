@@ -106,6 +106,7 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
     private JPanel createAssistancePanel(JComponent comp) {
         AssistanceIconPanel aip = new AssistanceIconPanel(comp);
         aip.setAssistanceEnabled(getContentAssistImage());
+        aip.setToolTipText(MSG.getString("Options.ProjectOptions.ContentAssistAvailable"));
         JPanel temp = new JPanel(new BorderLayout());
         temp.add(aip, BorderLayout.LINE_START);
         temp.add(comp);

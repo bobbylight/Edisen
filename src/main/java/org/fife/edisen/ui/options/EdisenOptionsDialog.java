@@ -2,6 +2,7 @@ package org.fife.edisen.ui.options;
 
 import org.fife.edisen.ui.Edisen;
 import org.fife.ui.OptionsDialog;
+import org.fife.ui.app.options.ShortcutOptionPanel;
 import org.fife.ui.rtextfilechooser.FileChooserFavoritesOptionPanel;
 import org.fife.ui.rtextfilechooser.RTextFileChooserOptionPanel;
 
@@ -27,6 +28,7 @@ public class EdisenOptionsDialog extends OptionsDialog {
         setOptionsPanels(Arrays.asList(
             new ProjectOptionPanel(edisen),
             chooserOptionPanel,
+            new ShortcutOptionPanel(edisen),
             new UIOptionPanel(edisen)
         ));
     }
