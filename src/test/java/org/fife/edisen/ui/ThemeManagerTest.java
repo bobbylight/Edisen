@@ -1,6 +1,5 @@
 package org.fife.edisen.ui;
 
-import org.fife.ui.SplashScreen;
 import org.fife.ui.rtextarea.RTextArea;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

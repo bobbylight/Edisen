@@ -1,11 +1,13 @@
 package org.fife.edisen.ui;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
 import java.awt.*;
 import java.io.*;
 
+@ExtendWith(SwingRunnerExtension.class)
 public class ChrRomViewerTest {
 
     private static File createTempFile() throws IOException {
