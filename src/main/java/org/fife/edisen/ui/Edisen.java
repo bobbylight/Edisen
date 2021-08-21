@@ -69,9 +69,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     public Edisen(EdisenAppContext context, EdisenPrefs prefs) {
         super(context, "Edisen", prefs);
-        this.prefs = prefs;
-        setIcons();
-        theme = Theme.fromKey(prefs.theme);
+        this.theme = Theme.fromKey(prefs.theme);
     }
 
     public boolean closeTab(int index) {
@@ -466,6 +464,12 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     @Override
     public void preferences() {
         getAction(Actions.OPTIONS_ACTION_KEY).actionPerformed(null);
+    }
+
+    @Override
+    protected void preCreateActions(EdisenPrefs prefs, SplashScreen splashScreen) {
+        this.prefs = prefs;
+        setIcons();
     }
 
     @Override

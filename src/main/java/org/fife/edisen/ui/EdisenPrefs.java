@@ -26,6 +26,7 @@ public class EdisenPrefs extends AppPrefs {
         lookAndFeel = "com.formdev.flatlaf.FlatDarkLaf";
 
         // App-specific preferences
+        recentFiles = new String[0];
         recentProjects = new String[0];
         theme = Theme.DARK.getKey();
     }

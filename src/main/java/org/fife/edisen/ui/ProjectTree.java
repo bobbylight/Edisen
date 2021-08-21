@@ -34,6 +34,13 @@ class ProjectTree extends FileSystemTree {
         edisen.addPropertyChangeListener(Edisen.PROPERTY_PROJECT, listener);
     }
 
+    void possiblyOpenFileForEditing() {
+        File selection = getSelectedFile();
+        if (selection != null) {
+            edisen.openFileForEditing(selection);
+        }
+    }
+
     private void showProject(EdisenProject project) {
         File projectRoot = project.getProjectFile().getParent().toFile();
         setRoot(projectRoot);
@@ -44,10 +51,7 @@ class ProjectTree extends FileSystemTree {
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == 2) {
-                File selection = getSelectedFile();
-                if (selection != null) {
-                    edisen.openFileForEditing(selection);
-                }
+                possiblyOpenFileForEditing();
             }
         }
 

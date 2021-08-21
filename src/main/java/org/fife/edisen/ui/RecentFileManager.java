@@ -90,6 +90,15 @@ public class RecentFileManager implements PropertyChangeListener {
 
 	}
 
+    /**
+     * Returns the maximum number of files this file manager will remember.
+     *
+     * @return The maximum number of files.
+     */
+	public int getMaxFileCount() {
+	    return MAX_FILE_COUNT;
+    }
+
 	/**
 	 * Returns the current index of the specified file in this history.
 	 *

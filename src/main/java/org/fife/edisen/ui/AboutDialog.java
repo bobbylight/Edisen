@@ -24,10 +24,56 @@ class AboutDialog extends EscapableDialog {
 
     private Edisen app;
     private Box box;
+    private boolean uiCreated;
 
     AboutDialog(Edisen parent) {
-
         super(parent);
+    }
+
+    private static void addLabelValuePairs(Container parent, ComponentOrientation o, String... pairs) {
+        if (o.isLeftToRight()) {
+            for (int i = 0; i < pairs.length; i += 2) {
+                parent.add(new JLabel(pairs[i]));
+                parent.add(new SelectableLabel(pairs[i + 1]));
+            }
+        }
+        else {
+            for (int i = 0; i < pairs.length; i += 2) {
+                parent.add(new SelectableLabel(pairs[i]));
+                parent.add(new JLabel(pairs[i + 1]));
+            }
+        }
+    }
+
+    private Container createTitleAndDescPanel(Theme theme) {
+
+        Color descAreaBackground = theme == Theme.LIGHT ? Color.WHITE : new Color(48, 50, 52);
+
+        SelectableLabel descLabel = new SelectableLabel(
+                app.getString("Dialog.About.Desc", app.getVersionString()));
+        descLabel.addHyperlinkListener(e -> {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                UIUtil.browse(e.getURL().toString());
+            }
+        });
+        this.box.add(descLabel);
+
+        Box box = Box.createHorizontalBox();
+
+        Icon icon = new ImageIcon(getClass().getResource("/icons/Nintendo-NES-icon-64x64.png"));
+        box.add(new JLabel(icon));
+        box.add(Box.createHorizontalStrut(15));
+
+        box.add(descLabel);
+        box.add(Box.createHorizontalGlue());
+
+        box.setOpaque(true);
+        box.setBackground(descAreaBackground);
+        box.setBorder(new TopBorder());
+        return box;
+    }
+
+    protected void createUI(Edisen parent) {
         this.app = parent;
 
         JPanel cp = new ResizableFrameContentPane(new BorderLayout());
@@ -75,50 +121,6 @@ class AboutDialog extends EscapableDialog {
         }
         pack();
         setLocationRelativeTo(app);
-
-    }
-
-    private static void addLabelValuePairs(Container parent, ComponentOrientation o, String... pairs) {
-        if (o.isLeftToRight()) {
-            for (int i = 0; i < pairs.length; i += 2) {
-                parent.add(new JLabel(pairs[i]));
-                parent.add(new SelectableLabel(pairs[i + 1]));
-            }
-        }
-        else {
-            for (int i = 0; i < pairs.length; i += 2) {
-                parent.add(new SelectableLabel(pairs[i]));
-                parent.add(new JLabel(pairs[i + 1]));
-            }
-        }
-    }
-
-    private Container createTitleAndDescPanel(Theme theme) {
-
-        Color descAreaBackground = theme == Theme.LIGHT ? Color.WHITE : new Color(48, 50, 52);
-
-        SelectableLabel descLabel = new SelectableLabel(
-                app.getString("Dialog.About.Desc", app.getVersionString()));
-        descLabel.addHyperlinkListener(e -> {
-            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                UIUtil.browse(e.getURL().toString());
-            }
-        });
-        this.box.add(descLabel);
-
-        Box box = Box.createHorizontalBox();
-
-        Icon icon = new ImageIcon(getClass().getResource("/icons/Nintendo-NES-icon-64x64.png"));
-        box.add(new JLabel(icon));
-        box.add(Box.createHorizontalStrut(15));
-
-        box.add(descLabel);
-        box.add(Box.createHorizontalGlue());
-
-        box.setOpaque(true);
-        box.setBackground(descAreaBackground);
-        box.setBorder(new TopBorder());
-        return box;
     }
 
     private String getBuildDateString() {
@@ -138,6 +140,31 @@ class AboutDialog extends EscapableDialog {
         box.remove(0);
         box.add(titleAndDescPanel, null, 0);
         pack();
+    }
+
+    /**
+     * This method is only here to facilitate unit testing, ugh.
+     * We can't pass the parent app into the constructor because
+     * that causes downstream NPE's in private and package-private
+     * {@code Window} code.
+     *
+     * @param app The parent application.
+     */
+    public void setApplication(Edisen app) {
+        this.app = app;
+        if (!uiCreated) {
+            createUI(app);
+            uiCreated = true;
+        }
+    }
+
+    @Override
+    public void setVisible(boolean visible) {
+        if (visible && !uiCreated) {
+            createUI(app);
+            uiCreated = true;
+        }
+        super.setVisible(visible);
     }
 
     /**

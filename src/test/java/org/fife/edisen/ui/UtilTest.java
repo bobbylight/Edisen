@@ -1,20 +1,39 @@
 package org.fife.edisen.ui;
 
+import org.fife.ui.rtextarea.RTextArea;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import javax.swing.*;
 
+@ExtendWith(SwingRunnerExtension.class)
 public class UtilTest {
 
     private Edisen edisen;
+    private EdisenPrefs prefs;
+
+    @BeforeEach
+    public void setUp() {
+        prefs = new EdisenPrefs();
+    }
 
     @AfterEach
     public void tearDown() {
         if (edisen != null) {
             edisen.dispose();
         }
+    }
+
+    private void createEdisen() {
+
+        new RTextArea(); // Yuck, needed for initialization
+
+        EdisenAppContext context = new EdisenAppContext();
+        EdisenPrefs prefs = new EdisenPrefs();
+        edisen = new Edisen(context, prefs);
     }
 
     @Test
@@ -33,24 +52,20 @@ public class UtilTest {
     }
 
     @Test
-    public void testGetDefaultLInkerCommandLine() {
+    public void testGetDefaultLinkerCommandLine() {
         Assertions.assertNotNull(Util.getDefaultLinkerCommandLine());
     }
 
     @Test
     public void testGetSvgIcon_success() {
-        EdisenAppContext context = new EdisenAppContext();
-        EdisenPrefs prefs = new EdisenPrefs();
-        edisen = new Edisen(context, prefs);
+        createEdisen();
         Assertions.assertNotNull(Util.getSvgIcon(edisen, "cut.svg", 16));
     }
 
     @Test
     public void testGetSvgIcon_error_noSuchIcon() {
 
-        EdisenAppContext context = new EdisenAppContext();
-        EdisenPrefs prefs = new EdisenPrefs();
-        edisen = new Edisen(context, prefs);
+        createEdisen();
 
         // This returns an EmptyIcon
         Assertions.assertNotNull(Util.getSvgIcon(edisen, "does-not-exist.svg", 16));
@@ -59,9 +74,8 @@ public class UtilTest {
     @Test
     public void testSetIcon() {
 
-        EdisenAppContext context = new EdisenAppContext();
-        EdisenPrefs prefs = new EdisenPrefs();
-        edisen = new Edisen(context, prefs);
+        createEdisen();
+        edisen.preCreateActions(prefs, null);
         edisen.createActions(prefs);
 
         Action a = edisen.getAction(Edisen.EXIT_ACTION_KEY);
