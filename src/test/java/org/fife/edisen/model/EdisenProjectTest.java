@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -15,8 +16,9 @@ public class EdisenProjectTest {
         String projectJson = "{\n" +
             "  \"name\": \"Test Project\",\n" +
             "  \"gameFile\": \"test.s\",\n" +
-            "  \"assembleCommandLine\": \"ca65 test.nes\",\n" +
-            "  \"linkCommandLine\": \"ld65 test.o\"\n" +
+            "  \"assemblerCommandLine\": \"ca65 test.nes\",\n" +
+            "  \"linkCommandLine\": \"ld65 test.o\",\n" +
+            "  \"emulatorCommandLine\": \"nestopia ${rom}\"\n" +
             "}\n";
 
         Path tempProject = Files.createTempFile("edisen", ".json");
@@ -41,9 +43,7 @@ public class EdisenProjectTest {
         Path tempProject = Files.createTempFile("edisen", ".json");
 
         try {
-            Assertions.assertThrows(IOException.class, () -> {
-                EdisenProject.fromFile(tempProject);
-            });
+            Assertions.assertThrows(IOException.class, () -> EdisenProject.fromFile(tempProject));
         } finally {
             Files.delete(tempProject);
         }
@@ -87,5 +87,28 @@ public class EdisenProjectTest {
         Assertions.assertNull(project.getProjectFile());
         project.setProjectFile(Path.of("test.json"));
         Assertions.assertEquals(Path.of("test.json"), project.getProjectFile());
+    }
+
+    @Test
+    public void testLoadSave() throws IOException {
+
+        Path projectFile = Files.createTempFile("edisen", ".json");
+
+        EdisenProject project = new EdisenProject();
+        project.setAssemblerCommandLine("assembler");
+        project.setEmulatorCommandLine("emu");
+        project.setLinkCommandLine("link");
+        project.setGameFile("game");
+        project.setName("name");
+        project.setProjectFile(projectFile);
+
+        project.save();
+
+        EdisenProject project2 = EdisenProject.load(Files.newBufferedReader(projectFile, StandardCharsets.UTF_8));
+        Assertions.assertEquals(project.getAssemblerCommandLine(), project2.getAssemblerCommandLine());
+        Assertions.assertEquals(project.getEmulatorCommandLine(), project2.getEmulatorCommandLine());
+        Assertions.assertEquals(project.getLinkCommandLine(), project2.getLinkCommandLine());
+        Assertions.assertEquals(project.getGameFile(), project2.getGameFile());
+        Assertions.assertEquals(project.getName(), project2.getName());
     }
 }

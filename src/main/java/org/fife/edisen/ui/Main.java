@@ -1,11 +1,9 @@
 package org.fife.edisen.ui;
 
-
 /**
  * Program entry point.
  */
 public final class Main {
-
 
     /**
      * Private constructor to prevent instantiation.
@@ -13,7 +11,6 @@ public final class Main {
     private Main() {
         // Do nothing - comment for Sonar
     }
-
 
     /**
      * Program entry point.

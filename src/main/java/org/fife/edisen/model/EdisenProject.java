@@ -30,25 +30,6 @@ public class EdisenProject {
         return project;
     }
 
-    /**
-     * Loads a project.
-     *
-     * @param r The project to load.
-     * @return The project.
-     * @throws IOException If an IO error occurs.
-     * @see #save()
-     */
-    public static EdisenProject load(Reader r) throws IOException {
-
-        EdisenProject project;
-
-        try (BufferedReader br = new BufferedReader(r)) {
-            project = new ObjectMapper().readerFor(EdisenProject.class).readValue(br);
-        }
-
-        return project;
-    }
-
     public String getAssemblerCommandLine() {
         return assemblerCommandLine;
     }
@@ -67,6 +48,25 @@ public class EdisenProject {
 
     public Path getProjectFile() {
         return projectFile;
+    }
+
+    /**
+     * Loads a project.
+     *
+     * @param r The project to load.
+     * @return The project.
+     * @throws IOException If an IO error occurs.
+     * @see #save()
+     */
+    public static EdisenProject load(Reader r) throws IOException {
+
+        EdisenProject project;
+
+        try (BufferedReader br = new BufferedReader(r)) {
+            project = new ObjectMapper().readerFor(EdisenProject.class).readValue(br);
+        }
+
+        return project;
     }
 
     /**

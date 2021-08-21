@@ -98,9 +98,9 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         super.createActions(prefs);
 
         addAction(Actions.OPEN_ACTION_KEY, new Actions.OpenAction(this));
-        Util.setIcon(Actions.OPEN_ACTION_KEY, "open.svg");
+        Util.setIcon(this, Actions.OPEN_ACTION_KEY, "open.svg");
         addAction(Actions.SAVE_ACTION_KEY, new Actions.SaveAction(this));
-        Util.setIcon(Actions.SAVE_ACTION_KEY, "save.svg");
+        Util.setIcon(this, Actions.SAVE_ACTION_KEY, "save.svg");
         addAction(Actions.SAVE_AS_ACTION_KEY, new Actions.SaveAsAction(this));
         addAction(Actions.CLOSE_ACTION_KEY, new Actions.CloseAction(this));
         addAction(EXIT_ACTION_KEY, new GUIApplication.ExitAction<>(this, "Action.Exit"));
@@ -115,11 +115,11 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         HelpAction<Edisen> helpAction = new HelpAction<>(this, "Action.Help");
         addAction(HELP_ACTION_KEY, helpAction);
-        Util.setIcon(HELP_ACTION_KEY, "help.svg");
+        Util.setIcon(this, HELP_ACTION_KEY, "help.svg");
 
         AboutAction<Edisen> aboutAction = new AboutAction<>(this, "Action.About");
         addAction(ABOUT_ACTION_KEY, aboutAction);
-        Util.setIcon(ABOUT_ACTION_KEY, "about.svg");
+        Util.setIcon(this, ABOUT_ACTION_KEY, "about.svg");
     }
 
     @Override
@@ -345,7 +345,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         String title = getString("DockedWindow.Project");
         projectWindow = new DockableWindow(title, new BorderLayout());
-        projectWindow.setIcon(Util.getSvgIcon("projectStructure.svg", 16));
+        projectWindow.setIcon(Util.getSvgIcon(this, "projectStructure.svg", 16));
         projectWindow.setPosition(DockableWindowConstants.LEFT);
         projectWindow.setActive(true);
         projectWindow.add(sp);
@@ -355,7 +355,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         title = getString("DockedWindow.Output");
         outputWindow = new DockableWindow(title, new BorderLayout());
-        outputWindow.setIcon(Util.getSvgIcon("console.svg", 16));
+        outputWindow.setIcon(Util.getSvgIcon(this, "console.svg", 16));
         outputWindow.setPosition(DockableWindowConstants.BOTTOM);
         outputWindow.setActive(true);
         outputTextArea = new OutputTextPane(this);
@@ -532,7 +532,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
      */
     private void refreshIcons() {
 
-        Util.setIcon(Actions.OPEN_ACTION_KEY, "open.svg");
+        Util.setIcon(this, Actions.OPEN_ACTION_KEY, "open.svg");
 
         refreshTextAreaIcon(RSyntaxTextArea.UNDO_ACTION, "undo.svg");
         refreshTextAreaIcon(RSyntaxTextArea.REDO_ACTION, "redo.svg");
@@ -540,16 +540,16 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         refreshTextAreaIcon(RSyntaxTextArea.COPY_ACTION, "copy.svg");
         refreshTextAreaIcon(RSyntaxTextArea.PASTE_ACTION, "paste.svg");
 
-        Util.setIcon(HELP_ACTION_KEY, "help.svg");
-        Util.setIcon(ABOUT_ACTION_KEY, "about.svg");
+        Util.setIcon(this, HELP_ACTION_KEY, "help.svg");
+        Util.setIcon(this, ABOUT_ACTION_KEY, "about.svg");
 
-        projectWindow.setIcon(Util.getSvgIcon("projectStructure.svg", 16));
-        outputWindow.setIcon(Util.getSvgIcon("console.svg", 16));
+        projectWindow.setIcon(Util.getSvgIcon(this, "projectStructure.svg", 16));
+        outputWindow.setIcon(Util.getSvgIcon(this, "console.svg", 16));
     }
 
     private void refreshTextAreaIcon(int icon, String resource) {
         Action action = RSyntaxTextArea.getAction(icon);
-        action.putValue(Action.SMALL_ICON, Util.getSvgIcon(resource, 16));
+        action.putValue(Action.SMALL_ICON, Util.getSvgIcon(this, resource, 16));
     }
 
     private void refreshTitle() {

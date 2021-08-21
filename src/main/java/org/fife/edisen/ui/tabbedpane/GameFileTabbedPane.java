@@ -175,7 +175,7 @@ public class GameFileTabbedPane extends JTabbedPane {
         }
 
         if (image.endsWith(".svg")) {
-            return Util.getSvgIcon(getIconPath(image), 16);
+            return Util.getSvgIcon(edisen, getIconPath(image), 16);
         }
         else {
             return new ImageIcon(getClass().getResource(getIconPath(image)));

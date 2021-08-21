@@ -26,7 +26,7 @@ public final class Util {
     public static Image getDarkLookAndFeelContentAssistImage() {
 
         Image image = null;
-        InputStream in = Util.class.getResourceAsStream("images/dark/intentionBulb.svg");
+        InputStream in = Util.class.getResourceAsStream("/images/dark/intentionBulb.svg");
 
         try {
             image = ImageTranscodingUtil.rasterize("bulb", in, 12, 12);
@@ -63,12 +63,12 @@ public final class Util {
         return "D:/emulation/nes/emulators/nestopia/nestopia.exe ${rom}";
     }
 
-    public static Icon getSvgIcon(String resource, int size) {
+    public static Icon getSvgIcon(Edisen edisen, String resource, int size) {
 
         // Trust fully-qualified resources.  Non-fully qualified - assume
         // they must match the theme.
         if (!resource.startsWith("/")) {
-            Theme theme = Edisen.get().getTheme();
+            Theme theme = edisen.getTheme();
             resource = "/images/" + theme.getImageRoot() + "/" + resource;
         }
 
@@ -88,14 +88,13 @@ public final class Util {
      * Sets an icon on an action in the application.  An icon is picked that provides the
      * best contrast for the current theme.  This is called in response to theme changes.
      *
+     * @param edisen The parent application.
      * @param actionKey The action to update.
      * @param resource The new image.
      */
     @SuppressWarnings("unchecked")
-    public static void setIcon(String actionKey, String resource) {
-
-        Edisen edisen = Edisen.get();
+    public static void setIcon(Edisen edisen, String actionKey, String resource) {
         AppAction<Edisen> action = (AppAction<Edisen>)edisen.getAction(actionKey);
-        action.setIcon(getSvgIcon(resource, 16));
+        action.setIcon(getSvgIcon(edisen, resource, 16));
     }
 }
