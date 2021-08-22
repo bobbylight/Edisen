@@ -284,7 +284,6 @@ public class GameFileTabbedPane extends JTabbedPane {
         @Override
         public void propertyChange(PropertyChangeEvent e) {
 
-
             switch (e.getPropertyName()) {
                 case Edisen.PROPERTY_PROJECT -> openInitialTabsForProject((EdisenProject)e.getNewValue());
                 case TabbedPaneContent.PROPERTY_DIRTY -> refreshTabName((TabbedPaneContent)e.getSource());

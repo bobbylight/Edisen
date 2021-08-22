@@ -174,15 +174,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         super.doExit();
     }
 
-    /**
-     * Returns the singleton instance of this application.
-     *
-     * @return The singleton instance of this application.
-     */
-    public static Edisen get() {
-        return (Edisen)JFrame.getFrames()[0];
-    }
-
     public String getAssemblerCommandLine() {
         return project.getAssemblerCommandLine();
     }

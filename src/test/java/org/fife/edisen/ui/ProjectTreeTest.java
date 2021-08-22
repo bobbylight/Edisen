@@ -1,13 +1,12 @@
 package org.fife.edisen.ui;
 
+import org.fife.edisen.TestUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
-import java.awt.*;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,8 +34,7 @@ public class ProjectTreeTest {
     @Disabled("Bug in FileSystemTree.setSelectedFile - does not work if not showing FS roots")
     public void testPossiblyOpenFileForEditing_fileSelected() throws IOException {
 
-        File file = File.createTempFile("edisenTest", ".tmp");
-        file.deleteOnExit();
+        File file = TestUtil.createTempFile();
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
         Path projectRoot = file.getParentFile().toPath();

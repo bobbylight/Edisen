@@ -1,39 +1,32 @@
 package org.fife.edisen.ui;
 
-import org.fife.ui.rtextarea.RTextArea;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 
 import javax.swing.*;
+
+import java.util.ResourceBundle;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SwingRunnerExtension.class)
 public class UtilTest {
 
     private Edisen edisen;
-    private EdisenPrefs prefs;
-
-    @BeforeEach
-    public void setUp() {
-        prefs = new EdisenPrefs();
-    }
-
-    @AfterEach
-    public void tearDown() {
-        if (edisen != null) {
-            edisen.dispose();
-        }
-    }
 
     private void createEdisen() {
 
-        new RTextArea(); // Yuck, needed for initialization
+        edisen = Mockito.mock(Edisen.class);
 
-        EdisenAppContext context = new EdisenAppContext();
-        EdisenPrefs prefs = new EdisenPrefs();
-        edisen = new Edisen(context, prefs);
+        ResourceBundle msg = ResourceBundle.getBundle("org.fife.edisen.ui.Edisen");
+        doReturn(msg).when(edisen).getResourceBundle();
+        doReturn(Theme.NORD).when(edisen).getTheme();
+
+        Action action = new Actions.BuildAction(edisen);
+        doReturn(action).when(edisen).getAction(anyString());
     }
 
     @Test
@@ -75,8 +68,6 @@ public class UtilTest {
     public void testSetIcon() {
 
         createEdisen();
-        edisen.preCreateActions(prefs, null);
-        edisen.createActions(prefs);
 
         Action a = edisen.getAction(Edisen.EXIT_ACTION_KEY);
         Assertions.assertNull(a.getValue(Action.SMALL_ICON));

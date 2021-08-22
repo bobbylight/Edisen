@@ -28,6 +28,9 @@ class AboutDialog extends EscapableDialog {
 
     AboutDialog(Edisen parent) {
         super(parent);
+        if (parent != null) {
+            createUI(parent);
+        }
     }
 
     private static void addLabelValuePairs(Container parent, ComponentOrientation o, String... pairs) {
@@ -74,7 +77,9 @@ class AboutDialog extends EscapableDialog {
     }
 
     protected void createUI(Edisen parent) {
+
         this.app = parent;
+        uiCreated = true;
 
         JPanel cp = new ResizableFrameContentPane(new BorderLayout());
         cp.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
@@ -151,10 +156,8 @@ class AboutDialog extends EscapableDialog {
      * @param app The parent application.
      */
     public void setApplication(Edisen app) {
-        this.app = app;
         if (!uiCreated) {
             createUI(app);
-            uiCreated = true;
         }
     }
 

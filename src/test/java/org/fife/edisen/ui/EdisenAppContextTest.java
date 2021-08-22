@@ -1,5 +1,6 @@
 package org.fife.edisen.ui;
 
+import org.fife.edisen.TestUtil;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,12 +22,6 @@ public class EdisenAppContextTest {
     @BeforeEach
     public void setUp() {
         context = new EdisenAppContext();
-    }
-
-    private static File createTempFile() throws IOException {
-        File file = File.createTempFile("edisenUnitTest", ".tmp");
-        file.deleteOnExit();
-        return file;
     }
 
     @Test
@@ -56,7 +51,7 @@ public class EdisenAppContextTest {
         Edisen mockEdisen = Mockito.mock(Edisen.class);
         EdisenPrefs prefs = new EdisenPrefs();
 
-        File tempFile = createTempFile();
+        File tempFile = TestUtil.createTempFile();
 
         // Can use the same set for files and projects
         List<FileLocation> mockFileLocations = Collections.singletonList(FileLocation.create(tempFile));
@@ -82,7 +77,7 @@ public class EdisenAppContextTest {
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
         // Can use the same set for files and projects
-        File tempFile = createTempFile();
+        File tempFile = TestUtil.createTempFile();
         List<FileLocation> mockFileLocations = Collections.singletonList(FileLocation.create(tempFile));
 
         doReturn(mockFileLocations).when(mockEdisen).getRecentFiles();

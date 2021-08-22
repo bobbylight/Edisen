@@ -1,12 +1,12 @@
 package org.fife.edisen.ui;
 
+import org.fife.edisen.TestUtil;
 import org.fife.edisen.model.EdisenProject;
-import org.fife.ui.rtextarea.RTextArea;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 
 import java.beans.PropertyChangeEvent;
 import java.io.File;
@@ -23,25 +23,11 @@ public class RecentFileManagerTest {
 
     @BeforeEach
     public void setUp() {
-
-        new RTextArea(); // Yuck, needed for initialization
-
-        EdisenAppContext context = new EdisenAppContext();
-        EdisenPrefs prefs = new EdisenPrefs();
-        edisen = new Edisen(context, prefs);
-    }
-
-    @AfterEach
-    public void tearDown() {
-        if (edisen != null) {
-            edisen.dispose();
-        }
+        edisen = Mockito.mock(Edisen.class);
     }
 
     private static String createTempFile() throws IOException {
-        File file = File.createTempFile("edisenUnitTest", ".tmp");
-        file.deleteOnExit();
-        return file.getAbsolutePath();
+        return TestUtil.createTempFile().getAbsolutePath();
     }
 
     @Test

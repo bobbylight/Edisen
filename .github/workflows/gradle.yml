@@ -27,7 +27,7 @@ jobs:
       #run: ./gradlew build --warning-mode all
       uses: GabrielBB/xvfb-action@v1
       with:
-        run: ./gradlew build --warning-mode all --stacktrace
+        run: ./gradlew build --warning-mode all
         working-directory: ./ #optional
 
     - name: Submit coverage data to codecov
