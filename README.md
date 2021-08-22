@@ -1,6 +1,7 @@
 # edisen
 ![Java Build](https://github.com/bobbylight/Edisen/actions/workflows/gradle.yml/badge.svg)
 ![Java Build](https://github.com/bobbylight/Edisen/actions/workflows/codeql-analysis.yml/badge.svg)
+[![codecov](https://codecov.io/gh/bobbylight/Edisen/branch/master/graph/badge.svg?token=3X56SWUX7Z)](https://codecov.io/gh/bobbylight/Edisen)
 
 The beginnings of a simple NES IDE.
 
