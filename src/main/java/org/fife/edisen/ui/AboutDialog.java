@@ -33,21 +33,6 @@ class AboutDialog extends EscapableDialog {
         }
     }
 
-    private static void addLabelValuePairs(Container parent, ComponentOrientation o, String... pairs) {
-        if (o.isLeftToRight()) {
-            for (int i = 0; i < pairs.length; i += 2) {
-                parent.add(new JLabel(pairs[i]));
-                parent.add(new SelectableLabel(pairs[i + 1]));
-            }
-        }
-        else {
-            for (int i = 0; i < pairs.length; i += 2) {
-                parent.add(new SelectableLabel(pairs[i]));
-                parent.add(new JLabel(pairs[i + 1]));
-            }
-        }
-    }
-
     private Container createTitleAndDescPanel(Theme theme) {
 
         Color descAreaBackground = theme == Theme.LIGHT ? Color.WHITE : new Color(48, 50, 52);
@@ -92,7 +77,7 @@ class AboutDialog extends EscapableDialog {
 
         SpringLayout sl = new SpringLayout();
         JPanel temp = new JPanel(sl);
-        addLabelValuePairs(temp, getComponentOrientation(),
+        Util.addLabelValuePairs(temp, getComponentOrientation(),
             app.getString("Dialog.About.InstallRoot"), app.getInstallLocation(),
             app.getString("Desc.About.BuildVersion"), app.getVersionString(),
             app.getString("Desc.About.BuildDate"), getBuildDateString());

@@ -2,7 +2,6 @@ package org.fife.edisen.ui.options;
 
 import org.fife.edisen.ui.Edisen;
 import org.fife.ui.OptionsDialogPanel;
-import org.fife.ui.SelectableLabel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,30 +21,6 @@ abstract class AbstractEdisenOptionPanel extends OptionsDialogPanel {
     AbstractEdisenOptionPanel(Edisen parent, String titleKey) {
         this.parent = parent;
         setName(parent.getString(titleKey));
-    }
-
-    /**
-     * Adds pairs of components to a parent container using {@code SpringLayout}
-     * in a label/value layout, honoring the component orientation.
-     *
-     * @param parent The parent container to add to.
-     * @param o The component orientation.
-     * @param pairs The pairs of components to add.  This should be an even number
-     *        of components.
-     */
-    protected static void addLabelValuePairs(Container parent, ComponentOrientation o, Component... pairs) {
-        if (o.isLeftToRight()) {
-            for (int i = 0; i < pairs.length; i += 2) {
-                parent.add(pairs[i]);
-                parent.add(pairs[i + 1]);
-            }
-        }
-        else {
-            for (int i = 0; i < pairs.length; i += 2) {
-                parent.add(pairs[i]);
-                parent.add(pairs[i + 1]);
-            }
-        }
     }
 
     /**

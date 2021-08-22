@@ -3,6 +3,7 @@ package org.fife.edisen.ui.options;
 import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.Theme;
 import org.fife.edisen.ui.ThemeManager;
+import org.fife.edisen.ui.Util;
 import org.fife.ui.LabelValueComboBox;
 import org.fife.ui.UIUtil;
 
@@ -44,7 +45,7 @@ class UIOptionPanel extends AbstractEdisenOptionPanel {
         }
         themeCombo.addActionListener(listener);
 
-        addLabelValuePairs(appearancePanel, getComponentOrientation(),
+        Util.addLabelValuePairs(appearancePanel, getComponentOrientation(),
             themeLabel, themeCombo);
 
         UIUtil.makeSpringCompactGrid(appearancePanel,

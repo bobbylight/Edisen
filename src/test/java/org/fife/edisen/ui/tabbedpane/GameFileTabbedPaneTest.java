@@ -33,6 +33,108 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
+    public void testFocusActiveEditor() throws IOException {
+        Edisen edisen = TestUtil.mockEdisen();
+        GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
+        tabbedPane.openFile(TestUtil.createTempFile());
+        tabbedPane.focusActiveEditor();
+    }
+
+    @Test
+    public void testGetSearchListener_find_textFound() throws IOException {
+
+        Edisen edisen = TestUtil.mockEdisen();
+
+        GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
+
+        tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world"));
+        TextEditorPane textArea = tabbedPane.getCurrentTextArea();
+        textArea.setCaretPosition(0);
+
+        // Search for "world"
+        SearchContext sc = new SearchContext("world");
+        SearchEvent e = new SearchEvent(textArea, SearchEvent.Type.FIND, sc);
+        tabbedPane.getSearchListener().searchEvent(e);
+
+        // Verify the text was selected
+        Assertions.assertEquals(6, textArea.getSelectionStart());
+        Assertions.assertEquals(11, textArea.getSelectionEnd());
+        Assertions.assertEquals("world", tabbedPane.getSearchListener().getSelectedText());
+    }
+
+    @Test
+    public void testGetSearchListener_replace_textFound() throws IOException {
+
+        Edisen edisen = TestUtil.mockEdisen();
+
+        GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
+
+        tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world"));
+        TextEditorPane textArea = tabbedPane.getCurrentTextArea();
+        textArea.setCaretPosition(0);
+
+        // Search for "world"
+        SearchContext sc = new SearchContext("world");
+        sc.setReplaceWith("Bob");
+        SearchEvent e = new SearchEvent(textArea, SearchEvent.Type.REPLACE, sc);
+        tabbedPane.getSearchListener().searchEvent(e);
+
+        // Verify the text was updated
+        Assertions.assertEquals(9, textArea.getSelectionStart());
+        Assertions.assertEquals(9, textArea.getSelectionEnd());
+        Assertions.assertEquals("Hello Bob", textArea.getText().trim());
+        Assertions.assertNull(tabbedPane.getSearchListener().getSelectedText());
+    }
+
+    @Test
+    public void testGetSearchListener_replaceAll_textFound() throws IOException {
+
+        Edisen edisen = TestUtil.mockEdisen();
+
+        GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
+
+        tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world world"));
+        TextEditorPane textArea = tabbedPane.getCurrentTextArea();
+        textArea.setCaretPosition(0);
+
+        // Search for "world"
+        SearchContext sc = new SearchContext("world");
+        sc.setReplaceWith("Bob");
+        SearchEvent e = new SearchEvent(textArea, SearchEvent.Type.REPLACE_ALL, sc);
+        tabbedPane.getSearchListener().searchEvent(e);
+
+        // Verify the text was updated
+        Assertions.assertEquals(14, textArea.getSelectionStart());
+        Assertions.assertEquals(14, textArea.getSelectionEnd());
+        Assertions.assertEquals("Hello Bob Bob", textArea.getText().trim());
+        Assertions.assertNull(tabbedPane.getSearchListener().getSelectedText());
+    }
+
+    @Test
+    public void testGetSearchListener_markAll_textFound() throws IOException {
+
+        Edisen edisen = TestUtil.mockEdisen();
+
+        GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
+
+        tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world world"));
+        TextEditorPane textArea = tabbedPane.getCurrentTextArea();
+        textArea.setCaretPosition(0);
+
+        // Search for "world"
+        SearchContext sc = new SearchContext("world");
+        sc.setMarkAll(true);
+        SearchEvent e = new SearchEvent(textArea, SearchEvent.Type.MARK_ALL, sc);
+        tabbedPane.getSearchListener().searchEvent(e);
+
+        // Verify the text was updated
+        Assertions.assertEquals(0, textArea.getSelectionStart());
+        Assertions.assertEquals(0, textArea.getSelectionEnd());
+        Assertions.assertEquals("Hello world world", textArea.getText().trim());
+        Assertions.assertNull(tabbedPane.getSearchListener().getSelectedText());
+    }
+
+    @Test
     public void testHasDirtyFiles_noFilesOpen() {
 
         Edisen edisen = TestUtil.mockEdisen();
@@ -132,100 +234,6 @@ public class GameFileTabbedPaneTest {
             content = r.readLine();
         }
         Assertions.assertEquals("Modified", content);
-    }
-
-    @Test
-    public void testGetSearchListener_find_textFound() throws IOException {
-
-        Edisen edisen = TestUtil.mockEdisen();
-
-        GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
-
-        tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world"));
-        TextEditorPane textArea = tabbedPane.getCurrentTextArea();
-        textArea.setCaretPosition(0);
-
-        // Search for "world"
-        SearchContext sc = new SearchContext("world");
-        SearchEvent e = new SearchEvent(textArea, SearchEvent.Type.FIND, sc);
-        tabbedPane.getSearchListener().searchEvent(e);
-
-        // Verify the text was selected
-        Assertions.assertEquals(6, textArea.getSelectionStart());
-        Assertions.assertEquals(11, textArea.getSelectionEnd());
-        Assertions.assertEquals("world", tabbedPane.getSearchListener().getSelectedText());
-    }
-
-    @Test
-    public void testGetSearchListener_replace_textFound() throws IOException {
-
-        Edisen edisen = TestUtil.mockEdisen();
-
-        GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
-
-        tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world"));
-        TextEditorPane textArea = tabbedPane.getCurrentTextArea();
-        textArea.setCaretPosition(0);
-
-        // Search for "world"
-        SearchContext sc = new SearchContext("world");
-        sc.setReplaceWith("Bob");
-        SearchEvent e = new SearchEvent(textArea, SearchEvent.Type.REPLACE, sc);
-        tabbedPane.getSearchListener().searchEvent(e);
-
-        // Verify the text was updated
-        Assertions.assertEquals(9, textArea.getSelectionStart());
-        Assertions.assertEquals(9, textArea.getSelectionEnd());
-        Assertions.assertEquals("Hello Bob", textArea.getText().trim());
-        Assertions.assertNull(tabbedPane.getSearchListener().getSelectedText());
-    }
-
-    @Test
-    public void testGetSearchListener_replaceAll_textFound() throws IOException {
-
-        Edisen edisen = TestUtil.mockEdisen();
-
-        GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
-
-        tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world world"));
-        TextEditorPane textArea = tabbedPane.getCurrentTextArea();
-        textArea.setCaretPosition(0);
-
-        // Search for "world"
-        SearchContext sc = new SearchContext("world");
-        sc.setReplaceWith("Bob");
-        SearchEvent e = new SearchEvent(textArea, SearchEvent.Type.REPLACE_ALL, sc);
-        tabbedPane.getSearchListener().searchEvent(e);
-
-        // Verify the text was updated
-        Assertions.assertEquals(14, textArea.getSelectionStart());
-        Assertions.assertEquals(14, textArea.getSelectionEnd());
-        Assertions.assertEquals("Hello Bob Bob", textArea.getText().trim());
-        Assertions.assertNull(tabbedPane.getSearchListener().getSelectedText());
-    }
-
-    @Test
-    public void testGetSearchListener_markAll_textFound() throws IOException {
-
-        Edisen edisen = TestUtil.mockEdisen();
-
-        GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
-
-        tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world world"));
-        TextEditorPane textArea = tabbedPane.getCurrentTextArea();
-        textArea.setCaretPosition(0);
-
-        // Search for "world"
-        SearchContext sc = new SearchContext("world");
-        sc.setMarkAll(true);
-        SearchEvent e = new SearchEvent(textArea, SearchEvent.Type.MARK_ALL, sc);
-        tabbedPane.getSearchListener().searchEvent(e);
-
-        // Verify the text was updated
-        Assertions.assertEquals(0, textArea.getSelectionStart());
-        Assertions.assertEquals(0, textArea.getSelectionEnd());
-        Assertions.assertEquals("Hello world world", textArea.getText().trim());
-        Assertions.assertNull(tabbedPane.getSearchListener().getSelectedText());
     }
 
     @Test

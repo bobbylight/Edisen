@@ -60,28 +60,32 @@ public class Actions {
         @Override
         public void actionPerformed(ActionEvent e) {
 
-            Edisen app = getApplication();
-
             // TODO: Cache this and kill it if the user manually stops the process
             GUIWorkerThread<Object> thread = new GUIWorkerThread<>() {
                 @Override
                 public Object construct() {
-
-                    ProcessRunner pr = createProcessRunner(app.getAssemblerCommandLine(), "Log.CompilingAt");
-                    pr.run();
-
-                    if (pr.getReturnCode() != 0 || pr.getLastError() != null) {
-                        return null;
-                    }
-
-                    pr = createProcessRunner(app.getLinkerCommandLine(), "Log.LinkingAt");
-                    pr.run();
-
-                    return null;
+                    return compileAndLink();
                 }
             };
 
             thread.start();
+        }
+
+        protected Object compileAndLink() {
+
+            Edisen app = getApplication();
+
+            ProcessRunner pr = createProcessRunner(app.getAssemblerCommandLine(), "Log.CompilingAt");
+            pr.run();
+
+            if (pr.getReturnCode() != 0 || pr.getLastError() != null) {
+                return null;
+            }
+
+            pr = createProcessRunner(app.getLinkerCommandLine(), "Log.LinkingAt");
+            pr.run();
+
+            return null;
         }
 
         private ProcessRunner createProcessRunner(String commandLine, String logKey) {
@@ -138,7 +142,6 @@ public class Actions {
         public void actionPerformed(ActionEvent e) {
 
             Edisen app = getApplication();
-            EdisenPrefs prefs = app.getPreferences();
 
             String rom = "./game.nes"; // "relative path" needed for Windows Nestopia
 

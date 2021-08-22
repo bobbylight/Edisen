@@ -1,5 +1,6 @@
 package org.fife.edisen.ui;
 
+import org.fife.ui.OptionsDialog;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +11,8 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SwingRunnerExtension.class)
 public class OutputTextPaneTest {
@@ -147,6 +150,21 @@ public class OutputTextPaneTest {
         Action clearAction = ((JMenuItem)textPane.createPopupMenu().getComponent(2)).getAction();
         clearAction.actionPerformed(null);
         Assertions.assertTrue(textPane.getText().isEmpty());
+    }
+
+    @Test
+    public void testMenu_configureAction() {
+
+        Edisen mockEdisen = Mockito.mock(Edisen.class);
+        OptionsDialog optionsDialog = Mockito.mock(OptionsDialog.class);
+        doReturn(optionsDialog).when(mockEdisen).getOptionsDialog();
+
+        OutputTextPane textPane = new OutputTextPane(mockEdisen);
+
+        // Note: This assumes menu item order
+        Action configureAction = ((JMenuItem)textPane.createPopupMenu().getComponent(4)).getAction();
+        configureAction.actionPerformed(null);
+        verify(optionsDialog, times(1)).setVisible(eq(true));
     }
 
     @Test

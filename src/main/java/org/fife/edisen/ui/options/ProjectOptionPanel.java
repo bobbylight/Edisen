@@ -3,21 +3,16 @@ package org.fife.edisen.ui.options;
 import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.Util;
 import org.fife.rsta.ui.AssistanceIconPanel;
-import org.fife.rsta.ui.search.AbstractSearchDialog;
 import org.fife.ui.ImageTranscodingUtil;
 import org.fife.ui.UIUtil;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
 import org.fife.ui.autocomplete.DefaultCompletionProvider;
-import org.fife.ui.autocomplete.EmptyIcon;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ResourceBundle;
@@ -85,7 +80,7 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
         emuCommandLineField.getDocument().addDocumentListener(listener);
         JPanel emuFieldPanel = createAssistancePanel(emuCommandLineField);
 
-        addLabelValuePairs(generalPanel, getComponentOrientation(),
+        Util.addLabelValuePairs(generalPanel, getComponentOrientation(),
             assemblerCommandLineLabel, assemblerFieldPanel,
             linkerCommandLineLabel, linkerFieldPanel,
             emuCommandLineLabel, emuFieldPanel);
