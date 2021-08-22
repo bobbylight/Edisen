@@ -17,7 +17,8 @@ public class ChrRomViewerTest {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
-        File file = TestUtil.createTempFile(".tmp", "Dummy PNG data");
+        File file = TestUtil.createTempFile(".chr");
+        TestUtil.copyResourceToFile("/chr/test.chr", file);
 
         ChrRomViewer viewer = new ChrRomViewer(mockEdisen, file);
 

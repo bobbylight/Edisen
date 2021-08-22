@@ -19,6 +19,22 @@ public class TestUtil {
     private static final String DEFAULT_PREFIX = "edisenUnitTest";
     private static final String DEFAULT_SUFFIX = ".s";
 
+    public static void copyResourceToFile(String resource, File file) throws IOException {
+
+        try (BufferedInputStream bin = new BufferedInputStream(TestUtil.class.getResourceAsStream(resource))) {
+
+            byte[] buf = new byte[4096];
+            int len;
+
+            try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+                while ((len = bin.read(buf)) > -1) {
+                    bos.write(buf, 0, len);
+                }
+                bos.flush();
+            }
+        }
+    }
+
     public static File createTempFile() throws IOException {
         return createTempFile(DEFAULT_SUFFIX, null);
     }
