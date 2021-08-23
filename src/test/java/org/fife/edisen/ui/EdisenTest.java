@@ -291,6 +291,5 @@ public class EdisenTest {
         public void displayException(Frame owner, Throwable t, String desc) {
             t.printStackTrace();
         }
-
     }
 }
