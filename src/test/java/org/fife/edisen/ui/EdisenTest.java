@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -29,7 +30,7 @@ public class EdisenTest {
         EdisenAppContext context = new EdisenAppContext();
         EdisenPrefs prefs = new EdisenPrefs();
 
-        return new Edisen(context, prefs);
+        return new TestableEdisen(context, prefs);
     }
 
     @Test
@@ -39,28 +40,24 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testCreateMenuBar() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.createMenuBar(edisen.getPreferences()));
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testCreateSplashScreen() {
         edisen = createEdisen();
         Assertions.assertNull(edisen.createSplashScreen());
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testCreateStatusBar() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.createStatusBar(edisen.getPreferences()));
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testCreateToolBar() {
         edisen = createEdisen();
         Assertions.assertNull(edisen.createToolBar(edisen.getPreferences()));
@@ -79,7 +76,6 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetSetAssemblerCommandLine() throws IOException {
 
         edisen = createEdisen();
@@ -101,7 +97,6 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetSetEmulatorCommandLine() throws IOException {
 
         edisen = createEdisen();
@@ -123,14 +118,12 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetFileChooser() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.getFileChooser());
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetSetLinkerCommandLine() throws IOException {
 
         edisen = createEdisen();
@@ -152,21 +145,18 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetOptionsDialog() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.getOptionsDialog());
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetPreferences() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.getPreferences());
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetProject() throws IOException {
 
         edisen = createEdisen();
@@ -185,42 +175,36 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetRecentFiles() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.getRecentFiles());
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetRecentProjects() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.getRecentProjects());
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetResourceBundleClassName() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.getResourceBundleClassName());
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetSelectedTabIndex() {
         edisen = createEdisen();
         Assertions.assertEquals(0, edisen.getSelectedTabIndex());
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetTheme() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.getTheme());
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testGetVersionString() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.getVersionString());
@@ -233,14 +217,12 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testLog() {
         edisen = createEdisen();
         edisen.log("stdout", "Test message");
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testRefreshLookAndFeel() {
         edisen = createEdisen();
         Assertions.assertNotEquals(Theme.NORD, edisen.getTheme());
@@ -249,7 +231,6 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testSaveAllDirtyFiles_success() throws IOException {
 
         edisen = createEdisen();
@@ -272,7 +253,6 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Doesn't play nicely running in GitHub Actions environment")
     public void testSaveCurrentFile() throws IOException {
 
         edisen = createEdisen();
@@ -296,5 +276,21 @@ public class EdisenTest {
     @Disabled("Figure out how to implement")
     public void testSaveCurrentFileAs() {
         // Do nothing (comment for Sonar)
+    }
+
+    /**
+     * Overridden to not display an error dialog since that doesn't play nicely in CI builds.
+     */
+    static class TestableEdisen extends Edisen {
+
+        TestableEdisen(EdisenAppContext context, EdisenPrefs prefs) {
+            super(context, prefs);
+        }
+
+        @Override
+        public void displayException(Frame owner, Throwable t, String desc) {
+            t.printStackTrace();
+        }
+
     }
 }

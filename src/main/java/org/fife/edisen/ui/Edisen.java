@@ -11,6 +11,7 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.*;
 import org.fife.ui.SplashScreen;
 import org.fife.ui.app.AbstractPluggableGUIApplication;
+import org.fife.ui.app.ExceptionDialog;
 import org.fife.ui.app.GUIApplication;
 import org.fife.ui.dockablewindows.DockableWindow;
 import org.fife.ui.dockablewindows.DockableWindowConstants;
