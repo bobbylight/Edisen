@@ -69,7 +69,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     public Edisen(EdisenAppContext context, EdisenPrefs prefs) {
         super(context, "Edisen", prefs);
-        this.theme = Theme.fromKey(prefs.theme);
     }
 
     public boolean closeTab(int index) {
@@ -92,6 +91,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     @Override
     protected void createActions(EdisenPrefs prefs) {
+
+        this.theme = Theme.fromKey(prefs.theme);
 
         super.createActions(prefs);
 
@@ -144,19 +145,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         return null;
     }
 
-    void find() {
-
-        if (searchContext == null) {
-            searchContext = new SearchContext();
-        }
-
-        if (findDialog == null) {
-            findDialog = new FindDialog(this, tabbedPane.getSearchListener());
-        }
-
-        findDialog.setVisible(true);
-    }
-
     @Override
     public void doExit() {
 
@@ -172,6 +160,19 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         savePreferences();
         super.doExit();
+    }
+
+    void find() {
+
+        if (searchContext == null) {
+            searchContext = new SearchContext();
+        }
+
+        if (findDialog == null) {
+            findDialog = new FindDialog(this, tabbedPane.getSearchListener());
+        }
+
+        findDialog.setVisible(true);
     }
 
     public String getAssemblerCommandLine() {
@@ -460,6 +461,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     @Override
     protected void preCreateActions(EdisenPrefs prefs, SplashScreen splashScreen) {
         this.prefs = prefs;
+        this.theme = Theme.fromKey(prefs.theme); // Needed by the actions to pick out their icons
         setIcons();
     }
 

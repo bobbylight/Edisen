@@ -1,5 +1,7 @@
 package org.fife.edisen.ui;
 
+import javax.swing.*;
+
 /**
  * Program entry point.
  */
@@ -19,6 +21,6 @@ public final class Main {
      */
     public static void main(String[] args) {
         EdisenAppContext context = new EdisenAppContext();
-        context.startApplication(args);
+        SwingUtilities.invokeLater(() -> context.createApplication(args).setVisible(true));
     }
 }

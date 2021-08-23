@@ -28,7 +28,7 @@ public class EdisenAppContext extends AppContext<Edisen, EdisenPrefs> {
 
 
     @Override
-    protected Edisen createApplication(String[] filesToOpen, EdisenPrefs prefs) {
+    protected Edisen createApplicationImpl(String[] filesToOpen, EdisenPrefs prefs) {
         UIManager.put("TitlePane.unifiedBackground", true);
         return new Edisen(this, prefs);
     }
