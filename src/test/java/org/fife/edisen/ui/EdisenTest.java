@@ -3,6 +3,7 @@ package org.fife.edisen.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fife.edisen.TestUtil;
 import org.fife.edisen.model.EdisenProject;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,15 @@ import java.io.IOException;
 @ExtendWith(SwingRunnerExtension.class)
 public class EdisenTest {
 
+    private Edisen edisen;
+
+    @AfterEach
+    public void tearDown() {
+        if (edisen != null) {
+            edisen.dispose();
+        }
+    }
+
     private static Edisen createEdisen() {
 
         EdisenAppContext context = new EdisenAppContext();
@@ -24,31 +34,31 @@ public class EdisenTest {
 
     @Test
     public void testCreateAboutDialog() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.createAboutDialog());
     }
 
     @Test
     public void testCreateMenuBar() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.createMenuBar(edisen.getPreferences()));
     }
 
     @Test
     public void testCreateSplashScreen() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNull(edisen.createSplashScreen());
     }
 
     @Test
     public void testCreateStatusBar() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.createStatusBar(edisen.getPreferences()));
     }
 
     @Test
     public void testCreateToolBar() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNull(edisen.createToolBar(edisen.getPreferences()));
     }
 
@@ -67,7 +77,7 @@ public class EdisenTest {
     @Test
     public void testGetSetAssemblerCommandLine() throws IOException {
 
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -88,7 +98,7 @@ public class EdisenTest {
     @Test
     public void testGetSetEmulatorCommandLine() throws IOException {
 
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -108,14 +118,14 @@ public class EdisenTest {
 
     @Test
     public void testGetFileChooser() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.getFileChooser());
     }
 
     @Test
     public void testGetSetLinkerCommandLine() throws IOException {
 
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -135,20 +145,20 @@ public class EdisenTest {
 
     @Test
     public void testGetOptionsDialog() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.getOptionsDialog());
     }
 
     @Test
     public void testGetPreferences() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.getPreferences());
     }
 
     @Test
     public void testGetProject() throws IOException {
 
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -165,37 +175,37 @@ public class EdisenTest {
 
     @Test
     public void testGetRecentFiles() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.getRecentFiles());
     }
 
     @Test
     public void testGetRecentProjects() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.getRecentProjects());
     }
 
     @Test
     public void testGetResourceBundleClassName() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.getResourceBundleClassName());
     }
 
     @Test
     public void testGetSelectedTabIndex() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertEquals(0, edisen.getSelectedTabIndex());
     }
 
     @Test
     public void testGetTheme() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.getTheme());
     }
 
     @Test
     public void testGetVersionString() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotNull(edisen.getVersionString());
     }
 
@@ -207,13 +217,13 @@ public class EdisenTest {
 
     @Test
     public void testLog() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         edisen.log("stdout", "Test message");
     }
 
     @Test
     public void testRefreshLookAndFeel() {
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
         Assertions.assertNotEquals(Theme.NORD, edisen.getTheme());
         edisen.refreshLookAndFeel(Theme.NORD);
         Assertions.assertEquals(Theme.NORD, edisen.getTheme());
@@ -222,7 +232,7 @@ public class EdisenTest {
     @Test
     public void testSaveAllDirtyFiles_success() throws IOException {
 
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -244,7 +254,7 @@ public class EdisenTest {
     @Test
     public void testSaveCurrentFile() throws IOException {
 
-        Edisen edisen = createEdisen();
+        edisen = createEdisen();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -266,6 +276,4 @@ public class EdisenTest {
     public void testSaveCurrentFileAs() {
         // Do nothing (comment for Sonar)
     }
-
-
 }
