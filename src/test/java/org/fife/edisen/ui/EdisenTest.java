@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 
 @ExtendWith(SwingRunnerExtension.class)
+@Disabled("Doesn't play nicely running in GitHub Actions environment")
 public class EdisenTest {
 
     private Edisen edisen;
