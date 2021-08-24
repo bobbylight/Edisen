@@ -3,31 +3,33 @@ package org.fife.edisen.ui;
 import org.fife.edisen.model.EdisenProject;
 import org.fife.ui.rtextfilechooser.FileSystemTree;
 
+import javax.swing.*;
 import javax.swing.tree.TreePath;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.nio.file.Path;
 
 /**
  * A tree view that shows all files in the open project.
  */
-class ProjectTree extends FileSystemTree {
+class ProjectTree extends JPanel {
 
     private final Edisen edisen;
+    private final FileSystemTree tree;
+    private final NoProjectLoadedPanel nothingLoadedPanel;
 
-    ProjectTree(Edisen edisen, Path projectRoot) {
+    ProjectTree(Edisen edisen) {
 
-        // Note the initial project root isn't actually used, but that's OK
-        super(projectRoot.toFile());
         this.edisen = edisen;
-        setRootVisible(false);
-        setShowsRootHandles(false);
 
-        TreePath path = getPathForRow(0);
-        setExpandedState(path, true);
+        tree = new FileSystemTree();
+        tree.setRootVisible(false);
+        tree.setShowsRootHandles(false);
+
+        nothingLoadedPanel = new NoProjectLoadedPanel();
+        add(nothingLoadedPanel);
 
         Listener listener = new Listener();
         addMouseListener(listener);
@@ -35,15 +37,27 @@ class ProjectTree extends FileSystemTree {
     }
 
     void possiblyOpenFileForEditing() {
-        File selection = getSelectedFile();
+        File selection = tree.getSelectedFile();
         if (selection != null) {
             edisen.openFileForEditing(selection);
         }
     }
 
     private void showProject(EdisenProject project) {
-        File projectRoot = project.getProjectFile().getParent().toFile();
-        setRoot(projectRoot);
+
+        if (project != null) {
+            remove(nothingLoadedPanel);
+            add(tree);
+            File projectRoot = project.getProjectFile().getParent().toFile();
+            tree.setRoot(projectRoot);
+        }
+        else {
+            remove(tree);
+            add(nothingLoadedPanel);
+        }
+
+        revalidate();
+        repaint();
     }
 
     private class Listener extends MouseAdapter implements PropertyChangeListener {
@@ -61,6 +75,13 @@ class ProjectTree extends FileSystemTree {
             if (Edisen.PROPERTY_PROJECT.equals(e.getPropertyName())) {
                 showProject((EdisenProject)e.getNewValue());
             }
+        }
+    }
+
+    class NoProjectLoadedPanel extends JPanel {
+
+        NoProjectLoadedPanel() {
+            add(new JLabel("Nothing loaded"));
         }
     }
 }

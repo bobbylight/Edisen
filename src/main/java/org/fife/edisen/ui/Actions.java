@@ -19,11 +19,13 @@ import java.util.List;
 public class Actions {
 
     public static final String CLOSE_ACTION_KEY = "closeAction";
+    public static final String CLOSE_PROJECT_ACTION_KEY = "closeProjectAction";
     public static final String COMPILE_ACTION_KEY = "compileAction";
     public static final String EMULATE_ACTION_KEY = "emulateAction";
     public static final String FIND_ACTION_KEY = "findAction";
     public static final String GOTO_ACTION_KEY = "goToAction";
     public static final String OPEN_ACTION_KEY = "openAction";
+    public static final String OPEN_PROJECT_ACTION_KEY = "openProjectAction";
     public static final String OPTIONS_ACTION_KEY = "optionsAction";
     public static final String REPLACE_ACTION_KEY = "replaceAction";
     public static final String SAVE_ACTION_KEY = "saveAction";
@@ -37,18 +39,6 @@ public class Actions {
      */
     private Actions() {
         // Do nothing (comment for Sonar)
-    }
-
-    public static class CloseAction extends AppAction<Edisen> {
-
-        public CloseAction(Edisen app) {
-            super(app, "Action.Close");
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            getApplication().closeTab(getApplication().getSelectedTabIndex());
-        }
     }
 
     public static class BuildAction extends AppAction<Edisen> {
@@ -129,6 +119,30 @@ public class Actions {
             });
 
             return pr;
+        }
+    }
+
+    public static class CloseAction extends AppAction<Edisen> {
+
+        public CloseAction(Edisen app) {
+            super(app, "Action.Close");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getApplication().closeTab(getApplication().getSelectedTabIndex());
+        }
+    }
+
+    public static class CloseProjectAction extends AppAction<Edisen> {
+
+        public CloseProjectAction(Edisen app) {
+            super(app, "Action.CloseProject");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getApplication().openFile(null);
         }
     }
 
@@ -215,7 +229,19 @@ public class Actions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            getApplication().openProject();
+            getApplication().openFileViaFileChooser();
+        }
+    }
+
+    public static class OpenProjectAction extends AppAction<Edisen> {
+
+        public OpenProjectAction(Edisen app) {
+            super(app, "Action.OpenProject");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            getApplication().openProjectViaFileChooser();
         }
     }
 

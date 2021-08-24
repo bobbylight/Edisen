@@ -17,7 +17,8 @@ public class CodeEditorTabbedPaneContentTest {
         File file = TestUtil.createTempFile();
 
         CodeEditorTabbedPaneContent content = new CodeEditorTabbedPaneContent(edisen, file);
-        Assertions.assertEquals(file, content.getFile());
+        // Canonical test needed on OS X
+        Assertions.assertEquals(file.getCanonicalPath(), content.getFile().getCanonicalPath());
     }
 
     @Test

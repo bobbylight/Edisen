@@ -30,11 +30,12 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
         JMenu fileMenu = createMenu(msg, "Menu.File");
         add(fileMenu);
 
-        fileMenu.add(createMenuItem(edisen.getAction(Actions.OPEN_ACTION_KEY)));
+        fileMenu.add(createMenuItem(edisen.getAction(Actions.OPEN_PROJECT_ACTION_KEY)));
+        fileMenu.add(createMenuItem(edisen.getAction(Actions.CLOSE_PROJECT_ACTION_KEY)));
         fileMenu.addSeparator();
+        fileMenu.add(createMenuItem(edisen.getAction(Actions.OPEN_ACTION_KEY)));
         fileMenu.add(createMenuItem(edisen.getAction(Actions.SAVE_ACTION_KEY)));
         fileMenu.add(createMenuItem(edisen.getAction(Actions.SAVE_AS_ACTION_KEY)));
-        fileMenu.addSeparator();
         fileMenu.add(createMenuItem(edisen.getAction(Actions.CLOSE_ACTION_KEY)));
         fileMenu.addSeparator();
 
@@ -155,7 +156,9 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
 
             case Edisen.PROPERTY_PROJECT:
                 EdisenProject project = (EdisenProject)e.getNewValue();
-                addProjectToProjectHistory(project.getProjectFile().toString());
+                if (project != null) { // Ensure they're not closing a project
+                    addProjectToProjectHistory(project.getProjectFile().toString());
+                }
                 break;
 
             case Edisen.PROPERTY_FILE_OPENED:

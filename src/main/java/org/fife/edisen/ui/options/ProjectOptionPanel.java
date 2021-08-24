@@ -122,6 +122,10 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
     protected void doApplyImpl(Frame owner) {
 
         Edisen app = (Edisen) owner;
+        boolean projectOpen = app.getProject() != null;
+        if (!projectOpen) {
+            return;
+        }
 
         app.setAssemblerCommandLine(assemblerCommandLineField.getText());
         app.setEmulatorCommandLine(emuCommandLineField.getText());
@@ -141,6 +145,11 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
 
     @Override
     boolean restoreDefaults() {
+
+        boolean projectOpen = parent.getProject() != null;
+        if (!projectOpen) {
+            return false;
+        }
 
         String defaultAssemblerCommandLine = Util.getDefaultAssemblerCommandLine();
         String defaultLinkerCommandLine = Util.getDefaultLinkerCommandLine();
@@ -163,10 +172,23 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
     protected void setValuesImpl(Frame owner) {
 
         Edisen app = (Edisen) owner;
+        boolean projectOpen = app.getProject() != null;
 
-        assemblerCommandLineField.setText(app.getAssemblerCommandLine());
-        emuCommandLineField.setText(app.getEmulatorCommandLine());
-        linkCommandLineField.setText(app.getLinkerCommandLine());
+        if (projectOpen) {
+            assemblerCommandLineField.setText(app.getAssemblerCommandLine());
+            emuCommandLineField.setText(app.getEmulatorCommandLine());
+            linkCommandLineField.setText(app.getLinkerCommandLine());
+        }
+        else {
+            assemblerCommandLineField.setText(null);
+            emuCommandLineField.setText(null);
+            linkCommandLineField.setText(null);
+        }
+
+        assemblerCommandLineField.setEnabled(projectOpen);
+        emuCommandLineField.setEnabled(projectOpen);
+        linkCommandLineField.setEnabled(projectOpen);
+        defaultsButton.setEnabled(projectOpen);
     }
 
     class Listener implements DocumentListener {

@@ -6,6 +6,7 @@ import org.fife.ui.rsyntaxtextarea.FileLocation;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,12 +61,17 @@ public class RecentFileManager implements PropertyChangeListener {
 		}
 
 		// If we already are remembering this file, move it to the "top."
-		int index = indexOf(file);
-		if (index > -1) {
-			FileLocation loc = files.remove(index);
-			files.add(0, loc);
-			return;
-		}
+        try {
+            int index = indexOf(file);
+            if (index > -1) {
+                FileLocation loc = files.remove(index);
+                files.add(0, loc);
+                return;
+            }
+        } catch (IOException ioe) {
+            edisen.displayException(ioe);
+            return;
+        }
 
 		// Add our new file to the "top" of remembered files.
 		FileLocation loc;
@@ -106,13 +112,13 @@ public class RecentFileManager implements PropertyChangeListener {
 	 * @return The index of the file, or <code>-1</code> if it is not
 	 *         currently in the list.
 	 */
-	private int indexOf(String fileFullPath) {
+	private int indexOf(String fileFullPath) throws IOException {
 
-	    File file = new File(fileFullPath);
+	    String file = new File(fileFullPath).getCanonicalPath();
 
 		for (int i=0; i<files.size(); i++) {
 			FileLocation loc = files.get(i);
-			if (loc.isLocal() && file.equals(new File(loc.getFileFullPath()))) {
+			if (loc.isLocal() && file.equals(loc.getFileFullPath())) {
 				return i;
 			}
 		}
@@ -142,7 +148,9 @@ public class RecentFileManager implements PropertyChangeListener {
 
         if (Edisen.PROPERTY_PROJECT.equals(prop)) {
             EdisenProject project = (EdisenProject)e.getNewValue();
-            addFile(project.getProjectFile().toString());
+            if (project != null) { // Ensure they're not closing a project
+                addFile(project.getProjectFile().toString());
+            }
         }
 
     }

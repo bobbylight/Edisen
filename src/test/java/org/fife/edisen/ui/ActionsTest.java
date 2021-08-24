@@ -84,12 +84,12 @@ public class ActionsTest {
     }
 
     @Test
-    public void testOpenAction() {
+    public void testOpenProjectAction() {
 
         Edisen edisen = TestUtil.mockEdisen();
 
-        new Actions.OpenAction(edisen).actionPerformed(null);
-        verify(edisen, times(1)).openProject();
+        new Actions.OpenProjectAction(edisen).actionPerformed(null);
+        verify(edisen, times(1)).openProjectViaFileChooser();
     }
 
     @Test

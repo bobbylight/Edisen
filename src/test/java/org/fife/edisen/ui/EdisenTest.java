@@ -195,7 +195,7 @@ public class EdisenTest {
     @Test
     public void testGetSelectedTabIndex() {
         edisen = createEdisen();
-        Assertions.assertEquals(0, edisen.getSelectedTabIndex());
+        Assertions.assertEquals(-1, edisen.getSelectedTabIndex());
     }
 
     @Test

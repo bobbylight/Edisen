@@ -11,7 +11,6 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.*;
 import org.fife.ui.SplashScreen;
 import org.fife.ui.app.AbstractPluggableGUIApplication;
-import org.fife.ui.app.ExceptionDialog;
 import org.fife.ui.app.GUIApplication;
 import org.fife.ui.dockablewindows.DockableWindow;
 import org.fife.ui.dockablewindows.DockableWindowConstants;
@@ -22,14 +21,15 @@ import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextfilechooser.FileChooserOwner;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
+import org.fife.ui.rtextfilechooser.filters.ExtensionFileFilter;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,13 +66,27 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     private Theme theme;
 
+    private final FileFilter projectFileFilter;
+    private final FileFilter allSupportedFilesFileFilter;
+
     private static final String VERSION = "1.0.0";
 
     public Edisen(EdisenAppContext context, EdisenPrefs prefs) {
         super(context, "Edisen", prefs);
+        setTitle(getString("MainWindow.Title.NoProjectOpen"));
+
+        projectFileFilter = new EdisenConfigFileFilter(this);
+        allSupportedFilesFileFilter = new ExtensionFileFilter(
+            getString("FileFilter.AllSupportedFiles"), ExtensionFileFilter.CaseCheck.SYSTEM_CASE_CHECK, false,
+                "chr", "inc", "json", "s");
     }
 
     public boolean closeTab(int index) {
+
+        if (index < 0 || index >= tabbedPane.getTabCount()) {
+            UIManager.getLookAndFeel().provideErrorFeedback(tabbedPane);
+            return false;
+        }
 
         TabbedPaneContent content = tabbedPane.getContentAt(index);
         if (content.isDirty()) {
@@ -97,12 +111,16 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         super.createActions(prefs);
 
+        addAction(Actions.OPEN_PROJECT_ACTION_KEY, new Actions.OpenProjectAction(this));
+        Util.setIcon(this, Actions.OPEN_PROJECT_ACTION_KEY, "open.svg");
+        addAction(Actions.CLOSE_PROJECT_ACTION_KEY, new Actions.CloseProjectAction(this));
+
         addAction(Actions.OPEN_ACTION_KEY, new Actions.OpenAction(this));
-        Util.setIcon(this, Actions.OPEN_ACTION_KEY, "open.svg");
         addAction(Actions.SAVE_ACTION_KEY, new Actions.SaveAction(this));
         Util.setIcon(this, Actions.SAVE_ACTION_KEY, "save.svg");
         addAction(Actions.SAVE_AS_ACTION_KEY, new Actions.SaveAsAction(this));
         addAction(Actions.CLOSE_ACTION_KEY, new Actions.CloseAction(this));
+
         addAction(EXIT_ACTION_KEY, new GUIApplication.ExitAction<>(this, "Action.Exit"));
 
         addAction(Actions.FIND_ACTION_KEY, new Actions.FindAction(this));
@@ -190,7 +208,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         if (chooser == null) {
             File startDir = new File(System.getProperty("user.dir"));
             chooser = new RTextFileChooser(false, startDir);
-            chooser.addChoosableFileFilter(new EdisenConfigFileFilter(this));
+            chooser.addChoosableFileFilter(projectFileFilter);
+            chooser.addChoosableFileFilter(allSupportedFilesFileFilter);
         }
 
         return chooser;
@@ -319,19 +338,12 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     private void initUI(EdisenPrefs prefs) throws IOException {
 
-        String path;
-        if (OS.get() == OS.WINDOWS) {
-            path = "D:/dev/Edisen/sample-projects/01-blinking-screen/sample-project.edisen.json";
-        }
-        else {
-            path = "/users/robert/dev/edisen/sample-projects/01-blinking-screen/sample-project.edisen.json";
-        }
-        EdisenProject project = EdisenProject.fromFile(Paths.get(path));
+        String project = null;
 
         Container contentPane = getContentPane();
         DockableWindowPanel mainPanel = (DockableWindowPanel) mainContentPanel;
 
-        ProjectTree tree = new ProjectTree(this, project.getProjectFile().getParent());
+        ProjectTree tree = new ProjectTree(this);
         RScrollPane sp = new RScrollPane(tree);
 
         String title = getString("DockedWindow.Project");
@@ -357,11 +369,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         tabbedPane = new GameFileTabbedPane(this);
         contentPane.add(tabbedPane);
-
-        File file = new File(project.getProjectFile().getParent().toFile(), project.getGameFile());
-        tabbedPane.addEditorTab(file);
-
-        openFile(project.getProjectFile().toFile());
     }
 
     public boolean isTabOkToClose(int index) {
@@ -402,6 +409,12 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         outputTextArea.log(level, text, arguments);
     }
 
+    /**
+     * Opens a project file.  This should be called {@code openProject()} but
+     * can't be because of the API contract.
+     *
+     * @param file The project file to open.
+     */
     @Override
     public void openFile(File file) {
 
@@ -424,34 +437,59 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
             }
         }
 
-        try {
-
-            EdisenProject project = EdisenProject.fromFile(file.toPath());
-            EdisenProject previousProject = this.project;
-            this.project = project;
-            refreshTitle();
-            setAssemblerCommandLine(project.getAssemblerCommandLine());
-            setEmulatorCommandLine(project.getEmulatorCommandLine());
-            firePropertyChange(PROPERTY_PROJECT, previousProject, project);
-        } catch (IOException ioe) {
-            displayException(ioe);
-        }
+        openProjectImpl(file);
     }
 
     void openFileForEditing(File file) {
         tabbedPane.openFile(file);
     }
 
-    void openProject() {
+    void openFileViaFileChooser() {
 
         RTextFileChooser chooser = getFileChooser();
+        chooser.setFileFilter(allSupportedFilesFileFilter);
         int rc = chooser.showOpenDialog(this);
 
         if (rc == RTextFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            tabbedPane.addEditorTab(file);
+        }
+    }
 
+    void openProjectViaFileChooser() {
+
+        RTextFileChooser chooser = getFileChooser();
+        chooser.setFileFilter(projectFileFilter);
+        int rc = chooser.showOpenDialog(this);
+
+        if (rc == RTextFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             openFile(file);
         }
+    }
+
+    private void openProjectImpl(File file) {
+
+        EdisenProject previousProject = this.project;
+
+        if (file != null) {
+            try {
+
+                EdisenProject project = EdisenProject.fromFile(file.toPath());
+                this.project = project;
+                setAssemblerCommandLine(project.getAssemblerCommandLine());
+                setEmulatorCommandLine(project.getEmulatorCommandLine());
+                setLinkerCommandLine(project.getLinkCommandLine());
+            } catch (IOException ioe) {
+                displayException(ioe);
+            }
+        }
+        else {
+            this.project = null;
+        }
+
+        refreshTitle();
+        firePropertyChange(PROPERTY_PROJECT, previousProject, project);
     }
 
     @Override
@@ -530,7 +568,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
      */
     private void refreshIcons() {
 
-        Util.setIcon(this, Actions.OPEN_ACTION_KEY, "open.svg");
+        Util.setIcon(this, Actions.OPEN_PROJECT_ACTION_KEY, "open.svg");
 
         refreshTextAreaIcon(RSyntaxTextArea.UNDO_ACTION, "undo.svg");
         refreshTextAreaIcon(RSyntaxTextArea.REDO_ACTION, "redo.svg");
@@ -551,7 +589,10 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     }
 
     private void refreshTitle() {
-        setTitle(getString("MainWindow.Title", project.getName()));
+        String title = project != null ?
+            getString("MainWindow.Title", project.getName()) :
+            getString("MainWindow.Title.NoProjectOpen");
+        setTitle(title);
     }
 
     void replace() {

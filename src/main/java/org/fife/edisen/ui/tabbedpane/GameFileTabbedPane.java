@@ -223,11 +223,13 @@ public class GameFileTabbedPane extends JTabbedPane {
      */
     private void openInitialTabsForProject(EdisenProject project) {
 
-        File projectRoot = project.getProjectFile().getParent().toFile();
-        String gameFile = project.getGameFile();
-
         removeAll();
-        addEditorTab(new File(projectRoot, gameFile));
+
+        if (project != null) { // Verify they aren't just closing a project
+            File projectRoot = project.getProjectFile().getParent().toFile();
+            String gameFile = project.getGameFile();
+            addEditorTab(new File(projectRoot, gameFile));
+        }
     }
 
     private void refreshTabName(TabbedPaneContent content) {

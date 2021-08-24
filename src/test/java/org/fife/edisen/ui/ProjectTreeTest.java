@@ -24,25 +24,8 @@ public class ProjectTreeTest {
     public void testConstructor_listensForProjectChanges() throws IOException {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
-        Path projectRoot = Files.createTempDirectory("edisenTest");
 
-        new ProjectTree(mockEdisen, projectRoot);
+        new ProjectTree(mockEdisen);
         verify(mockEdisen, times(1)).addPropertyChangeListener(eq(Edisen.PROPERTY_PROJECT), any());
-    }
-
-    @Test
-    @Disabled("Bug in FileSystemTree.setSelectedFile - does not work if not showing FS roots")
-    public void testPossiblyOpenFileForEditing_fileSelected() throws IOException {
-
-        File file = TestUtil.createTempFile();
-
-        Edisen mockEdisen = Mockito.mock(Edisen.class);
-        Path projectRoot = file.getParentFile().toPath();
-
-        ProjectTree tree = new ProjectTree(mockEdisen, projectRoot);
-        Assertions.assertTrue(tree.setSelectedFile(file));
-
-        tree.possiblyOpenFileForEditing();
-        verify(mockEdisen, times(1)).openFileForEditing(any(File.class));
     }
 }
