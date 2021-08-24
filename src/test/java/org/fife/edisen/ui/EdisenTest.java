@@ -3,20 +3,27 @@ package org.fife.edisen.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fife.edisen.TestUtil;
 import org.fife.edisen.model.EdisenProject;
+import org.fife.rsta.ui.GoToDialog;
+import org.fife.rsta.ui.search.FindDialog;
+import org.fife.rsta.ui.search.ReplaceDialog;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
 @ExtendWith(SwingRunnerExtension.class)
 public class EdisenTest {
 
-    private Edisen edisen;
+    private TestableEdisen edisen;
 
     @AfterEach
     public void tearDown() {
@@ -25,7 +32,7 @@ public class EdisenTest {
         }
     }
 
-    private static Edisen createEdisen() {
+    private static TestableEdisen createEdisen() {
 
         EdisenAppContext context = new EdisenAppContext();
         EdisenPrefs prefs = new EdisenPrefs();
@@ -97,9 +104,30 @@ public class EdisenTest {
     }
 
     @Test
-    @Disabled("Figure out how to implement")
     public void testFind() {
-        // Do nothing (comment for Sonar)
+
+        edisen = createEdisen();
+
+        // The first call creates the dialog
+        edisen.find();
+        verify(edisen.mockFindDialog, times(1)).setVisible(eq(true));
+
+        // The second call uses cached info, so run again for coverage of this scenario
+        edisen.find();
+        verify(edisen.mockFindDialog, times(2)).setVisible(eq(true));
+    }
+
+    @Test
+    public void testFindAfterReplace() {
+
+        edisen = createEdisen();
+
+        // The "replace" call creates the search context
+        edisen.replace();
+
+        // The subsequent "find" call reuses that search context but creates the Find dialog
+        edisen.find();
+        verify(edisen.mockFindDialog, times(1)).setVisible(eq(true));
     }
 
     @Test
@@ -238,6 +266,55 @@ public class EdisenTest {
     }
 
     @Test
+    public void testGoToLine_textAreaFocused() throws IOException {
+
+        edisen = createEdisen();
+
+        EdisenProject project = new EdisenProject();
+        project.setAssemblerCommandLine("assembler");
+        project.setLinkCommandLine("linker");
+        project.setEmulatorCommandLine("emulator");
+        File mainProjectFile = TestUtil.createTempFile(".s", "line 1\nline 2");
+        project.setGameFile(mainProjectFile.getName());
+        String json = new ObjectMapper().writeValueAsString(project);
+        File projectFile = TestUtil.createTempFile(".edisen.json", json);
+
+        // Opening a project will open its "main" source file
+        edisen.openFile(projectFile);
+
+        edisen.createGoToDialog(); // Unfortunately must be done for our method mock below
+        doReturn(0).when(edisen.mockGoToDialog).getLineNumber();
+        edisen.goToLine();
+        Assertions.assertEquals(0, edisen.exceptionCount);
+    }
+
+    @Test
+    public void testGoToLine_error_BadLocationException() throws IOException {
+
+        // Note this scenario doesn't happen in real life, but is here for coverage
+        edisen = createEdisen();
+
+        EdisenProject project = new EdisenProject();
+        project.setAssemblerCommandLine("assembler");
+        project.setLinkCommandLine("linker");
+        project.setEmulatorCommandLine("emulator");
+        File mainProjectFile = TestUtil.createTempFile(".s", "line 1\nline 2");
+        project.setGameFile(mainProjectFile.getName());
+        String json = new ObjectMapper().writeValueAsString(project);
+        File projectFile = TestUtil.createTempFile(".edisen.json", json);
+
+        // Opening a project will open its "main" source file
+        edisen.openFile(projectFile);
+
+        edisen.createGoToDialog(); // Unfortunately must be done for our method mock below
+        doReturn(999).when(edisen.mockGoToDialog).getLineNumber();
+
+        Assertions.assertEquals(0, edisen.exceptionCount);
+        edisen.goToLine();
+        Assertions.assertEquals(1, edisen.exceptionCount);
+    }
+
+    @Test
     @Disabled("Figure out how to implement")
     public void testIsTabOkToClose() {
         // Do nothing (comment for Sonar)
@@ -250,11 +327,51 @@ public class EdisenTest {
     }
 
     @Test
-    public void testRefreshLookAndFeel() {
+    public void testRefreshLookAndFeel_noDialogsCreated() {
         edisen = createEdisen();
         Assertions.assertNotEquals(Theme.NORD, edisen.getTheme());
         edisen.refreshLookAndFeel(Theme.NORD);
         Assertions.assertEquals(Theme.NORD, edisen.getTheme());
+    }
+
+    @Test
+    public void testRefreshLookAndFeel_dialogsCreated() {
+
+        edisen = createEdisen();
+        edisen.getOptionsDialog();
+        edisen.find();
+        edisen.replace();
+
+        Assertions.assertNotEquals(Theme.NORD, edisen.getTheme());
+        edisen.refreshLookAndFeel(Theme.NORD);
+        Assertions.assertEquals(Theme.NORD, edisen.getTheme());
+    }
+
+    @Test
+    public void testReplace() {
+
+        edisen = createEdisen();
+
+        // The first call creates the dialog
+        edisen.replace();
+        verify(edisen.mockReplaceDialog, times(1)).setVisible(eq(true));
+
+        // The second call uses cached info, so run again for coverage of this scenario
+        edisen.replace();
+        verify(edisen.mockReplaceDialog, times(2)).setVisible(eq(true));
+    }
+
+    @Test
+    public void testReplaceAfterFind() {
+
+        edisen = createEdisen();
+
+        // The "find" call creates the search context
+        edisen.find();
+
+        // The subsequent "replace" call reuses that search context but creates the Find dialog
+        edisen.replace();
+        verify(edisen.mockReplaceDialog, times(1)).setVisible(eq(true));
     }
 
     @Test
@@ -340,12 +457,42 @@ public class EdisenTest {
      */
     static class TestableEdisen extends Edisen {
 
+        FindDialog mockFindDialog;
+        ReplaceDialog mockReplaceDialog;
+        GoToDialog mockGoToDialog;
+        int exceptionCount;
+
         TestableEdisen(EdisenAppContext context, EdisenPrefs prefs) {
             super(context, prefs);
         }
 
         @Override
+        protected FindDialog createFindDialog() {
+            if (mockFindDialog == null) {
+                mockFindDialog = Mockito.mock(FindDialog.class);
+            }
+            return mockFindDialog;
+        }
+
+        @Override
+        protected GoToDialog createGoToDialog() {
+            if (mockGoToDialog == null) {
+                mockGoToDialog = Mockito.mock(GoToDialog.class);
+            }
+            return mockGoToDialog;
+        }
+
+        @Override
+        protected ReplaceDialog createReplaceDialog() {
+            if (mockReplaceDialog == null) {
+                mockReplaceDialog = Mockito.mock(ReplaceDialog.class);
+            }
+            return mockReplaceDialog;
+        }
+
+        @Override
         public void displayException(Frame owner, Throwable t, String desc) {
+            exceptionCount++;
             t.printStackTrace();
         }
     }

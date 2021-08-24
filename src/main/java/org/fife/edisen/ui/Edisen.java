@@ -140,6 +140,14 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         Util.setIcon(this, ABOUT_ACTION_KEY, "about.svg");
     }
 
+    protected FindDialog createFindDialog() {
+        return new FindDialog(this, tabbedPane.getSearchListener());
+    }
+
+    protected GoToDialog createGoToDialog() {
+        return new GoToDialog(this);
+    }
+
     @Override
     protected JMenuBar createMenuBar(EdisenPrefs prefs) {
 
@@ -147,6 +155,10 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         new RSyntaxTextArea();
 
         return new AppMenuBar(this);
+    }
+
+    protected ReplaceDialog createReplaceDialog() {
+        return new ReplaceDialog(this, tabbedPane.getSearchListener());
     }
 
     @Override
@@ -188,7 +200,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         }
 
         if (findDialog == null) {
-            findDialog = new FindDialog(this, tabbedPane.getSearchListener());
+            findDialog = createFindDialog();
         }
 
         findDialog.setVisible(true);
@@ -284,7 +296,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     void goToLine() {
 
         if (goToDialog == null) {
-            goToDialog = new GoToDialog(this);
+            goToDialog = createGoToDialog();
         }
 
         TextEditorPane textArea = tabbedPane.getCurrentTextArea();
@@ -602,7 +614,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         }
 
         if (replaceDialog == null) {
-            replaceDialog = new ReplaceDialog(this, tabbedPane.getSearchListener());
+            replaceDialog = createReplaceDialog();
         }
 
         replaceDialog.setVisible(true);
