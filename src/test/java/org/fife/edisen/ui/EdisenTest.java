@@ -34,6 +34,33 @@ public class EdisenTest {
     }
 
     @Test
+    public void testCloseTab_validIndex_notDirty() throws IOException {
+        edisen = createEdisen();
+
+        File[] files = new File[] {
+            TestUtil.createTempFile(".chr"),
+            TestUtil.createTempFile(".s"),
+        };
+        for (File file : files) {
+            edisen.openFileForEditing(file);
+        }
+
+        Assertions.assertTrue(edisen.closeTab(0));
+    }
+
+    @Test
+    public void testCloseTab_invalid_lessThanZero() throws IOException {
+        edisen = createEdisen();
+        Assertions.assertFalse(edisen.closeTab(-1));
+    }
+
+    @Test
+    public void testCloseTab_invalid_greaterThanTabCount() throws IOException {
+        edisen = createEdisen();
+        Assertions.assertFalse(edisen.closeTab(42));
+    }
+
+    @Test
     public void testCreateAboutDialog() {
         edisen = createEdisen();
         Assertions.assertNotNull(edisen.createAboutDialog());
@@ -276,6 +303,36 @@ public class EdisenTest {
     @Disabled("Figure out how to implement")
     public void testSaveCurrentFileAs() {
         // Do nothing (comment for Sonar)
+    }
+
+    @Test
+    public void testSaveProject_success() throws IOException {
+
+        edisen = createEdisen();
+
+        EdisenProject project = new EdisenProject();
+        project.setAssemblerCommandLine("assembler");
+        project.setLinkCommandLine("linker");
+        project.setEmulatorCommandLine("emulator");
+        File mainProjectFile = TestUtil.createTempFile(".s");
+        project.setGameFile(mainProjectFile.getName());
+        String json = new ObjectMapper().writeValueAsString(project);
+        File projectFile = TestUtil.createTempFile(".edisen.json", json);
+
+        edisen.openFile(projectFile);
+
+        edisen.setAssemblerCommandLine("aaa");
+        edisen.setLinkerCommandLine("bbb");
+        edisen.setEmulatorCommandLine("ccc");
+
+        edisen.saveProject();
+
+        EdisenProject newProject = new ObjectMapper().readValue(projectFile, EdisenProject.class);
+        Assertions.assertEquals(edisen.getAssemblerCommandLine(), newProject.getAssemblerCommandLine());
+        Assertions.assertEquals(edisen.getLinkerCommandLine(), newProject.getLinkCommandLine());
+        Assertions.assertEquals(edisen.getEmulatorCommandLine(), newProject.getEmulatorCommandLine());
+        Assertions.assertEquals(project.getName(), newProject.getName());
+        Assertions.assertEquals(project.getGameFile(), newProject.getGameFile());
     }
 
     /**

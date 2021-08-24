@@ -12,16 +12,6 @@ import static org.mockito.Mockito.*;
 public class ActionsTest {
 
     @Test
-    public void testCloseAction() {
-
-        Edisen edisen = TestUtil.mockEdisen();
-        doReturn(0).when(edisen).getSelectedTabIndex();
-
-        new Actions.CloseAction(edisen).actionPerformed(null);
-        verify(edisen, times(1)).closeTab(eq(0));
-    }
-
-    @Test
     public void testBuildAction_success() throws IOException {
 
         Edisen edisen = TestUtil.mockEdisen();
@@ -49,6 +39,16 @@ public class ActionsTest {
 
         Object result = new Actions.BuildAction(edisen).compileAndLink();
         Assertions.assertNull(result); // Nothing returned just yet
+    }
+
+    @Test
+    public void testCloseAction() {
+
+        Edisen edisen = TestUtil.mockEdisen();
+        doReturn(0).when(edisen).getSelectedTabIndex();
+
+        new Actions.CloseAction(edisen).actionPerformed(null);
+        verify(edisen, times(1)).closeTab(eq(0));
     }
 
     @Test
