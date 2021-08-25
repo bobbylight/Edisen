@@ -7,6 +7,7 @@ import org.mockito.Mockito;
 
 import javax.swing.*;
 
+import java.awt.*;
 import java.util.ResourceBundle;
 
 import static org.mockito.ArgumentMatchers.anyString;
@@ -27,6 +28,50 @@ public class UtilTest {
 
         Action action = new Actions.BuildAction(edisen);
         doReturn(action).when(edisen).getAction(anyString());
+    }
+
+    @Test
+    public void testAddLabelValuePairs_ltr_strings() {
+
+        JPanel parent = new JPanel();
+        Util.addLabelValuePairs(parent, ComponentOrientation.LEFT_TO_RIGHT,
+            "label1", "value1",
+            "label2", "value2");
+
+        Assertions.assertEquals(4, parent.getComponentCount());
+    }
+
+    @Test
+    public void testAddLabelValuePairs_rtl_strings() {
+
+        JPanel parent = new JPanel();
+        Util.addLabelValuePairs(parent, ComponentOrientation.RIGHT_TO_LEFT,
+            "label1", "value1",
+            "label2", "value2");
+
+        Assertions.assertEquals(4, parent.getComponentCount());
+    }
+
+    @Test
+    public void testAddLabelValuePairs_ltr_components() {
+
+        JPanel parent = new JPanel();
+        Util.addLabelValuePairs(parent, ComponentOrientation.LEFT_TO_RIGHT,
+            new JLabel("label1"), new JTextField(),
+            new JLabel("label2"), new JTextField());
+
+        Assertions.assertEquals(4, parent.getComponentCount());
+    }
+
+    @Test
+    public void testAddLabelValuePairs_rtl_components() {
+
+        JPanel parent = new JPanel();
+        Util.addLabelValuePairs(parent, ComponentOrientation.RIGHT_TO_LEFT,
+            new JLabel("label1"), new JTextField(),
+            new JLabel("label2"), new JTextField());
+
+        Assertions.assertEquals(4, parent.getComponentCount());
     }
 
     @Test

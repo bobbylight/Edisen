@@ -464,7 +464,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         if (rc == RTextFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
-            tabbedPane.addEditorTab(file);
+            openFileForEditing(file);
         }
     }
 

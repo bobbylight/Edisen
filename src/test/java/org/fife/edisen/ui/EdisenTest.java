@@ -3,9 +3,7 @@ package org.fife.edisen.ui;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fife.edisen.TestUtil;
 import org.fife.edisen.model.EdisenProject;
-import org.fife.rsta.ui.GoToDialog;
-import org.fife.rsta.ui.search.FindDialog;
-import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.ui.rtextfilechooser.RTextFileChooser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -13,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
@@ -32,17 +29,9 @@ public class EdisenTest {
         }
     }
 
-    private static TestableEdisen createEdisen() {
-
-        EdisenAppContext context = new EdisenAppContext();
-        EdisenPrefs prefs = new EdisenPrefs();
-
-        return new TestableEdisen(context, prefs);
-    }
-
     @Test
     public void testCloseTab_validIndex_notDirty() throws IOException {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         File[] files = new File[] {
             TestUtil.createTempFile(".chr"),
@@ -56,44 +45,44 @@ public class EdisenTest {
     }
 
     @Test
-    public void testCloseTab_invalid_lessThanZero() throws IOException {
-        edisen = createEdisen();
+    public void testCloseTab_invalid_lessThanZero() {
+        edisen = TestableEdisen.create();
         Assertions.assertFalse(edisen.closeTab(-1));
     }
 
     @Test
-    public void testCloseTab_invalid_greaterThanTabCount() throws IOException {
-        edisen = createEdisen();
+    public void testCloseTab_invalid_greaterThanTabCount() {
+        edisen = TestableEdisen.create();
         Assertions.assertFalse(edisen.closeTab(42));
     }
 
     @Test
     public void testCreateAboutDialog() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.createAboutDialog());
     }
 
     @Test
     public void testCreateMenuBar() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.createMenuBar(edisen.getPreferences()));
     }
 
     @Test
     public void testCreateSplashScreen() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNull(edisen.createSplashScreen());
     }
 
     @Test
     public void testCreateStatusBar() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.createStatusBar(edisen.getPreferences()));
     }
 
     @Test
     public void testCreateToolBar() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNull(edisen.createToolBar(edisen.getPreferences()));
     }
 
@@ -106,7 +95,7 @@ public class EdisenTest {
     @Test
     public void testFind() {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         // The first call creates the dialog
         edisen.find();
@@ -120,7 +109,7 @@ public class EdisenTest {
     @Test
     public void testFindAfterReplace() {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         // The "replace" call creates the search context
         edisen.replace();
@@ -133,7 +122,7 @@ public class EdisenTest {
     @Test
     public void testGetSetAssemblerCommandLine() throws IOException {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -154,7 +143,7 @@ public class EdisenTest {
     @Test
     public void testGetSetEmulatorCommandLine() throws IOException {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -174,14 +163,15 @@ public class EdisenTest {
 
     @Test
     public void testGetFileChooser() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getFileChooser());
+        Assertions.assertNotNull(edisen.getFileChooser()); // Second time it's cached
     }
 
     @Test
     public void testGetSetLinkerCommandLine() throws IOException {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -201,20 +191,21 @@ public class EdisenTest {
 
     @Test
     public void testGetOptionsDialog() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getOptionsDialog());
+        Assertions.assertNotNull(edisen.getOptionsDialog()); // Second time it's cached
     }
 
     @Test
     public void testGetPreferences() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getPreferences());
     }
 
     @Test
     public void testGetProject() throws IOException {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -231,44 +222,44 @@ public class EdisenTest {
 
     @Test
     public void testGetRecentFiles() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getRecentFiles());
     }
 
     @Test
     public void testGetRecentProjects() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getRecentProjects());
     }
 
     @Test
     public void testGetResourceBundleClassName() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getResourceBundleClassName());
     }
 
     @Test
     public void testGetSelectedTabIndex() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertEquals(-1, edisen.getSelectedTabIndex());
     }
 
     @Test
     public void testGetTheme() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getTheme());
     }
 
     @Test
     public void testGetVersionString() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getVersionString());
     }
 
     @Test
     public void testGoToLine_textAreaFocused() throws IOException {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -292,7 +283,7 @@ public class EdisenTest {
     public void testGoToLine_error_BadLocationException() throws IOException {
 
         // Note this scenario doesn't happen in real life, but is here for coverage
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -322,13 +313,85 @@ public class EdisenTest {
 
     @Test
     public void testLog() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         edisen.log("stdout", "Test message");
     }
 
     @Test
+    public void testOpenProjectViaFileChooser_openApproved() throws IOException {
+
+        // Spy to do partial mocks on our Edisen instance
+        edisen = Mockito.spy(TestableEdisen.create());
+        doNothing().when(edisen).openFile(any());
+
+        RTextFileChooser mockChooser = Mockito.mock(RTextFileChooser.class);
+        doReturn(RTextFileChooser.APPROVE_OPTION).when(mockChooser).showOpenDialog(any());
+        doReturn(mockChooser).when(edisen).getFileChooser();
+        File selectedFile = TestUtil.createTempFile(".edisen.json");
+        doReturn(selectedFile).when(mockChooser).getSelectedFile();
+
+        // Verify the file chooser displays, and when "OK" is clicked, the project is opened
+        edisen.openProjectViaFileChooser();
+        verify(mockChooser, times(1)).showOpenDialog(any());
+        verify(edisen, times(1)).openFile(eq(selectedFile));
+    }
+
+    @Test
+    public void testOpenProjectViaFileChooser_openCancelled() {
+
+        // Spy to do partial mocks on our Edisen instance
+        edisen = Mockito.spy(TestableEdisen.create());
+        doNothing().when(edisen).openFile(any());
+
+        RTextFileChooser mockChooser = Mockito.mock(RTextFileChooser.class);
+        doReturn(RTextFileChooser.CANCEL_OPTION).when(mockChooser).showOpenDialog(any());
+        doReturn(mockChooser).when(edisen).getFileChooser();
+
+        // Verify the file chooser displays, and when "OK" is clicked, the project is not opened
+        edisen.openProjectViaFileChooser();
+        verify(mockChooser, times(1)).showOpenDialog(any());
+        verify(edisen, times(0)).openFile(any());
+    }
+
+    @Test
+    public void testOpenViaFileChooser_openApproved() throws IOException {
+
+        // Spy to do partial mocks on our Edisen instance
+        edisen = Mockito.spy(TestableEdisen.create());
+        doNothing().when(edisen).openFile(any());
+
+        RTextFileChooser mockChooser = Mockito.mock(RTextFileChooser.class);
+        doReturn(RTextFileChooser.APPROVE_OPTION).when(mockChooser).showOpenDialog(any());
+        doReturn(mockChooser).when(edisen).getFileChooser();
+        File selectedFile = TestUtil.createTempFile(".s");
+        doReturn(selectedFile).when(mockChooser).getSelectedFile();
+
+        // Verify the file chooser displays, and when "OK" is clicked, the file is opened
+        edisen.openFileViaFileChooser();
+        verify(mockChooser, times(1)).showOpenDialog(any());
+        verify(edisen, times(1)).openFileForEditing(eq(selectedFile));
+    }
+
+    @Test
+    public void testOpenViaFileChooser_openCancelled() {
+
+        // Spy to do partial mocks on our Edisen instance
+        edisen = Mockito.spy(TestableEdisen.create());
+        doNothing().when(edisen).openFile(any());
+
+        RTextFileChooser mockChooser = Mockito.mock(RTextFileChooser.class);
+        doReturn(RTextFileChooser.CANCEL_OPTION).when(mockChooser).showOpenDialog(any());
+        doReturn(mockChooser).when(edisen).getFileChooser();
+
+        // Verify the file chooser displays, and when "OK" is clicked, the file is not opened
+        edisen.openFileViaFileChooser();
+        verify(mockChooser, times(1)).showOpenDialog(any());
+        verify(edisen, times(0)).openFileForEditing(any());
+    }
+
+    @Test
     public void testRefreshLookAndFeel_noDialogsCreated() {
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         Assertions.assertNotEquals(Theme.NORD, edisen.getTheme());
         edisen.refreshLookAndFeel(Theme.NORD);
         Assertions.assertEquals(Theme.NORD, edisen.getTheme());
@@ -337,7 +400,7 @@ public class EdisenTest {
     @Test
     public void testRefreshLookAndFeel_dialogsCreated() {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
         edisen.getOptionsDialog();
         edisen.find();
         edisen.replace();
@@ -350,7 +413,7 @@ public class EdisenTest {
     @Test
     public void testReplace() {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         // The first call creates the dialog
         edisen.replace();
@@ -364,7 +427,7 @@ public class EdisenTest {
     @Test
     public void testReplaceAfterFind() {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         // The "find" call creates the search context
         edisen.find();
@@ -377,7 +440,7 @@ public class EdisenTest {
     @Test
     public void testSaveAllDirtyFiles_success() throws IOException {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -399,7 +462,7 @@ public class EdisenTest {
     @Test
     public void testSaveCurrentFile() throws IOException {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -425,7 +488,7 @@ public class EdisenTest {
     @Test
     public void testSaveProject_success() throws IOException {
 
-        edisen = createEdisen();
+        edisen = TestableEdisen.create();
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine("assembler");
@@ -450,50 +513,5 @@ public class EdisenTest {
         Assertions.assertEquals(edisen.getEmulatorCommandLine(), newProject.getEmulatorCommandLine());
         Assertions.assertEquals(project.getName(), newProject.getName());
         Assertions.assertEquals(project.getGameFile(), newProject.getGameFile());
-    }
-
-    /**
-     * Overridden to not display an error dialog since that doesn't play nicely in CI builds.
-     */
-    static class TestableEdisen extends Edisen {
-
-        FindDialog mockFindDialog;
-        ReplaceDialog mockReplaceDialog;
-        GoToDialog mockGoToDialog;
-        int exceptionCount;
-
-        TestableEdisen(EdisenAppContext context, EdisenPrefs prefs) {
-            super(context, prefs);
-        }
-
-        @Override
-        protected FindDialog createFindDialog() {
-            if (mockFindDialog == null) {
-                mockFindDialog = Mockito.mock(FindDialog.class);
-            }
-            return mockFindDialog;
-        }
-
-        @Override
-        protected GoToDialog createGoToDialog() {
-            if (mockGoToDialog == null) {
-                mockGoToDialog = Mockito.mock(GoToDialog.class);
-            }
-            return mockGoToDialog;
-        }
-
-        @Override
-        protected ReplaceDialog createReplaceDialog() {
-            if (mockReplaceDialog == null) {
-                mockReplaceDialog = Mockito.mock(ReplaceDialog.class);
-            }
-            return mockReplaceDialog;
-        }
-
-        @Override
-        public void displayException(Frame owner, Throwable t, String desc) {
-            exceptionCount++;
-            t.printStackTrace();
-        }
     }
 }
