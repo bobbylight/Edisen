@@ -5,6 +5,7 @@ import org.fife.ui.rtextfilechooser.FileSystemTree;
 
 import javax.swing.*;
 import javax.swing.tree.TreePath;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -23,6 +24,10 @@ class ProjectTree extends JPanel {
     ProjectTree(Edisen edisen) {
 
         this.edisen = edisen;
+
+        // Show the background (JViewport) color
+        setLayout(new BorderLayout());
+        setOpaque(false);
 
         tree = new FileSystemTree();
         tree.setRootVisible(false);

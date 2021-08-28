@@ -350,8 +350,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     private void initUI(EdisenPrefs prefs) throws IOException {
 
-        String project = null;
-
         Container contentPane = getContentPane();
         DockableWindowPanel mainPanel = (DockableWindowPanel) mainContentPanel;
 

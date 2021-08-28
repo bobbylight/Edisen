@@ -1,9 +1,11 @@
 # edisen
-![Java Build](https://github.com/bobbylight/Edisen/actions/workflows/gradle.yml/badge.svg)
-![Java Build](https://github.com/bobbylight/Edisen/actions/workflows/codeql-analysis.yml/badge.svg)
-[![codecov](https://codecov.io/gh/bobbylight/Edisen/branch/master/graph/badge.svg?token=3X56SWUX7Z)](https://codecov.io/gh/bobbylight/Edisen)
+![Build status](https://github.com/bobbylight/Edisen/actions/workflows/gradle.yml/badge.svg)
+![CodeQL analysis](https://github.com/bobbylight/Edisen/actions/workflows/codeql-analysis.yml/badge.svg)
+[![Coverage](https://codecov.io/gh/bobbylight/Edisen/branch/master/graph/badge.svg?token=3X56SWUX7Z)](https://codecov.io/gh/bobbylight/Edisen)
 
 The beginnings of a simple NES IDE.
+
+![Example screenshot](images/readme-screenshot-main.png)
 
 ## Compiling
 `Edisen` requires Java 14 or later to compile and run.
