@@ -499,6 +499,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         }
 
         refreshTitle();
+        refreshProjectRelatedActions();
         firePropertyChange(PROPERTY_PROJECT, previousProject, project);
     }
 
@@ -527,6 +528,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         // Really only the RSTA action icons need this...
         refreshIcons();
+        refreshProjectRelatedActions();
 
         tabbedPane.focusActiveEditor();
 
@@ -591,6 +593,12 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         projectWindow.setIcon(Util.getSvgIcon(this, "projectStructure.svg", 16));
         outputWindow.setIcon(Util.getSvgIcon(this, "console.svg", 16));
+    }
+
+    private void refreshProjectRelatedActions() {
+        boolean activeProject = project != null;
+        getAction(Actions.COMPILE_ACTION_KEY).setEnabled(activeProject);
+        getAction(Actions.EMULATE_ACTION_KEY).setEnabled(activeProject);
     }
 
     private void refreshTextAreaIcon(int icon, String resource) {

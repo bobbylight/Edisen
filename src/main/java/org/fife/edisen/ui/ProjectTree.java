@@ -4,7 +4,6 @@ import org.fife.edisen.model.EdisenProject;
 import org.fife.ui.rtextfilechooser.FileSystemTree;
 
 import javax.swing.*;
-import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -37,7 +36,7 @@ class ProjectTree extends JPanel {
         add(nothingLoadedPanel);
 
         Listener listener = new Listener();
-        addMouseListener(listener);
+        tree.addMouseListener(listener);
         edisen.addPropertyChangeListener(Edisen.PROPERTY_PROJECT, listener);
     }
 
