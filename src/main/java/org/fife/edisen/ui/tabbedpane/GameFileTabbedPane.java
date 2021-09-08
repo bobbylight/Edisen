@@ -232,6 +232,17 @@ public class GameFileTabbedPane extends JTabbedPane {
         }
     }
 
+    /**
+     * Overridden to draw a rectangle when no tabs are open.
+     */
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (getTabCount() == 0) {
+            g.setColor(UIManager.getColor("Component.borderColor")); // FlatLaf-specific
+            g.drawRect(1, 1, getWidth() - 3, getHeight() - 3);
+        }
+    }
+
     private void refreshTabName(TabbedPaneContent content) {
 
         for (int i = 0; i < getTabCount(); i++) {
