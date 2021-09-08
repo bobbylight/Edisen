@@ -83,7 +83,7 @@ public class EdisenTest {
     @Test
     public void testCreateToolBar() {
         edisen = TestableEdisen.create();
-        Assertions.assertNull(edisen.createToolBar(edisen.getPreferences()));
+        Assertions.assertNotNull(edisen.createToolBar(edisen.getPreferences()));
     }
 
     @Test

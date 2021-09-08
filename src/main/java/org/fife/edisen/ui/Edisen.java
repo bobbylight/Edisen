@@ -112,10 +112,11 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         super.createActions(prefs);
 
         addAction(Actions.OPEN_PROJECT_ACTION_KEY, new Actions.OpenProjectAction(this));
-        Util.setIcon(this, Actions.OPEN_PROJECT_ACTION_KEY, "open.svg");
+        Util.setIcon(this, Actions.OPEN_PROJECT_ACTION_KEY, "projectDirectory.svg");
         addAction(Actions.CLOSE_PROJECT_ACTION_KEY, new Actions.CloseProjectAction(this));
 
         addAction(Actions.OPEN_ACTION_KEY, new Actions.OpenAction(this));
+        Util.setIcon(this, Actions.OPEN_ACTION_KEY, "open.svg");
         addAction(Actions.SAVE_ACTION_KEY, new Actions.SaveAction(this));
         Util.setIcon(this, Actions.SAVE_ACTION_KEY, "save.svg");
         addAction(Actions.SAVE_AS_ACTION_KEY, new Actions.SaveAsAction(this));
@@ -124,12 +125,16 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         addAction(EXIT_ACTION_KEY, new GUIApplication.ExitAction<>(this, "Action.Exit"));
 
         addAction(Actions.FIND_ACTION_KEY, new Actions.FindAction(this));
+        Util.setIcon(this, Actions.FIND_ACTION_KEY, "find.svg");
         addAction(Actions.REPLACE_ACTION_KEY, new Actions.ReplaceAction(this));
+        Util.setIcon(this, Actions.REPLACE_ACTION_KEY, "replace.svg");
         addAction(Actions.GOTO_ACTION_KEY, new Actions.GoToAction(this));
         addAction(Actions.OPTIONS_ACTION_KEY, new OptionsAction<>(this, "Action.Options"));
 
         addAction(Actions.COMPILE_ACTION_KEY, new Actions.BuildAction(this));
+        Util.setIcon(this, Actions.COMPILE_ACTION_KEY, "compile.svg");
         addAction(Actions.EMULATE_ACTION_KEY, new Actions.EmulateAction(this));
+        Util.setIcon(this, Actions.EMULATE_ACTION_KEY, "run_anything.svg");
 
         HelpAction<Edisen> helpAction = new HelpAction<>(this, "Action.Help");
         addAction(HELP_ACTION_KEY, helpAction);
@@ -173,7 +178,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     @Override
     protected CustomizableToolBar createToolBar(EdisenPrefs prefs) {
-        return null;
+        return new EdisenToolBar(this);
     }
 
     @Override
@@ -580,7 +585,12 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
      */
     private void refreshIcons() {
 
-        Util.setIcon(this, Actions.OPEN_PROJECT_ACTION_KEY, "open.svg");
+        Util.setIcon(this, Actions.OPEN_PROJECT_ACTION_KEY, "projectDirectory.svg");
+
+        Util.setIcon(this, Actions.OPEN_ACTION_KEY, "open.svg");
+
+        Util.setIcon(this, Actions.COMPILE_ACTION_KEY, "compile.svg");
+        Util.setIcon(this, Actions.EMULATE_ACTION_KEY, "run_anything.svg");
 
         refreshTextAreaIcon(RSyntaxTextArea.UNDO_ACTION, "undo.svg");
         refreshTextAreaIcon(RSyntaxTextArea.REDO_ACTION, "redo.svg");
