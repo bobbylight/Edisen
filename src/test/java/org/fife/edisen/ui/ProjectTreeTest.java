@@ -22,7 +22,7 @@ public class ProjectTreeTest {
     @Test
     public void testConstructor_listensForProjectChanges() {
 
-        Edisen mockEdisen = Mockito.mock(Edisen.class);
+        Edisen mockEdisen = TestUtil.mockEdisen();
 
         new ProjectTree(mockEdisen);
         verify(mockEdisen, times(1)).addPropertyChangeListener(eq(Edisen.PROPERTY_PROJECT), any());
@@ -31,7 +31,7 @@ public class ProjectTreeTest {
     @Test
     public void testPossiblyOpenFileForEditing_noSelection() {
 
-        Edisen mockEdisen = Mockito.mock(Edisen.class);
+        Edisen mockEdisen = TestUtil.mockEdisen();
         ProjectTree tree = new ProjectTree(mockEdisen);
         tree.possiblyOpenFileForEditing();
         verify(mockEdisen, times(0)).openFileForEditing(any()); // No selection
