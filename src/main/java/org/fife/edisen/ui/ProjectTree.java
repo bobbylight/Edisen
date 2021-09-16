@@ -1,6 +1,7 @@
 package org.fife.edisen.ui;
 
 import org.fife.edisen.model.EdisenProject;
+import org.fife.ui.UIUtil;
 import org.fife.ui.rtextfilechooser.FileSystemTree;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.util.ResourceBundle;
 
 /**
  * A tree view that shows all files in the open project.
@@ -85,7 +87,28 @@ class ProjectTree extends JPanel {
     class NoProjectLoadedPanel extends JPanel {
 
         NoProjectLoadedPanel() {
-            add(new JLabel("Nothing loaded"));
+
+            setLayout(new BorderLayout());
+
+            Box top = Box.createVerticalBox();
+            add(top, BorderLayout.NORTH);
+
+            JLabel label = new JLabel(edisen.getString("ProjectTree.NothingLoaded"));
+            JPanel temp = new JPanel();
+            temp.add(label);
+            top.add(temp);
+
+            ResourceBundle msg = edisen.getResourceBundle();
+            JButton newButton = UIUtil.newButton(msg, "ProjectTree.NewProject");
+            JButton openButton = UIUtil.newButton(msg, "ProjectTree.OpenProject");
+            openButton.addActionListener((e) -> edisen.openProjectViaFileChooser());
+            temp = new JPanel(new SpringLayout());
+            temp.add(newButton);
+            temp.add(openButton);
+            UIUtil.makeSpringCompactGrid(temp, 2, 1, 0, 0, 5, 5);
+            top.add(temp);
+
+            top.add(Box.createVerticalGlue());
         }
     }
 }
