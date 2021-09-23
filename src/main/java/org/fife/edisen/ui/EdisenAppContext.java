@@ -50,16 +50,4 @@ public class EdisenAppContext extends AppContext<Edisen, EdisenPrefs> {
             .toArray(String[]::new);
         prefs.theme = edisen.getTheme().getKey();
     }
-
-    @Override
-    public void savePreferences(Edisen edisen) throws IOException {
-
-        // TODO: Move this check into FifeCommon
-        File dir = getPreferencesDir();
-        if (!dir.exists()) {
-            dir.mkdirs();
-        }
-
-        super.savePreferences(edisen);
-    }
 }

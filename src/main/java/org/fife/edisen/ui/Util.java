@@ -2,7 +2,6 @@ package org.fife.edisen.ui;
 
 import org.fife.ui.ImageTranscodingUtil;
 import org.fife.ui.OS;
-import org.fife.ui.SelectableLabel;
 import org.fife.ui.app.AppAction;
 import org.fife.ui.autocomplete.EmptyIcon;
 
@@ -11,7 +10,6 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 /**
  * Obligatory utility methods.
@@ -23,49 +21,6 @@ public final class Util {
      */
     private Util() {
         // Do nothing (comment for Sonar)
-    }
-
-    /**
-     * Adds pairs of components to a parent container using {@code SpringLayout}
-     * in a label/value layout, honoring the component orientation.
-     *
-     * @param parent The parent container to add to.
-     * @param o The component orientation.
-     * @param pairs The pairs of strings to add.  This should be an even number
-     *        of strings.
-     * @see #addLabelValuePairs(Container, ComponentOrientation, Component...)
-     */
-    public static void addLabelValuePairs(Container parent, ComponentOrientation o, String... pairs) {
-
-        SelectableLabel[] labels = Arrays.stream(pairs)
-            .map(SelectableLabel::new)
-            .toArray(SelectableLabel[]::new);
-        addLabelValuePairs(parent, o, labels);
-    }
-
-    /**
-     * Adds pairs of components to a parent container using {@code SpringLayout}
-     * in a label/value layout, honoring the component orientation.
-     *
-     * @param parent The parent container to add to.
-     * @param o The component orientation.
-     * @param pairs The pairs of components to add.  This should be an even number
-     *        of components.
-     * @see #addLabelValuePairs(Container, ComponentOrientation, String...)
-     */
-    public static void addLabelValuePairs(Container parent, ComponentOrientation o, Component... pairs) {
-        if (o.isLeftToRight()) {
-            for (int i = 0; i < pairs.length; i += 2) {
-                parent.add(pairs[i]);
-                parent.add(pairs[i + 1]);
-            }
-        }
-        else {
-            for (int i = 0; i < pairs.length; i += 2) {
-                parent.add(pairs[i]);
-                parent.add(pairs[i + 1]);
-            }
-        }
     }
 
     public static Image getDarkLookAndFeelContentAssistImage() {

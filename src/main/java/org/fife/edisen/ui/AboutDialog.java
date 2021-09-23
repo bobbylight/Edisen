@@ -77,7 +77,7 @@ class AboutDialog extends EscapableDialog {
 
         SpringLayout sl = new SpringLayout();
         JPanel temp = new JPanel(sl);
-        Util.addLabelValuePairs(temp, getComponentOrientation(),
+        UIUtil.addLabelValuePairs(temp, getComponentOrientation(),
             app.getString("Dialog.About.InstallRoot"), app.getInstallLocation(),
             app.getString("Desc.About.BuildVersion"), app.getVersionString(),
             app.getString("Desc.About.BuildDate"), getBuildDateString());

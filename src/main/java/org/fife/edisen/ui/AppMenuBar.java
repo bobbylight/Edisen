@@ -2,6 +2,7 @@ package org.fife.edisen.ui;
 
 import org.fife.edisen.model.EdisenProject;
 import org.fife.ui.RecentFilesMenu;
+import org.fife.ui.UIUtil;
 import org.fife.ui.app.MenuBar;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
@@ -44,8 +45,7 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
             protected Action createOpenAction(String fileFullPath) {
                 OpenFileFromHistoryAction action =
                     new OpenFileFromHistoryAction(edisen);
-                // TODO: Share abbreviated path code in fife.common
-                action.setName(fileFullPath);//getDisplayPath(fileFullPath));
+                action.setName(UIUtil.getDisplayPathForFile(AppMenuBar.this, fileFullPath));
                 action.setFileFullPath(fileFullPath);
                 return action;
             }
@@ -56,8 +56,7 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
             protected Action createOpenAction(String fileFullPath) {
                 OpenFileFromHistoryAction action =
                     new OpenFileFromHistoryAction(edisen);
-                // TODO: Share abbreviated path code in fife.common
-                action.setName(fileFullPath);//getDisplayPath(fileFullPath));
+                action.setName(UIUtil.getDisplayPathForFile(AppMenuBar.this, fileFullPath));
                 action.setFileFullPath(fileFullPath);
                 return action;
             }

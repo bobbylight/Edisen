@@ -80,7 +80,7 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
         emuCommandLineField.getDocument().addDocumentListener(listener);
         JPanel emuFieldPanel = createAssistancePanel(emuCommandLineField);
 
-        Util.addLabelValuePairs(generalPanel, getComponentOrientation(),
+        UIUtil.addLabelValuePairs(generalPanel, getComponentOrientation(),
             assemblerCommandLineLabel, assemblerFieldPanel,
             linkerCommandLineLabel, linkerFieldPanel,
             emuCommandLineLabel, emuFieldPanel);
