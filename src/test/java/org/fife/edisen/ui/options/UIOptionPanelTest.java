@@ -2,6 +2,7 @@ package org.fife.edisen.ui.options;
 
 import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.SwingRunnerExtension;
+import org.fife.edisen.ui.TestableEdisen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,8 +20,11 @@ public class UIOptionPanelTest {
 
     @Test
     public void testRestoreDefaults_nothingChanged() {
-        Edisen edisen = Mockito.mock(Edisen.class);
+
+        Edisen edisen = TestableEdisen.create();
         UIOptionPanel panel = new UIOptionPanel(edisen);
+        panel.setValues(edisen);
+
         Assertions.assertFalse(panel.restoreDefaults());
     }
 }

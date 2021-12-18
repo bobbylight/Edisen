@@ -3,7 +3,6 @@ package org.fife.edisen.ui.options;
 import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.Util;
 import org.fife.rsta.ui.AssistanceIconPanel;
-import org.fife.ui.ImageTranscodingUtil;
 import org.fife.ui.UIUtil;
 import org.fife.ui.autocomplete.AutoCompletion;
 import org.fife.ui.autocomplete.BasicCompletion;
@@ -13,8 +12,6 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ResourceBundle;
 
 /**
@@ -101,6 +98,9 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
     private JPanel createAssistancePanel(JComponent comp) {
         AssistanceIconPanel aip = new AssistanceIconPanel(comp);
         aip.setAssistanceEnabled(getContentAssistImage());
+        getApplication().addPropertyChangeListener(Edisen.ICON_STYLE_PROPERTY, e ->
+            aip.setAssistanceEnabled(getContentAssistImage())
+        );
         aip.setToolTipText(MSG.getString("Options.ProjectOptions.ContentAssistAvailable"));
         JPanel temp = new JPanel(new BorderLayout());
         temp.add(aip, BorderLayout.LINE_START);
@@ -109,13 +109,7 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
     }
 
     private Image getContentAssistImage() {
-        try {
-            InputStream in = getClass().getResourceAsStream("/images/light/intentionBulb.svg");
-            return ImageTranscodingUtil.rasterize("lightBulb", in, 12, 12);
-        } catch (IOException ioe) { // Never happens
-            ioe.printStackTrace();
-            return null;
-        }
+        return getApplication().getIconGroup().getImage("intentionBulb", 12, 12);
     }
 
     @Override
@@ -193,23 +187,23 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
 
     class Listener implements DocumentListener {
 
-        private void handleDocumentUpdate(DocumentEvent e) {
+        private void handleDocumentUpdate() {
             setDirty(true);
         }
 
         @Override
         public void insertUpdate(DocumentEvent e) {
-            handleDocumentUpdate(e);
+            handleDocumentUpdate();
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-            handleDocumentUpdate(e);
+            handleDocumentUpdate();
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
-            handleDocumentUpdate(e);
+            handleDocumentUpdate();
         }
     }
 }

@@ -35,6 +35,10 @@ abstract class AbstractEdisenOptionPanel extends OptionsDialogPanel {
         addLeftAligned(parent, defaultsButton);
     }
 
+    protected Edisen getApplication() {
+        return parent;
+    }
+
     protected String getString(String key, String... params) {
         return parent.getString(key, (Object[])params);
     }

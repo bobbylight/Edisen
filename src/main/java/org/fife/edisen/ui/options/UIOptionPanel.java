@@ -1,10 +1,11 @@
 package org.fife.edisen.ui.options;
 
 import org.fife.edisen.ui.Edisen;
-import org.fife.edisen.ui.Theme;
-import org.fife.edisen.ui.ThemeManager;
+import org.fife.edisen.ui.EdisenAppThemes;
 import org.fife.ui.LabelValueComboBox;
 import org.fife.ui.UIUtil;
+import org.fife.ui.app.AppTheme;
+import org.fife.ui.app.themes.FlatDarkTheme;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +18,7 @@ import java.util.ResourceBundle;
  */
 class UIOptionPanel extends AbstractEdisenOptionPanel {
 
-    private LabelValueComboBox<String, Theme> themeCombo;
+    private LabelValueComboBox<String, AppTheme> themeCombo;
 
     private static final ResourceBundle MSG = ResourceBundle.getBundle("org.fife.edisen.ui.Edisen");
 
@@ -39,8 +40,8 @@ class UIOptionPanel extends AbstractEdisenOptionPanel {
 
         JLabel themeLabel = new JLabel(MSG.getString("Options.UI.Theme"));
         themeCombo = new LabelValueComboBox<>();
-        for (Theme theme : Theme.values()) {
-            themeCombo.addLabelValuePair(MSG.getString(theme.getKey()), theme);
+        for (AppTheme theme : EdisenAppThemes.get()) {
+            themeCombo.addLabelValuePair(theme.getName(), theme);
         }
         themeCombo.addActionListener(listener);
 
@@ -62,9 +63,8 @@ class UIOptionPanel extends AbstractEdisenOptionPanel {
 
     @Override
     protected void doApplyImpl(Frame owner) {
-
         Edisen app = (Edisen) owner;
-        ThemeManager.apply(app, themeCombo.getSelectedValue());
+        app.setTheme(themeCombo.getSelectedValue());
     }
 
     @Override
@@ -79,6 +79,20 @@ class UIOptionPanel extends AbstractEdisenOptionPanel {
 
     @Override
     boolean restoreDefaults() {
+
+        int darkThemeIndex = 0;
+        for (int i = 0; i < themeCombo.getItemCount(); i++) {
+            if (FlatDarkTheme.ID.equals(themeCombo.getValueAt(i).getId())) {
+                darkThemeIndex = i;
+                break;
+            }
+        }
+
+        if (darkThemeIndex != themeCombo.getSelectedIndex()) {
+            themeCombo.setSelectedIndex(darkThemeIndex);
+            return true;
+        }
+
         return false;
     }
 

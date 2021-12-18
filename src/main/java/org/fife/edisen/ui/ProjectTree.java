@@ -1,6 +1,6 @@
 package org.fife.edisen.ui;
 
-import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.model.EdisenProject;
 import org.fife.ui.UIUtil;
 import org.fife.ui.rtextfilechooser.FileSystemTree;
 

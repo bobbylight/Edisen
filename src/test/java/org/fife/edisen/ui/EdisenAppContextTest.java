@@ -1,6 +1,7 @@
 package org.fife.edisen.ui;
 
 import org.fife.edisen.TestUtil;
+import org.fife.ui.app.themes.NativeTheme;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +59,7 @@ public class EdisenAppContextTest {
 
         doReturn(mockFileLocations).when(mockEdisen).getRecentFiles();
         doReturn(mockFileLocations).when(mockEdisen).getRecentProjects();
-        doReturn(Theme.NORD).when(mockEdisen).getTheme();
+        doReturn(new NativeTheme()).when(mockEdisen).getTheme();
 
         context.populatePrefsFromApplication(mockEdisen, prefs);
 
@@ -68,7 +69,7 @@ public class EdisenAppContextTest {
 
         Assertions.assertArrayEquals(expectedFilesAndProjects, prefs.recentFiles);
         Assertions.assertArrayEquals(expectedFilesAndProjects, prefs.recentProjects);
-        Assertions.assertEquals(Theme.NORD.getKey(), prefs.theme);
+        Assertions.assertEquals(NativeTheme.NAME, prefs.appTheme);
     }
 
     @Test
@@ -82,7 +83,7 @@ public class EdisenAppContextTest {
 
         doReturn(mockFileLocations).when(mockEdisen).getRecentFiles();
         doReturn(mockFileLocations).when(mockEdisen).getRecentProjects();
-        doReturn(Theme.NORD).when(mockEdisen).getTheme();
+        doReturn(new NativeTheme()).when(mockEdisen).getTheme();
 
         context.savePreferences(mockEdisen);
     }

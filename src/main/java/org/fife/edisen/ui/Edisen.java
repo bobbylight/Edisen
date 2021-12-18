@@ -1,6 +1,6 @@
 package org.fife.edisen.ui;
 
-import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.model.EdisenProject;
 import org.fife.edisen.ui.options.EdisenOptionsDialog;
 import org.fife.edisen.ui.tabbedpane.GameFileTabbedPane;
 import org.fife.edisen.ui.tabbedpane.TabbedPaneContent;
@@ -11,13 +11,18 @@ import org.fife.rsta.ui.search.ReplaceDialog;
 import org.fife.ui.*;
 import org.fife.ui.SplashScreen;
 import org.fife.ui.app.AbstractPluggableGUIApplication;
+import org.fife.ui.app.AppTheme;
 import org.fife.ui.app.GUIApplication;
+import org.fife.ui.app.icons.IconGroup;
+import org.fife.ui.app.icons.RasterImageIconGroup;
+import org.fife.ui.app.icons.SvgIconGroup;
 import org.fife.ui.dockablewindows.DockableWindow;
 import org.fife.ui.dockablewindows.DockableWindowConstants;
 import org.fife.ui.dockablewindows.DockableWindowPanel;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
+import org.fife.ui.rtextarea.RTextArea;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextfilechooser.FileChooserOwner;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
@@ -30,9 +35,7 @@ import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
 
 /**
@@ -64,10 +67,12 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     private ReplaceDialog replaceDialog;
     private GoToDialog goToDialog;
 
-    private Theme theme;
-
     private final FileFilter projectFileFilter;
     private final FileFilter allSupportedFilesFileFilter;
+
+    private Map<String, IconGroup> iconGroupMap;
+
+    private static final String DEFAULT_ICON_GROUP_NAME = "IntelliJ Icons (Dark)";
 
     private static final String VERSION = "1.0.0";
 
@@ -107,42 +112,29 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     @Override
     protected void createActions(EdisenPrefs prefs) {
 
-        this.theme = Theme.fromKey(prefs.theme);
-
         super.createActions(prefs);
 
         addAction(Actions.OPEN_PROJECT_ACTION_KEY, new Actions.OpenProjectAction(this));
-        Util.setIcon(this, Actions.OPEN_PROJECT_ACTION_KEY, "projectDirectory.svg");
         addAction(Actions.CLOSE_PROJECT_ACTION_KEY, new Actions.CloseProjectAction(this));
 
         addAction(Actions.OPEN_ACTION_KEY, new Actions.OpenAction(this));
-        Util.setIcon(this, Actions.OPEN_ACTION_KEY, "open.svg");
         addAction(Actions.SAVE_ACTION_KEY, new Actions.SaveAction(this));
-        Util.setIcon(this, Actions.SAVE_ACTION_KEY, "save.svg");
         addAction(Actions.SAVE_AS_ACTION_KEY, new Actions.SaveAsAction(this));
         addAction(Actions.CLOSE_ACTION_KEY, new Actions.CloseAction(this));
 
         addAction(EXIT_ACTION_KEY, new GUIApplication.ExitAction<>(this, "Action.Exit"));
 
         addAction(Actions.FIND_ACTION_KEY, new Actions.FindAction(this));
-        Util.setIcon(this, Actions.FIND_ACTION_KEY, "find.svg");
         addAction(Actions.REPLACE_ACTION_KEY, new Actions.ReplaceAction(this));
-        Util.setIcon(this, Actions.REPLACE_ACTION_KEY, "replace.svg");
         addAction(Actions.GOTO_ACTION_KEY, new Actions.GoToAction(this));
         addAction(Actions.OPTIONS_ACTION_KEY, new OptionsAction<>(this, "Action.Options"));
 
         addAction(Actions.COMPILE_ACTION_KEY, new Actions.BuildAction(this));
-        Util.setIcon(this, Actions.COMPILE_ACTION_KEY, "compile.svg");
         addAction(Actions.EMULATE_ACTION_KEY, new Actions.EmulateAction(this));
-        Util.setIcon(this, Actions.EMULATE_ACTION_KEY, "run_anything.svg");
 
-        HelpAction<Edisen> helpAction = new HelpAction<>(this, "Action.Help");
-        addAction(HELP_ACTION_KEY, helpAction);
-        Util.setIcon(this, HELP_ACTION_KEY, "help.svg");
+        addAction(HELP_ACTION_KEY, new HelpAction<>(this, "Action.Help"));
 
-        AboutAction<Edisen> aboutAction = new AboutAction<>(this, "Action.About");
-        addAction(ABOUT_ACTION_KEY, aboutAction);
-        Util.setIcon(this, ABOUT_ACTION_KEY, "about.svg");
+        addAction(ABOUT_ACTION_KEY, new AboutAction<>(this, "Action.About"));
     }
 
     protected FindDialog createFindDialog() {
@@ -155,10 +147,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     @Override
     protected JMenuBar createMenuBar(EdisenPrefs prefs) {
-
-        // Ugh - needed to initialize RSTA's actions, which we shove into the menu bar
-        new RSyntaxTextArea();
-
         return new AppMenuBar(this);
     }
 
@@ -289,10 +277,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         return tabbedPane.getSelectedIndex();
     }
 
-    public Theme getTheme() {
-        return theme;
-    }
-
     @Override
     public String getVersionString() {
         return VERSION;
@@ -363,7 +347,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         String title = getString("DockedWindow.Project");
         projectWindow = new DockableWindow(title, new BorderLayout());
-        projectWindow.setIcon(Util.getSvgIcon(this, "projectStructure.svg", 16));
+        projectWindow.setIcon(getIconGroup().getIcon("projectStructure"));
         projectWindow.setPosition(DockableWindowConstants.LEFT);
         projectWindow.setActive(true);
         projectWindow.add(sp);
@@ -373,7 +357,7 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
         title = getString("DockedWindow.Output");
         outputWindow = new DockableWindow(title, new BorderLayout());
-        outputWindow.setIcon(Util.getSvgIcon(this, "console.svg", 16));
+        outputWindow.setIcon(getIconGroup().getIcon("console"));
         outputWindow.setPosition(DockableWindowConstants.BOTTOM);
         outputWindow.setActive(true);
         outputTextArea = new OutputTextPane(this);
@@ -418,6 +402,29 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         }
 
         return okToClose;
+    }
+
+
+    /**
+     * Loads and validates the icon groups available to RText.
+     */
+    private void loadPossibleIconGroups() {
+
+        iconGroupMap = new HashMap<>();
+        String resourceRoot = "images/";
+
+        iconGroupMap.put(DEFAULT_ICON_GROUP_NAME,
+            new SvgIconGroup(this, DEFAULT_ICON_GROUP_NAME,
+                resourceRoot + "intellij-icons-dark",
+                resourceRoot + "intellij-icons-light")); // Proper contrast
+        iconGroupMap.put("IntelliJ Icons (Light)",
+            new SvgIconGroup(this, "IntelliJ Icons (Light)",
+                resourceRoot + "intellij-icons-light",
+                null));
+        iconGroupMap.put("Eclipse Icons", new RasterImageIconGroup("Eclipse Icons",
+            resourceRoot + "eclipse-icons",
+            null));
+
     }
 
     public void log(String level, String text, Object... arguments) {
@@ -516,7 +523,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     @Override
     protected void preCreateActions(EdisenPrefs prefs, SplashScreen splashScreen) {
         this.prefs = prefs;
-        this.theme = Theme.fromKey(prefs.theme); // Needed by the actions to pick out their icons
         setIcons();
     }
 
@@ -531,8 +537,6 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
             displayException(ioe);
         }
 
-        // Really only the RSTA action icons need this...
-        refreshIcons();
         refreshProjectRelatedActions();
 
         tabbedPane.focusActiveEditor();
@@ -552,7 +556,8 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     @Override
     protected void preStatusBarInit(EdisenPrefs prefs, SplashScreen splashScreen) {
-
+        loadPossibleIconGroups();
+        setIconGroupByName((String)getTheme().getExtraUiDefaults().get("edisen.iconGroupName"));
     }
 
     @Override
@@ -560,60 +565,10 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     }
 
-    void refreshLookAndFeel(Theme theme) {
-
-        this.theme = theme;
-
-        SwingUtilities.updateComponentTreeUI(this);
-        ((AboutDialog)getAboutDialog()).refreshLookAndFeel(theme);
-        if (optionsDialog != null) {
-            SwingUtilities.updateComponentTreeUI(optionsDialog);
-        }
-        if (findDialog != null) {
-            SwingUtilities.updateComponentTreeUI(findDialog);
-        }
-        if (replaceDialog != null) {
-            SwingUtilities.updateComponentTreeUI(replaceDialog);
-        }
-
-        refreshIcons();
-    }
-
-    /**
-     * Refreshes icons used by the application to better match the current theme.
-     * Called after theme changes.
-     */
-    private void refreshIcons() {
-
-        Util.setIcon(this, Actions.OPEN_PROJECT_ACTION_KEY, "projectDirectory.svg");
-
-        Util.setIcon(this, Actions.OPEN_ACTION_KEY, "open.svg");
-
-        Util.setIcon(this, Actions.COMPILE_ACTION_KEY, "compile.svg");
-        Util.setIcon(this, Actions.EMULATE_ACTION_KEY, "run_anything.svg");
-
-        refreshTextAreaIcon(RSyntaxTextArea.UNDO_ACTION, "undo.svg");
-        refreshTextAreaIcon(RSyntaxTextArea.REDO_ACTION, "redo.svg");
-        refreshTextAreaIcon(RSyntaxTextArea.CUT_ACTION, "cut.svg");
-        refreshTextAreaIcon(RSyntaxTextArea.COPY_ACTION, "copy.svg");
-        refreshTextAreaIcon(RSyntaxTextArea.PASTE_ACTION, "paste.svg");
-
-        Util.setIcon(this, HELP_ACTION_KEY, "help.svg");
-        Util.setIcon(this, ABOUT_ACTION_KEY, "about.svg");
-
-        projectWindow.setIcon(Util.getSvgIcon(this, "projectStructure.svg", 16));
-        outputWindow.setIcon(Util.getSvgIcon(this, "console.svg", 16));
-    }
-
     private void refreshProjectRelatedActions() {
         boolean activeProject = project != null;
         getAction(Actions.COMPILE_ACTION_KEY).setEnabled(activeProject);
         getAction(Actions.EMULATE_ACTION_KEY).setEnabled(activeProject);
-    }
-
-    private void refreshTextAreaIcon(int icon, String resource) {
-        Action action = RSyntaxTextArea.getAction(icon);
-        action.putValue(Action.SMALL_ICON, Util.getSvgIcon(this, resource, 16));
     }
 
     private void refreshTitle() {
@@ -684,6 +639,27 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
         project.setEmulatorCommandLine(commandLine);
     }
 
+    /**
+     * Changes the style of icons used by the application.<p>
+     *
+     * This method fires a property change of type
+     * <code>ICON_STYLE_PROPERTY</code>.
+     *
+     * @param name The name of the icon group to use.  If this name is not
+     *        recognized, a default icon set will be used.
+     */
+    private void setIconGroupByName(String name) {
+
+        IconGroup newGroup = iconGroupMap.get(name);
+        if (newGroup==null)
+            newGroup = iconGroupMap.get(DEFAULT_ICON_GROUP_NAME);
+        IconGroup iconGroup = getIconGroup();
+        if (iconGroup!=null && iconGroup.equals(newGroup))
+            return;
+
+        setIconGroup(newGroup);
+    }
+
     private void setIcons() {
 
         try {
@@ -699,5 +675,105 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
 
     public void setLinkerCommandLine(String commandLine) {
         project.setLinkCommandLine(commandLine);
+    }
+
+    @Override
+    protected void setThemeAdditionalProperties(AppTheme theme) {
+
+        super.setThemeAdditionalProperties(theme);
+
+        if (iconGroupMap != null) {
+            setIconGroupByName((String)theme.getExtraUiDefaults().get("edisen.iconGroupName"));
+        }
+
+        if (tabbedPane != null) {
+            try {
+                tabbedPane.updateRstaTheme(EdisenAppThemes.getRstaTheme(theme));
+            } catch (IOException ioe) {
+                displayException(ioe);
+            }
+        }
+    }
+
+    private void updateIconImpl(IconGroup iconGroup, String action, String icon) {
+        getAction(action).putValue(Action.SMALL_ICON, iconGroup.getIcon(icon));
+    }
+
+    /**
+     * Refreshes icons used by the application to better match the current theme.
+     * Called after theme changes.
+     */
+    @Override
+    protected void updateIconsForNewIconGroup(IconGroup iconGroup) {
+
+        super.updateIconsForNewIconGroup(iconGroup);
+
+        // Ugh - needed to initialize RSTA's actions, which we shove into the menu bar
+        new RSyntaxTextArea();
+
+        Dimension size = getSize();
+
+        // Text area icons
+        updateTextAreaIcon(RTextArea.CUT_ACTION, "cut");
+        updateTextAreaIcon(RTextArea.COPY_ACTION, "copy");
+        updateTextAreaIcon(RTextArea.PASTE_ACTION, "paste");
+        updateTextAreaIcon(RTextArea.DELETE_ACTION, "delete");
+        updateTextAreaIcon(RTextArea.UNDO_ACTION, "undo");
+        updateTextAreaIcon(RTextArea.REDO_ACTION, "redo");
+        updateTextAreaIcon(RTextArea.SELECT_ALL_ACTION, "selectall");
+
+        // All other icons
+        updateIconImpl(iconGroup, Actions.OPEN_PROJECT_ACTION_KEY, "projectDirectory");
+        updateIconImpl(iconGroup, Actions.OPEN_ACTION_KEY, "open");
+        updateIconImpl(iconGroup, Actions.SAVE_ACTION_KEY, "save");
+        updateIconImpl(iconGroup, Actions.SAVE_AS_ACTION_KEY, "saveas");
+        updateIconImpl(iconGroup, Actions.FIND_ACTION_KEY, "find");
+        updateIconImpl(iconGroup, Actions.REPLACE_ACTION_KEY, "replace");
+        updateIconImpl(iconGroup, Actions.COMPILE_ACTION_KEY, "compile");
+        updateIconImpl(iconGroup, Actions.EMULATE_ACTION_KEY, "run_anything");
+        updateIconImpl(iconGroup, HELP_ACTION_KEY, "help");
+        updateIconImpl(iconGroup, ABOUT_ACTION_KEY, "about");
+
+        // Do this because the toolbar has changed it's size.
+        if (isDisplayable()) {
+            pack();
+            setSize(size);
+        }
+
+        if (projectWindow != null) {
+            projectWindow.setIcon(iconGroup.getIcon("projectStructure"));
+        }
+        if (outputWindow != null) {
+            outputWindow.setIcon(iconGroup.getIcon("console"));
+        }
+    }
+
+    @Override
+    public void updateLookAndFeel(LookAndFeel lnf) {
+
+        super.updateLookAndFeel(lnf);
+
+        // Our About dialog needs a little extra nudge
+        ((AboutDialog)getAboutDialog()).refreshForNewAppTheme(getTheme());
+
+        if (optionsDialog != null) {
+            SwingUtilities.updateComponentTreeUI(optionsDialog);
+        }
+        if (findDialog != null) {
+            SwingUtilities.updateComponentTreeUI(findDialog);
+        }
+        if (replaceDialog != null) {
+            SwingUtilities.updateComponentTreeUI(replaceDialog);
+        }
+    }
+
+    private void updateTextAreaIcon(int actionName, String iconName) {
+
+        Icon icon = getIconGroup().getIcon(iconName);
+
+        Action action = RTextArea.getAction(actionName);
+        if (action != null) { // Can be null when the app is first starting up
+            action.putValue(Action.SMALL_ICON, icon);
+        }
     }
 }

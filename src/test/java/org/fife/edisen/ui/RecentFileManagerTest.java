@@ -1,7 +1,7 @@
 package org.fife.edisen.ui;
 
 import org.fife.edisen.TestUtil;
-import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.model.EdisenProject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

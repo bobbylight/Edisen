@@ -1,6 +1,6 @@
 package org.fife.edisen.ui;
 
-import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.model.EdisenProject;
 import org.fife.ui.RecentFilesMenu;
 import org.fife.ui.UIUtil;
 import org.fife.ui.app.MenuBar;
@@ -15,15 +15,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class AppMenuBar extends MenuBar implements PropertyChangeListener {
+public class AppMenuBar extends MenuBar<Edisen> implements PropertyChangeListener {
 
-    private Edisen edisen;
     private RecentFilesMenu recentProjectsMenu;
     private RecentFilesMenu recentFilesMenu;
 
     public AppMenuBar(Edisen edisen) {
+        super(edisen);
+    }
 
-        this.edisen = edisen;
+    @Override
+    protected void initializeUI() {
+
+        Edisen edisen = getApplication();
         edisen.addPropertyChangeListener(Edisen.PROPERTY_PROJECT, this);
         edisen.addPropertyChangeListener(Edisen.PROPERTY_FILE_OPENED, this);
         ResourceBundle msg = edisen.getResourceBundle();
@@ -126,7 +130,7 @@ public class AppMenuBar extends MenuBar implements PropertyChangeListener {
 
         super.addNotify();
 
-        List<FileLocation> recentFiles = edisen.getRecentProjects();
+        List<FileLocation> recentFiles = getApplication().getRecentProjects();
         List<FileLocation> recentFilesCopy = new ArrayList<>(recentFiles);
         Collections.reverse(recentFilesCopy);
         for (FileLocation file : recentFilesCopy) {

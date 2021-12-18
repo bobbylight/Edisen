@@ -2,6 +2,7 @@ package org.fife.edisen.ui.tabbedpane;
 
 import org.fife.edisen.TestUtil;
 import org.fife.edisen.ui.Edisen;
+import org.fife.edisen.ui.TestableEdisen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ public class CodeEditorTabbedPaneContentTest {
     @Test
     public void testGetFile() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
         File file = TestUtil.createTempFile();
 
         CodeEditorTabbedPaneContent content = new CodeEditorTabbedPaneContent(edisen, file);
@@ -24,7 +25,7 @@ public class CodeEditorTabbedPaneContentTest {
     @Test
     public void testGetTabName() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
         File file = TestUtil.createTempFile();
 
         CodeEditorTabbedPaneContent content = new CodeEditorTabbedPaneContent(edisen, file);

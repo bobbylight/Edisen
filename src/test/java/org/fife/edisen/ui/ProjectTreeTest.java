@@ -2,7 +2,7 @@ package org.fife.edisen.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fife.edisen.TestUtil;
-import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.model.EdisenProject;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

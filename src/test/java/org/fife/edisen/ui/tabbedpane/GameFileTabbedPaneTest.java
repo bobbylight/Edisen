@@ -3,6 +3,7 @@ package org.fife.edisen.ui.tabbedpane;
 import org.fife.edisen.TestUtil;
 import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.SwingRunnerExtension;
+import org.fife.edisen.ui.TestableEdisen;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
 import org.fife.ui.rtextarea.SearchContext;
@@ -21,7 +22,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testCloseTab() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
         tabbedPane.openFile(TestUtil.createTempFile());
@@ -34,7 +35,7 @@ public class GameFileTabbedPaneTest {
 
     @Test
     public void testFocusActiveEditor() throws IOException {
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
         tabbedPane.openFile(TestUtil.createTempFile());
         tabbedPane.focusActiveEditor();
@@ -43,7 +44,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testGetSearchListener_find_textFound() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
@@ -65,7 +66,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testGetSearchListener_replace_textFound() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
@@ -89,7 +90,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testGetSearchListener_replaceAll_textFound() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
@@ -113,7 +114,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testGetSearchListener_markAll_textFound() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
@@ -137,7 +138,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testHasDirtyFiles_noFilesOpen() {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
         Assertions.assertFalse(tabbedPane.hasDirtyFiles());
@@ -146,7 +147,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testHasDirtyFiles_filesOpenButNoneDirty() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
@@ -159,7 +160,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testHasDirtyFiles_oneDirtyFile() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
@@ -174,7 +175,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testOpenFile_chrDataFile() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
         Assertions.assertEquals(0, tabbedPane.getTabCount());
@@ -187,7 +188,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testOpenFile_sourceFile() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
         Assertions.assertEquals(0, tabbedPane.getTabCount());
@@ -203,7 +204,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testRemoveAll() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
@@ -218,7 +219,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testSaveCurrentFile() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = spy(TestableEdisen.create());
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
@@ -239,7 +240,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testUpdateUI() throws IOException {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = spy(TestableEdisen.create());
 
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 

@@ -1,25 +1,25 @@
 package org.fife.edisen.ui.options;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.fife.edisen.TestUtil;
-import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.TestableEdisen;
+import org.fife.edisen.ui.model.EdisenProject;
 import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.SwingRunnerExtension;
 import org.fife.edisen.ui.Util;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 
+import java.io.File;
 import java.io.IOException;
-
-import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SwingRunnerExtension.class)
 public class ProjectOptionPanelTest {
 
     @Test
     public void testGetTopJComponent() {
-        Edisen edisen = Mockito.mock(Edisen.class);
+        Edisen edisen = TestableEdisen.create();
         ProjectOptionPanel panel = new ProjectOptionPanel(edisen);
         Assertions.assertNotNull(panel.getTopJComponent());
     }
@@ -29,16 +29,16 @@ public class ProjectOptionPanelTest {
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine(Util.getDefaultAssemblerCommandLine());
-        project.setEmulatorCommandLine(Util.getDefaultEmulatorCommandLine());
         project.setLinkCommandLine(Util.getDefaultLinkerCommandLine());
-        project.setProjectFile(TestUtil.createTempFile(".edisen.json").toPath());
+        project.setEmulatorCommandLine(Util.getDefaultEmulatorCommandLine());
+        project.setGameFile("main.s");
+        String json = new ObjectMapper().writeValueAsString(project);
+
+        File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         // Initialize an Edisen mock with all default values for this option panel
-        Edisen edisen = Mockito.mock(Edisen.class);
-        doReturn(project).when(edisen).getProject();
-        doReturn(project.getAssemblerCommandLine()).when(edisen).getAssemblerCommandLine();
-        doReturn(project.getEmulatorCommandLine()).when(edisen).getEmulatorCommandLine();
-        doReturn(project.getLinkCommandLine()).when(edisen).getLinkerCommandLine();
+        Edisen edisen = TestableEdisen.create();
+        edisen.openFile(projectFile);
 
         // Initialize the option panel with the default values
         ProjectOptionPanel panel = new ProjectOptionPanel(edisen);
@@ -53,16 +53,19 @@ public class ProjectOptionPanelTest {
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine(Util.getDefaultAssemblerCommandLine());
-        project.setEmulatorCommandLine(Util.getDefaultEmulatorCommandLine());
         project.setLinkCommandLine(Util.getDefaultLinkerCommandLine());
-        project.setProjectFile(TestUtil.createTempFile(".edisen.json").toPath());
+        project.setEmulatorCommandLine(Util.getDefaultEmulatorCommandLine());
+        project.setGameFile("main.s");
+        String json = new ObjectMapper().writeValueAsString(project);
+
+        File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         // Initialize an Edisen mock with all modified values for this option panel
-        Edisen edisen = Mockito.mock(Edisen.class);
-        doReturn(project).when(edisen).getProject();
-        doReturn("changed").when(edisen).getAssemblerCommandLine();
-        doReturn("changed").when(edisen).getEmulatorCommandLine();
-        doReturn("changed").when(edisen).getLinkerCommandLine();
+        Edisen edisen = TestableEdisen.create();
+        edisen.openFile(projectFile);
+        edisen.setAssemblerCommandLine("changed");
+        edisen.setEmulatorCommandLine("changed");
+        edisen.setLinkerCommandLine("changed");
 
         // Initialize the option panel with the modified values
         ProjectOptionPanel panel = new ProjectOptionPanel(edisen);
@@ -76,7 +79,7 @@ public class ProjectOptionPanelTest {
     public void testRestoreDefaults_projectNotLoaded_falseReturned() {
 
         // Initialize an Edisen mock with no project loaded
-        Edisen edisen = Mockito.mock(Edisen.class);
+        Edisen edisen = TestableEdisen.create();
 
         // Initialize the option panel with the modified values
         ProjectOptionPanel panel = new ProjectOptionPanel(edisen);

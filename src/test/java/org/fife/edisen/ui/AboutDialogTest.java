@@ -35,14 +35,4 @@ public class AboutDialogTest {
         dialog.setApplication(mockEdisen);
         dialog.paint(g);
     }
-
-    @Test
-    public void testRefreshLookAndFeel() {
-
-        Edisen mockEdisen = TestUtil.mockEdisen();
-
-        AboutDialog dialog = new AboutDialog(null);
-        dialog.setApplication(mockEdisen);
-        dialog.refreshLookAndFeel(Theme.LIGHT);
-    }
 }

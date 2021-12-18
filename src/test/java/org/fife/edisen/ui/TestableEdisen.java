@@ -19,7 +19,7 @@ public class TestableEdisen extends Edisen {
     public GoToDialog mockGoToDialog;
     public int exceptionCount;
 
-    public TestableEdisen(EdisenAppContext context, EdisenPrefs prefs) {
+    private TestableEdisen(EdisenAppContext context, EdisenPrefs prefs) {
         super(context, prefs);
     }
 
@@ -32,7 +32,8 @@ public class TestableEdisen extends Edisen {
     public static TestableEdisen create() {
         EdisenAppContext context = new EdisenAppContext();
         EdisenPrefs prefs = new EdisenPrefs();
-        return new TestableEdisen(context, prefs);
+        TestableEdisen edisen = new TestableEdisen(context, prefs);
+        return edisen;
     }
 
     @Override

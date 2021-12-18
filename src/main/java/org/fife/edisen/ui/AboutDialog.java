@@ -12,6 +12,8 @@ import org.fife.ui.EscapableDialog;
 import org.fife.ui.ResizableFrameContentPane;
 import org.fife.ui.SelectableLabel;
 import org.fife.ui.UIUtil;
+import org.fife.ui.app.AppTheme;
+import org.fife.ui.app.themes.FlatDarkTheme;
 
 
 /**
@@ -33,9 +35,10 @@ class AboutDialog extends EscapableDialog {
         }
     }
 
-    private Container createTitleAndDescPanel(Theme theme) {
+    private Container createTitleAndDescPanel(AppTheme theme) {
 
-        Color descAreaBackground = theme == Theme.LIGHT ? Color.WHITE : new Color(48, 50, 52);
+        boolean lightTheme = !(theme instanceof FlatDarkTheme);
+        Color descAreaBackground = lightTheme ? Color.WHITE : new Color(48, 50, 52);
 
         SelectableLabel descLabel = new SelectableLabel(
                 app.getString("Dialog.About.Desc", app.getVersionString()));
@@ -122,7 +125,7 @@ class AboutDialog extends EscapableDialog {
         return "(unknown)"; // Dev builds won't have a build date
     }
 
-    void refreshLookAndFeel(Theme theme) {
+    void refreshForNewAppTheme(AppTheme theme) {
 
         SwingUtilities.updateComponentTreeUI(this);
 

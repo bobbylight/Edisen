@@ -1,12 +1,12 @@
 package org.fife.edisen.ui.tabbedpane;
 
-import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.model.EdisenProject;
 import org.fife.edisen.ui.Edisen;
-import org.fife.edisen.ui.Theme;
-import org.fife.edisen.ui.Util;
 import org.fife.rsta.ui.search.SearchEvent;
 import org.fife.rsta.ui.search.SearchListener;
+import org.fife.ui.app.AppTheme;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rtextarea.SearchContext;
 import org.fife.ui.rtextarea.SearchEngine;
 import org.fife.ui.rtextarea.SearchResult;
@@ -19,7 +19,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.function.BiConsumer;
 
 /**
@@ -85,18 +84,23 @@ public class GameFileTabbedPane extends JTabbedPane {
         content.requestFocusInWindow();
     }
 
-    private void applyThemeToTextAreas(Theme theme) throws IOException {
+    private void applyThemeToTextAreas(AppTheme theme) throws IOException {
 
-        InputStream in = getClass().getResourceAsStream(theme.getRstaTheme());
-        org.fife.ui.rsyntaxtextarea.Theme rstaTheme = org.fife.ui.rsyntaxtextarea.Theme.load(in);
+        String editorTheme = (String)theme.getExtraUiDefaults().get("edisen.editorTheme");
 
-        for (int i = 0; i < getTabCount(); i++) {
+        try {
+            InputStream in = getClass().getResourceAsStream(editorTheme);
+            org.fife.ui.rsyntaxtextarea.Theme rstaTheme = org.fife.ui.rsyntaxtextarea.Theme.load(in);
 
-            TabbedPaneContent content = (TabbedPaneContent)getComponentAt(i);
-            if (content instanceof CodeEditorTabbedPaneContent) {
-                TextEditorPane textArea = ((CodeEditorTabbedPaneContent)content).getTextArea();
-                rstaTheme.apply(textArea);
+            for (int i = 0; i < getTabCount(); i++) {
+                TabbedPaneContent content = (TabbedPaneContent)getComponentAt(i);
+                if (content instanceof CodeEditorTabbedPaneContent) {
+                    TextEditorPane textArea = ((CodeEditorTabbedPaneContent)content).getTextArea();
+                    rstaTheme.apply(textArea);
+                }
             }
+        } catch (IOException ioe) {
+            edisen.displayException(ioe);
         }
     }
 
@@ -156,34 +160,8 @@ public class GameFileTabbedPane extends JTabbedPane {
     }
 
     private Icon getIconFor(File file) {
-
-        // Default
-        String image = "plain.svg";
-
         String extension = Utilities.getExtension(file.getName());
-        if (extension != null) {
-            URL url = getClass().getResource(getIconPath(extension + ".svg"));
-            if (url != null) {
-                image = extension + ".svg";
-            }
-            else {
-                url = getClass().getResource(getIconPath(extension + ".png"));
-                if (url != null) {
-                    image = extension + ".png";
-                }
-            }
-        }
-
-        if (image.endsWith(".svg")) {
-            return Util.getSvgIcon(edisen, getIconPath(image), 16);
-        }
-        else {
-            return new ImageIcon(getClass().getResource(getIconPath(image)));
-        }
-    }
-
-    private static String getIconPath(String icon) {
-        return "/icons/fileTypes/" + icon;
+        return edisen.getIconGroup().getIcon(extension);
     }
 
     public boolean hasDirtyFiles() {
@@ -277,15 +255,25 @@ public class GameFileTabbedPane extends JTabbedPane {
         }
     }
 
+    public void updateRstaTheme(Theme theme) {
+        for (int i = 0; i < getTabCount(); i++) {
+            TabbedPaneContent content = (TabbedPaneContent)getComponentAt(i);
+            if (content instanceof CodeEditorTabbedPaneContent) {
+                TextEditorPane textArea = ((CodeEditorTabbedPaneContent)content).
+                    getTextArea();
+                theme.apply(textArea);
+            }
+        }
+    }
+
     @Override
     public void updateUI() {
 
         super.updateUI();
 
         if (edisen != null) {
-            Theme theme = edisen.getTheme();
             try {
-                applyThemeToTextAreas(theme);
+                applyThemeToTextAreas(edisen.getTheme());
             } catch (IOException ioe) {
                 edisen.displayException(ioe);
             }

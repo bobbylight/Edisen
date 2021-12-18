@@ -1,8 +1,9 @@
 package org.fife.edisen.ui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.formdev.flatlaf.FlatDarkLaf;
 import org.fife.edisen.TestUtil;
-import org.fife.edisen.model.EdisenProject;
+import org.fife.edisen.ui.model.EdisenProject;
 import org.fife.ui.rtextfilechooser.RTextFileChooser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -390,27 +391,6 @@ public class EdisenTest {
     }
 
     @Test
-    public void testRefreshLookAndFeel_noDialogsCreated() {
-        edisen = TestableEdisen.create();
-        Assertions.assertNotEquals(Theme.NORD, edisen.getTheme());
-        edisen.refreshLookAndFeel(Theme.NORD);
-        Assertions.assertEquals(Theme.NORD, edisen.getTheme());
-    }
-
-    @Test
-    public void testRefreshLookAndFeel_dialogsCreated() {
-
-        edisen = TestableEdisen.create();
-        edisen.getOptionsDialog();
-        edisen.find();
-        edisen.replace();
-
-        Assertions.assertNotEquals(Theme.NORD, edisen.getTheme());
-        edisen.refreshLookAndFeel(Theme.NORD);
-        Assertions.assertEquals(Theme.NORD, edisen.getTheme());
-    }
-
-    @Test
     public void testReplace() {
 
         edisen = TestableEdisen.create();
@@ -513,5 +493,16 @@ public class EdisenTest {
         Assertions.assertEquals(edisen.getEmulatorCommandLine(), newProject.getEmulatorCommandLine());
         Assertions.assertEquals(project.getName(), newProject.getName());
         Assertions.assertEquals(project.getGameFile(), newProject.getGameFile());
+    }
+
+    @Test
+    public void testUpdateLookAndFeel_everythingCreated() {
+
+        edisen = TestableEdisen.create();
+
+        edisen.getOptionsDialog();
+        edisen.find();
+        edisen.replace();
+        edisen.updateLookAndFeel(new FlatDarkLaf());
     }
 }

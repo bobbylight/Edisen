@@ -2,12 +2,8 @@ package org.fife.edisen.ui;
 
 import org.fife.ui.ImageTranscodingUtil;
 import org.fife.ui.OS;
-import org.fife.ui.app.AppAction;
-import org.fife.ui.autocomplete.EmptyIcon;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -21,20 +17,6 @@ public final class Util {
      */
     private Util() {
         // Do nothing (comment for Sonar)
-    }
-
-    public static Image getDarkLookAndFeelContentAssistImage() {
-
-        Image image = null;
-        InputStream in = Util.class.getResourceAsStream("/images/dark/intentionBulb.svg");
-
-        try {
-            image = ImageTranscodingUtil.rasterize("bulb", in, 12, 12);
-        } catch (IOException ioe) { // Never happens
-            ioe.printStackTrace();
-        }
-
-        return image;
     }
 
     public static String getDefaultAssemblerCommandLine() {
@@ -61,40 +43,5 @@ public final class Util {
             return "open -a Nestopia ${rom}";
         }
         return "D:/emulation/nes/emulators/nestopia/nestopia.exe ${rom}";
-    }
-
-    public static Icon getSvgIcon(Edisen edisen, String resource, int size) {
-
-        // Trust fully-qualified resources.  Non-fully qualified - assume
-        // they must match the theme.
-        if (!resource.startsWith("/")) {
-            Theme theme = edisen.getTheme();
-            resource = "/images/" + theme.getImageRoot() + "/" + resource;
-        }
-
-        InputStream in = Util.class.getResourceAsStream(resource);
-
-        try {
-            BufferedImage image = ImageTranscodingUtil.rasterize(resource, in, size, size);
-            return new ImageIcon(image);
-        } catch (IOException ioe) {
-            System.out.println("Couldn't find icon: " + resource);
-            ioe.printStackTrace();
-            return new EmptyIcon(size);
-        }
-    }
-
-    /**
-     * Sets an icon on an action in the application.  An icon is picked that provides the
-     * best contrast for the current theme.  This is called in response to theme changes.
-     *
-     * @param edisen The parent application.
-     * @param actionKey The action to update.
-     * @param resource The new image.
-     */
-    @SuppressWarnings("unchecked")
-    public static void setIcon(Edisen edisen, String actionKey, String resource) {
-        AppAction<Edisen> action = (AppAction<Edisen>)edisen.getAction(actionKey);
-        action.setIcon(getSvgIcon(edisen, resource, 16));
     }
 }

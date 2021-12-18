@@ -1,7 +1,8 @@
 package org.fife.edisen;
 
 import org.fife.edisen.ui.Edisen;
-import org.fife.edisen.ui.Theme;
+import org.fife.edisen.ui.TestableEdisen;
+import org.fife.ui.app.themes.FlatDarkTheme;
 import org.mockito.Mockito;
 
 import java.awt.*;
@@ -63,14 +64,18 @@ public class TestUtil {
 
     /**
      * Creates a reasonably well-mocked Edisen.  Mocks most things needed
-     * for various tests - i18n stuff, being a parent window, etc.
+     * for various tests - i18n stuff, being a parent window, etc.<p>
+     *
+     * For tests that need an "actual" Edisen instance, use
+     * {@code TestableEdisen#create()}.
      *
      * @return The mocked Edisen instance.
+     * @see TestableEdisen#create()
      */
     public static Edisen mockEdisen() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
-        doReturn(Theme.NORD).when(mockEdisen).getTheme();
+        doReturn(new FlatDarkTheme()).when(mockEdisen).getTheme();
 
         // Stuff for tests that create UI's with localized text
         ResourceBundle msg = ResourceBundle.getBundle("org.fife.edisen.ui.Edisen");

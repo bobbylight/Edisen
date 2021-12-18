@@ -1,5 +1,6 @@
 package org.fife.edisen.model;
 
+import org.fife.edisen.ui.model.EdisenProject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

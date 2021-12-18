@@ -1,8 +1,8 @@
 package org.fife.edisen.ui.options;
 
-import org.fife.edisen.TestUtil;
 import org.fife.edisen.ui.Edisen;
 import org.fife.edisen.ui.SwingRunnerExtension;
+import org.fife.edisen.ui.TestableEdisen;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -12,7 +12,7 @@ public class EdisenOptionsDialogTest {
     @Test
     public void testConstructor() {
 
-        Edisen edisen = TestUtil.mockEdisen();
+        Edisen edisen = TestableEdisen.create();
 
         EdisenOptionsDialog dialog = new EdisenOptionsDialog(null);
         dialog.setApplication(edisen);

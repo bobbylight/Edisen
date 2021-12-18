@@ -1,11 +1,12 @@
 package org.fife.edisen.ui.tabbedpane;
 
 import org.fife.edisen.ui.Edisen;
-import org.fife.edisen.ui.FileTypeManager;
-import org.fife.edisen.ui.Theme;
 import org.fife.ui.UIUtil;
+import org.fife.ui.app.AppTheme;
 import org.fife.ui.rsyntaxtextarea.FileLocation;
+import org.fife.ui.rsyntaxtextarea.FileTypeUtil;
 import org.fife.ui.rsyntaxtextarea.TextEditorPane;
+import org.fife.ui.rsyntaxtextarea.Theme;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -35,7 +36,6 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
         Listener listener = new Listener();
 
         textArea = new TextEditorPane();
-        textArea.setSyntaxEditingStyle(FileTypeManager.get().get(file));
         textArea.setCodeFoldingEnabled(true);
         textArea.addPropertyChangeListener(TextEditorPane.DIRTY_PROPERTY, listener);
         addSpellingParser(textArea);
@@ -46,6 +46,8 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
         } catch (IOException ioe) {
             edisen.displayException(ioe);
         }
+
+        setSyntaxEditingStyle(textArea, file);
 
         RTextScrollPane scrollPane = new RTextScrollPane(textArea);
         UIUtil.removeTabbedPaneFocusTraversalKeyBindings(scrollPane);
@@ -64,10 +66,13 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
         }
     }
 
-    private void applyThemeToTextArea(TextEditorPane textArea, Theme theme) {
+    private void applyThemeToTextArea(TextEditorPane textArea, AppTheme theme) {
+
+        String editorTheme = (String)theme.getExtraUiDefaults().get("edisen.editorTheme");
+
         try {
-            InputStream in = getClass().getResourceAsStream(theme.getRstaTheme());
-            org.fife.ui.rsyntaxtextarea.Theme rstaTheme = org.fife.ui.rsyntaxtextarea.Theme.load(in);
+            InputStream in = getClass().getResourceAsStream(editorTheme);
+            Theme rstaTheme = Theme.load(in);
             rstaTheme.apply(textArea);
         } catch (IOException ioe) {
             edisen.displayException(ioe);
@@ -131,6 +136,14 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
     @Override
     public void saveChanges() throws IOException {
         textArea.save();
+    }
+
+    private static void setSyntaxEditingStyle(TextEditorPane textArea, File file) {
+        String style = FileTypeUtil.get().guessContentType(file);
+        if (style == null) {
+            style = FileTypeUtil.get().guessContentType(textArea);
+        }
+        textArea.setSyntaxEditingStyle(style);
     }
 
     @Override

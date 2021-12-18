@@ -1,4 +1,4 @@
-package org.fife.edisen.model;
+package org.fife.edisen.ui.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
