@@ -2,7 +2,7 @@ import java.time.format.*
 import org.apache.tools.ant.taskdefs.condition.Os
 import static org.gradle.api.JavaVersion.*
 
-// export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-11.0.1.jdk/Contents/Home
+// export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-14.jdk/Contents/Home
 // export PATH=$JAVA_HOME/bin:$PATH
 
 plugins {
@@ -27,7 +27,7 @@ repositories {
 }
 
 wrapper {
-    gradleVersion '7.1.1'
+    gradleVersion '7.3.2'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -49,10 +49,10 @@ configurations.all { // Check for updates every build
 
 dependencies {
 
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.12.4'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
-    implementation 'com.formdev:flatlaf:1.4'
-    implementation 'com.formdev:flatlaf-intellij-themes:1.4'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.13.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.0'
+    implementation 'com.formdev:flatlaf:1.6.5'
+    implementation 'com.formdev:flatlaf-intellij-themes:1.6.5'
 
     implementation('com.fifesoft.rtext:fife.common:4.0.1-SNAPSHOT') { changing = true }
     implementation('com.fifesoft:rsyntaxtextarea:3.1.5-SNAPSHOT') { changing = true }
@@ -61,7 +61,7 @@ dependencies {
     implementation 'com.fifesoft:spellchecker:3.1.3'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testImplementation 'org.mockito:mockito-core:3.11.2'
+    testImplementation 'org.mockito:mockito-core:4.1.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
 }
 
