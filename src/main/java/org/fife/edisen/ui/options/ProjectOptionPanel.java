@@ -41,9 +41,12 @@ public class ProjectOptionPanel extends AbstractEdisenOptionPanel {
             }
         };
         provider.setAutoActivationRules(true, "${");
-        provider.addCompletion(new BasicCompletion(provider, "${rom}", "The name of the ROM file to generate, e.g. 'game.nes'"));
-        provider.addCompletion(new BasicCompletion(provider, "${gameFile}", "The source file containing the game's entry point"));
-        provider.addCompletion(new BasicCompletion(provider, "${objFile}", "The name of the object file to generate"));
+        provider.addCompletion(new BasicCompletion(provider, "${rom}",
+            "The name of the ROM file to generate, e.g. 'game.nes'"));
+        provider.addCompletion(new BasicCompletion(provider, "${gameFile}",
+            "The source file containing the game's entry point"));
+        provider.addCompletion(new BasicCompletion(provider, "${objFile}",
+            "The name of the object file to generate"));
 
         setBorder(UIUtil.getEmpty5Border());
         setLayout(new BorderLayout());

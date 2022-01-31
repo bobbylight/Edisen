@@ -8,6 +8,7 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'distribution'
+    id 'checkstyle'
 }
 
 assert JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_14)
@@ -27,6 +28,11 @@ repositories {
 wrapper {
     gradleVersion '7.3.3'
     distributionType = Wrapper.DistributionType.ALL
+}
+
+checkstyle {
+    toolVersion = '9.2.1'
+    configDirectory = file("$rootProject.projectDir/config/checkstyle")
 }
 
 test {

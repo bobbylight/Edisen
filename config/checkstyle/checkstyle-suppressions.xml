@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE suppressions PUBLIC
+    "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+    "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+<suppressions>
+    <suppress files=".*org[\\/]fife[\\/]edisen[\\/]ui[\\/]EdisenPrefs" checks="[a-zA-Z0-9]*"/>
+<!--    <suppress files=".*TokenMaker.*\.java" checks="[a-zA-Z0-9]*"/>-->
+<!--    <suppress files=".*src[\\/]test[\\/].*" checks="[a-zA-Z0-9]*"/>-->
+
+<!--    &lt;!&ndash; These files are long due to how much functionality we have &ndash;&gt;-->
+<!--    <suppress files="RSyntaxTextArea.java" checks="FileLengthCheck"/>-->
+<!--    <suppress files="RSyntaxTextAreaEditorKit.java" checks="FileLengthCheck"/>-->
+<!--    <suppress files="RTextAreaEditorKit.java" checks="FileLengthCheck"/>-->
+</suppressions>

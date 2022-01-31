@@ -651,11 +651,13 @@ public class Edisen extends AbstractPluggableGUIApplication<EdisenPrefs>
     private void setIconGroupByName(String name) {
 
         IconGroup newGroup = iconGroupMap.get(name);
-        if (newGroup==null)
+        if (newGroup==null) {
             newGroup = iconGroupMap.get(DEFAULT_ICON_GROUP_NAME);
+        }
         IconGroup iconGroup = getIconGroup();
-        if (iconGroup!=null && iconGroup.equals(newGroup))
+        if (iconGroup!=null && iconGroup.equals(newGroup)) {
             return;
+        }
 
         setIconGroup(newGroup);
     }

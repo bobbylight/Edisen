@@ -1,11 +1,6 @@
 package org.fife.edisen.ui;
 
-import org.fife.ui.ImageTranscodingUtil;
 import org.fife.ui.OS;
-
-import java.awt.*;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Obligatory utility methods.

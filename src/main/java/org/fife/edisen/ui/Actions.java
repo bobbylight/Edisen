@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Actions used by the application.
  */
-public class Actions {
+public final class Actions {
 
     public static final String CLOSE_ACTION_KEY = "closeAction";
     public static final String CLOSE_PROJECT_ACTION_KEY = "closeProjectAction";
