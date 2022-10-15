@@ -11,10 +11,10 @@ import java.util.Date;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class AboutDialogTest {
+class AboutDialogTest {
 
     @Test
-    public void testHappyPath_noBuildDate() {
+    void testHappyPath_noBuildDate() {
 
         Edisen mockEdisen = TestUtil.mockEdisen();
 
@@ -25,7 +25,7 @@ public class AboutDialogTest {
     }
 
     @Test
-    public void testHappyPath_withBuildDate() {
+    void testHappyPath_withBuildDate() {
 
         Edisen mockEdisen = TestUtil.mockEdisen();
         doReturn(new Date()).when(mockEdisen).getBuildDate();

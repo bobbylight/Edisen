@@ -14,7 +14,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class AppMenuBarTest {
+class AppMenuBarTest {
 
     @BeforeAll
     public static void setUpOnce() {
@@ -22,7 +22,7 @@ public class AppMenuBarTest {
     }
 
     @Test
-    public void testGetFileHistory() {
+    void testGetFileHistory() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
         ResourceBundle msg = ResourceBundle.getBundle("org.fife.edisen.ui.Edisen");

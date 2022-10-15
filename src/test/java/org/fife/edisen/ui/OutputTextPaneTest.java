@@ -15,10 +15,10 @@ import java.io.IOException;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class OutputTextPaneTest {
+class OutputTextPaneTest {
 
     @Test
-    public void testCreatePopupMenu() {
+    void testCreatePopupMenu() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -27,7 +27,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testGetDefaultFont() {
+    void testGetDefaultFont() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -36,7 +36,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testLog_noNewline_noArguments() {
+    void testLog_noNewline_noArguments() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -49,7 +49,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testLog_withNewline_noArguments() {
+    void testLog_withNewline_noArguments() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -62,7 +62,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testLog_noNewline_withArguments() {
+    void testLog_noNewline_withArguments() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -75,7 +75,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testLog_withNewline_withArguments() {
+    void testLog_withNewline_withArguments() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -88,7 +88,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testReplaceSelection_addingToLastLine() {
+    void testReplaceSelection_addingToLastLine() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -102,7 +102,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testReplaceSelection_typingInPriorLine() {
+    void testReplaceSelection_typingInPriorLine() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -119,7 +119,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testReplaceSelection_typingWithSelectionHandInLastLineHalfOut() {
+    void testReplaceSelection_typingWithSelectionHandInLastLineHalfOut() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -138,7 +138,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testMenu_clearAllAction() {
+    void testMenu_clearAllAction() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 
@@ -153,7 +153,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testMenu_configureAction() {
+    void testMenu_configureAction() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
         OptionsDialog optionsDialog = Mockito.mock(OptionsDialog.class);
@@ -168,7 +168,7 @@ public class OutputTextPaneTest {
     }
 
     @Test
-    public void testMenu_copyAllAction() throws IOException, UnsupportedFlavorException {
+    void testMenu_copyAllAction() throws IOException, UnsupportedFlavorException {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 

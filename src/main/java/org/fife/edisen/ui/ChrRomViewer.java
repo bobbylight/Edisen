@@ -11,8 +11,8 @@ import java.io.*;
  */
 public class ChrRomViewer extends JComponent {
 
-    private Edisen edisen;
-    private File chrFile;
+    private final Edisen edisen;
+    private final File chrFile;
     private BufferedImage image;
 
     public ChrRomViewer(Edisen edisen, File chrFile) {
@@ -58,23 +58,13 @@ public class ChrRomViewer extends JComponent {
                 }
 
                 for (int i = 0; i < newPixels.length; i++) {
-                    int color;
-                    switch (newPixels[i]) {
-                        case 0:
-                            color = 0xffffffff;
-                            break;
-                        case 1:
-                            color = 0xffff0000;
-                            break;
-                        case 2:
-                            color = 0xff00ff00;
-                            break;
-                        case 3:
-                            color = 0xff0000ff;
-                            break;
-                        default:
-                            throw new RuntimeException("Unexpected color value: " + newPixels[i]);
-                    }
+                    int color = switch (newPixels[i]) {
+                        case 0 -> 0xffffffff;
+                        case 1 -> 0xffff0000;
+                        case 2 -> 0xff00ff00;
+                        case 3 -> 0xff0000ff;
+                        default -> throw new RuntimeException("Unexpected color value: " + newPixels[i]);
+                    };
                     pixels[yOffs * w + xOffs + i] = color;
                 }
 

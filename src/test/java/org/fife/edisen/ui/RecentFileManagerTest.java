@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class RecentFileManagerTest {
+class RecentFileManagerTest {
 
     private Edisen edisen;
 
@@ -31,33 +31,33 @@ public class RecentFileManagerTest {
     }
 
     @Test
-    public void testConstructor_nullFileList() {
+    void testConstructor_nullFileList() {
         RecentFileManager rfm = new RecentFileManager(edisen, null);
         Assertions.assertEquals(0, rfm.getRecentFiles().size());
     }
 
     @Test
-    public void testConstructor_emptyFileList() {
+    void testConstructor_emptyFileList() {
         RecentFileManager rfm = new RecentFileManager(edisen, Collections.emptyList());
         Assertions.assertEquals(0, rfm.getRecentFiles().size());
     }
 
     @Test
-    public void testConstructor_nonEmptyFileListButFilesNoLongerExist() {
+    void testConstructor_nonEmptyFileListButFilesNoLongerExist() {
         List<String> recentFiles = Collections.singletonList("does-not-exist.txt");
         RecentFileManager rfm = new RecentFileManager(edisen, recentFiles);
         Assertions.assertEquals(0, rfm.getRecentFiles().size());
     }
 
     @Test
-    public void testConstructor_nonEmptyFileListWithFilesThatExist() throws IOException {
+    void testConstructor_nonEmptyFileListWithFilesThatExist() throws IOException {
         List<String> recentFiles = Collections.singletonList(createTempFile());
         RecentFileManager rfm = new RecentFileManager(edisen, recentFiles);
         Assertions.assertEquals(recentFiles.size(), rfm.getRecentFiles().size());
     }
 
     @Test
-    public void testAddFile_addingTheSameFileTwiceDoesNotDuplicate() throws IOException {
+    void testAddFile_addingTheSameFileTwiceDoesNotDuplicate() throws IOException {
 
         String file = createTempFile();
 
@@ -75,7 +75,7 @@ public class RecentFileManagerTest {
     }
 
     @Test
-    public void testAddFile_maxFileCount() throws IOException {
+    void testAddFile_maxFileCount() throws IOException {
 
         List<String> recentFiles = new ArrayList<>();
         for (int i = 0; i < 76; i++) {
@@ -87,7 +87,7 @@ public class RecentFileManagerTest {
     }
 
     @Test
-    public void testProjectOpenedAddsAnEntry() throws IOException {
+    void testProjectOpenedAddsAnEntry() throws IOException {
 
         RecentFileManager rfm = new RecentFileManager(edisen, Collections.emptyList());
         Assertions.assertEquals(0, rfm.getRecentFiles().size());

@@ -5,20 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class UtilTest {
+class UtilTest {
 
     @Test
-    public void testGetDefaultAssemblerCommandLine() {
+    void testGetDefaultAssemblerCommandLine() {
         Assertions.assertNotNull(Util.getDefaultAssemblerCommandLine());
     }
 
     @Test
-    public void testGetDefaultEmulatorCommandLine() {
+    void testGetDefaultEmulatorCommandLine() {
         Assertions.assertNotNull(Util.getDefaultEmulatorCommandLine());
     }
 
     @Test
-    public void testGetDefaultLinkerCommandLine() {
+    void testGetDefaultLinkerCommandLine() {
         Assertions.assertNotNull(Util.getDefaultLinkerCommandLine());
     }
 }

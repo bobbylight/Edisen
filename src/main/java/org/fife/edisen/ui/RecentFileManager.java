@@ -20,8 +20,8 @@ import java.util.List;
  */
 public class RecentFileManager implements PropertyChangeListener {
 
-    private Edisen edisen;
-    private List<FileLocation> files;
+    private final Edisen edisen;
+    private final List<FileLocation> files;
 
     /**
      * The number of files we remember.

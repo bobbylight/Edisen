@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class EdisenOptionsDialogTest {
+class EdisenOptionsDialogTest {
 
     @Test
-    public void testConstructor() {
+    void testConstructor() {
 
         Edisen edisen = TestableEdisen.create();
 

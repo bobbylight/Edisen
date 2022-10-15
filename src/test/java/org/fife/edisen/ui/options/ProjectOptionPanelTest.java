@@ -15,17 +15,17 @@ import java.io.File;
 import java.io.IOException;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class ProjectOptionPanelTest {
+class ProjectOptionPanelTest {
 
     @Test
-    public void testGetTopJComponent() {
+    void testGetTopJComponent() {
         Edisen edisen = TestableEdisen.create();
         ProjectOptionPanel panel = new ProjectOptionPanel(edisen);
         Assertions.assertNotNull(panel.getTopJComponent());
     }
 
     @Test
-    public void testRestoreDefaults_projectLoaded_nothingChanged() throws IOException {
+    void testRestoreDefaults_projectLoaded_nothingChanged() throws IOException {
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine(Util.getDefaultAssemblerCommandLine());
@@ -49,7 +49,7 @@ public class ProjectOptionPanelTest {
     }
 
     @Test
-    public void testRestoreDefaults_projectLoaded_everythingChanged() throws IOException {
+    void testRestoreDefaults_projectLoaded_everythingChanged() throws IOException {
 
         EdisenProject project = new EdisenProject();
         project.setAssemblerCommandLine(Util.getDefaultAssemblerCommandLine());
@@ -76,7 +76,7 @@ public class ProjectOptionPanelTest {
     }
 
     @Test
-    public void testRestoreDefaults_projectNotLoaded_falseReturned() {
+    void testRestoreDefaults_projectNotLoaded_falseReturned() {
 
         // Initialize an Edisen mock with no project loaded
         Edisen edisen = TestableEdisen.create();

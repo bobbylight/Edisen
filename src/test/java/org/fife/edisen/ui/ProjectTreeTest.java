@@ -16,10 +16,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class ProjectTreeTest {
+class ProjectTreeTest {
 
     @Test
-    public void testConstructor_listensForProjectChanges() {
+    void testConstructor_listensForProjectChanges() {
 
         Edisen mockEdisen = TestUtil.mockEdisen();
 
@@ -28,7 +28,7 @@ public class ProjectTreeTest {
     }
 
     @Test
-    public void testPossiblyOpenFileForEditing_noSelection() {
+    void testPossiblyOpenFileForEditing_noSelection() {
 
         Edisen mockEdisen = TestUtil.mockEdisen();
         ProjectTree tree = new ProjectTree(mockEdisen);
@@ -38,12 +38,12 @@ public class ProjectTreeTest {
 
     @Test
     @Disabled("Currently no programmatic way to do this")
-    public void testPossiblyOpenFileForEditing_selection() {
+    void testPossiblyOpenFileForEditing_selection() {
         // Do nothing (comment for Sonar)
     }
 
     @Test
-    public void testOpenProject_contentsDisplayed() throws IOException {
+    void testOpenProject_contentsDisplayed() throws IOException {
 
         Edisen mockEdisen = TestableEdisen.create();
         ProjectTree tree = new ProjectTree(mockEdisen);
@@ -57,7 +57,7 @@ public class ProjectTreeTest {
     }
 
     @Test
-    public void testCloseProject_contentsRemoved() throws IOException {
+    void testCloseProject_contentsRemoved() throws IOException {
 
         Edisen mockEdisen = TestableEdisen.create();
         ProjectTree tree = new ProjectTree(mockEdisen);

@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-public class AbstractTabbedPaneContentTest {
+class AbstractTabbedPaneContentTest {
 
     @Test
-    public void testGetSetDirty() {
+    void testGetSetDirty() {
         TestableTabbedPaneContent content = new TestableTabbedPaneContent();
         Assertions.assertFalse(content.isDirty());
         content.setDirty(true);
@@ -17,7 +17,7 @@ public class AbstractTabbedPaneContentTest {
     }
 
     @Test
-    public void testSaveContent() throws IOException {
+    void testSaveContent() throws IOException {
         // Just for coverage
         TestableTabbedPaneContent content = new TestableTabbedPaneContent();
         content.saveChanges();

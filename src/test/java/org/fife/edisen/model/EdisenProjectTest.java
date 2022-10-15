@@ -9,10 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class EdisenProjectTest {
+class EdisenProjectTest {
 
     @Test
-    public void testFromFile_success() throws IOException {
+    void testFromFile_success() throws IOException {
 
         String projectJson = "{\n" +
             "  \"name\": \"Test Project\",\n" +
@@ -38,7 +38,7 @@ public class EdisenProjectTest {
     }
 
     @Test
-    public void testFromFile_failure() throws IOException {
+    void testFromFile_failure() throws IOException {
 
         // Empty file
         Path tempProject = Files.createTempFile("edisen", ".json");
@@ -51,7 +51,7 @@ public class EdisenProjectTest {
     }
 
     @Test
-    public void testGetSetAssembleCommandLine() {
+    void testGetSetAssembleCommandLine() {
         EdisenProject project = new EdisenProject();
         Assertions.assertNull(project.getAssemblerCommandLine());
         project.setAssemblerCommandLine("foo");
@@ -59,7 +59,7 @@ public class EdisenProjectTest {
     }
 
     @Test
-    public void testGetSetGameFile() {
+    void testGetSetGameFile() {
         EdisenProject project = new EdisenProject();
         Assertions.assertNull(project.getGameFile());
         project.setGameFile("test.nes");
@@ -67,7 +67,7 @@ public class EdisenProjectTest {
     }
 
     @Test
-    public void testGetSetLinkCommandLine() {
+    void testGetSetLinkCommandLine() {
         EdisenProject project = new EdisenProject();
         Assertions.assertNull(project.getLinkCommandLine());
         project.setLinkCommandLine("foo");
@@ -75,7 +75,7 @@ public class EdisenProjectTest {
     }
 
     @Test
-    public void testGetSetName() {
+    void testGetSetName() {
         EdisenProject project = new EdisenProject();
         Assertions.assertNull(project.getName());
         project.setName("Test Project");
@@ -83,7 +83,7 @@ public class EdisenProjectTest {
     }
 
     @Test
-    public void testGetSetProjectFile() {
+    void testGetSetProjectFile() {
         EdisenProject project = new EdisenProject();
         Assertions.assertNull(project.getProjectFile());
         project.setProjectFile(Path.of("test.json"));
@@ -91,7 +91,7 @@ public class EdisenProjectTest {
     }
 
     @Test
-    public void testLoadSave() throws IOException {
+    void testLoadSave() throws IOException {
 
         Path projectFile = Files.createTempFile("edisen", ".json");
 

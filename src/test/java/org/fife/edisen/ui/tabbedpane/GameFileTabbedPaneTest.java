@@ -14,10 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import java.io.*;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class GameFileTabbedPaneTest {
+class GameFileTabbedPaneTest {
 
     @Test
-    public void testCloseTab() throws IOException {
+    void testCloseTab() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -31,7 +31,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testFocusActiveEditor() throws IOException {
+    void testFocusActiveEditor() throws IOException {
         Edisen edisen = TestableEdisen.create();
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
         tabbedPane.openFile(TestUtil.createTempFile());
@@ -39,7 +39,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testGetSearchListener_find_textFound() throws IOException {
+    void testGetSearchListener_find_textFound() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -61,7 +61,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testGetSearchListener_replace_textFound() throws IOException {
+    void testGetSearchListener_replace_textFound() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -85,7 +85,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testGetSearchListener_replaceAll_textFound() throws IOException {
+    void testGetSearchListener_replaceAll_textFound() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -109,7 +109,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testGetSearchListener_markAll_textFound() throws IOException {
+    void testGetSearchListener_markAll_textFound() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -133,7 +133,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testHasDirtyFiles_noFilesOpen() {
+    void testHasDirtyFiles_noFilesOpen() {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -142,7 +142,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testHasDirtyFiles_filesOpenButNoneDirty() throws IOException {
+    void testHasDirtyFiles_filesOpenButNoneDirty() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -155,7 +155,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testHasDirtyFiles_oneDirtyFile() throws IOException {
+    void testHasDirtyFiles_oneDirtyFile() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -170,7 +170,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testOpenFile_chrDataFile() throws IOException {
+    void testOpenFile_chrDataFile() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -183,7 +183,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testOpenFile_sourceFile() throws IOException {
+    void testOpenFile_sourceFile() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -199,7 +199,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testRemoveAll() throws IOException {
+    void testRemoveAll() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
 
@@ -214,7 +214,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testSaveCurrentFile() throws IOException {
+    void testSaveCurrentFile() throws IOException {
 
         TestableEdisen edisen = TestableEdisen.create();
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
@@ -234,7 +234,7 @@ public class GameFileTabbedPaneTest {
     }
 
     @Test
-    public void testUpdateUI() throws IOException {
+    void testUpdateUI() throws IOException {
 
         TestableEdisen edisen = TestableEdisen.create();
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);

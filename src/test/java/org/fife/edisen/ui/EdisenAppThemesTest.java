@@ -1,18 +1,14 @@
 package org.fife.edisen.ui;
 
 import org.fife.ui.app.AppTheme;
-import org.fife.ui.app.themes.NativeTheme;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.IOException;
 
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-
 @ExtendWith(SwingRunnerExtension.class)
-public class EdisenAppThemesTest {
+class EdisenAppThemesTest {
 
     @Test
     void testGet() {

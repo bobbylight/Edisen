@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 
-public class EdisenPrefsTest {
+class EdisenPrefsTest {
 
     private static void assertDefaults(EdisenPrefs prefs) {
 
@@ -22,7 +22,7 @@ public class EdisenPrefsTest {
     }
 
     @Test
-    public void testConstructor_verifyDefaults() {
+    void testConstructor_verifyDefaults() {
         EdisenPrefs prefs = new EdisenPrefs();
         assertDefaults(prefs);
     }

@@ -9,10 +9,10 @@ import org.mockito.Mockito;
 import java.io.File;
 import java.io.IOException;
 
-public class ChrRomTabbedPaneContentTest {
+class ChrRomTabbedPaneContentTest {
 
     @Test
-    public void testGetFile() throws IOException {
+    void testGetFile() throws IOException {
 
         Edisen edisen = Mockito.mock(Edisen.class);
         File chrFile = TestUtil.createTempFile();
@@ -22,7 +22,7 @@ public class ChrRomTabbedPaneContentTest {
     }
 
     @Test
-    public void testGetTabName() throws IOException {
+    void testGetTabName() throws IOException {
 
         Edisen edisen = Mockito.mock(Edisen.class);
         File chrFile = TestUtil.createTempFile();

@@ -10,10 +10,10 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class ChrRomViewerTest {
+class ChrRomViewerTest {
 
     @Test
-    public void testPaintComponent() throws IOException {
+    void testPaintComponent() throws IOException {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 

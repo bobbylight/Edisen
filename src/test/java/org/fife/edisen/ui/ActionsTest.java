@@ -9,10 +9,10 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
-public class ActionsTest {
+class ActionsTest {
 
     @Test
-    public void testBuildAction_success() throws IOException {
+    void testBuildAction_success() throws IOException {
 
         Edisen edisen = TestUtil.mockEdisen();
         doReturn("echo 'assemble'").when(edisen).getAssemblerCommandLine();
@@ -28,7 +28,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void testBuildAction_assembleFails() throws IOException {
+    void testBuildAction_assembleFails() throws IOException {
 
         Edisen edisen = TestUtil.mockEdisen();
         doReturn("unknown-command").when(edisen).getAssemblerCommandLine();
@@ -42,7 +42,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void testCloseAction() {
+    void testCloseAction() {
 
         Edisen edisen = TestUtil.mockEdisen();
         doReturn(0).when(edisen).getSelectedTabIndex();
@@ -52,7 +52,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void testEmulateAction_success() throws IOException {
+    void testEmulateAction_success() throws IOException {
 
         Edisen edisen = TestUtil.mockEdisen();
         doReturn("echo 'emulate'").when(edisen).getEmulatorCommandLine();
@@ -66,7 +66,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void testFindAction() {
+    void testFindAction() {
 
         Edisen edisen = TestUtil.mockEdisen();
 
@@ -75,7 +75,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void testGoToAction() {
+    void testGoToAction() {
 
         Edisen edisen = TestUtil.mockEdisen();
 
@@ -84,7 +84,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void testOpenProjectAction() {
+    void testOpenProjectAction() {
 
         Edisen edisen = TestUtil.mockEdisen();
 
@@ -93,7 +93,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void testReplaceAction() {
+    void testReplaceAction() {
 
         Edisen edisen = TestUtil.mockEdisen();
 
@@ -102,7 +102,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void testSaveAction() {
+    void testSaveAction() {
 
         Edisen edisen = TestUtil.mockEdisen();
 
@@ -111,7 +111,7 @@ public class ActionsTest {
     }
 
     @Test
-    public void testSaveAsAction() {
+    void testSaveAsAction() {
 
         Edisen edisen = TestUtil.mockEdisen();
 

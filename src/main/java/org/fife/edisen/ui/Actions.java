@@ -1,17 +1,10 @@
 package org.fife.edisen.ui;
 
 import org.fife.io.ProcessRunner;
-import org.fife.io.ProcessRunnerOutputListener;
 import org.fife.ui.GUIWorkerThread;
-import org.fife.ui.OS;
 import org.fife.ui.app.AppAction;
 
 import java.awt.event.ActionEvent;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Actions used by the application.
@@ -30,9 +23,6 @@ public final class Actions {
     public static final String REPLACE_ACTION_KEY = "replaceAction";
     public static final String SAVE_ACTION_KEY = "saveAction";
     public static final String SAVE_AS_ACTION_KEY = "saveAsAction";
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
 
     /**
      * Private constructor to prevent instantiation.
@@ -92,36 +82,7 @@ public final class Actions {
                 .replace("${gameFile}", mainGameFile)
                 .replace("${objfile}", objFile);
 
-            List<String> command = new ArrayList<>();
-            if (OS.get() == OS.WINDOWS) {
-                command.add("cmd.exe");
-                command.add("/c");
-            }
-            else {
-                command.add("/bin/sh");
-                command.add("-c");
-            }
-            command.add(commandLine);
-            ProcessRunner pr = new ProcessRunner(command.toArray(new String[0]));
-            pr.setDirectory(app.getProject().getProjectFile().getParent().toFile());
-
-            String dateTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
-            app.log("stdin", app.getString(logKey, dateTime));
-            app.log("stdout", pr.getCommandLineString());
-
-            pr.setOutputListener(new ProcessRunnerOutputListener() {
-                @Override
-                public void outputWritten(Process p, String output, boolean stdout) {
-                    app.log(stdout ? "stdout" : "stderr", output);
-                }
-
-                @Override
-                public void processCompleted(Process p, int rc, Throwable e) {
-                    app.log("stdin", app.getString("Log.ProcessCompleted", rc));
-                }
-            });
-
-            return pr;
+            return Util.createProcessRunner(app, logKey, commandLine);
         }
     }
 
@@ -174,35 +135,7 @@ public final class Actions {
             String commandLine = app.getEmulatorCommandLine();
             commandLine = commandLine.replace("${rom}", '"' + rom + '"');
 
-            List<String> command = new ArrayList<>();
-            if (OS.get() == OS.WINDOWS) {
-                command.add("cmd.exe");
-                command.add("/c");
-            }
-            else {
-                command.add("/bin/sh");
-                command.add("-c");
-            }
-            command.add(commandLine);
-            ProcessRunner pr = new ProcessRunner(command.toArray(new String[0]));
-
-            pr.setDirectory(app.getProject().getProjectFile().getParent().toFile());
-
-            String dateTime = DATE_TIME_FORMATTER.format(LocalDateTime.now());
-            app.log("stdin", app.getString("Log.RunningProgram", dateTime));
-            app.log("stdout", pr.getCommandLineString());
-
-            pr.setOutputListener(new ProcessRunnerOutputListener() {
-                @Override
-                public void outputWritten(Process p, String output, boolean stdout) {
-                    app.log(stdout ? "stdout" : "stderr", output);
-                }
-
-                @Override
-                public void processCompleted(Process p, int rc, Throwable e) {
-                    app.log("stdin", app.getString("Log.ProcessCompleted", rc));
-                }
-            });
+            ProcessRunner pr = Util.createProcessRunner(app, "Log.RunningProgram", commandLine);
 
             // TODO: Cache this and kill it if the user manually stops the process
             new ProcessRunnerThread(pr).start();

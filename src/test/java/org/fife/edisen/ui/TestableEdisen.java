@@ -34,8 +34,7 @@ public class TestableEdisen extends Edisen {
     public static TestableEdisen create() {
         EdisenAppContext context = new EdisenAppContext();
         EdisenPrefs prefs = new EdisenPrefs();
-        TestableEdisen edisen = new TestableEdisen(context, prefs);
-        return edisen;
+        return new TestableEdisen(context, prefs);
     }
 
     @Override

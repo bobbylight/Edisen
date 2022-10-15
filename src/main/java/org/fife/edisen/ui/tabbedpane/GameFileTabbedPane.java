@@ -41,9 +41,7 @@ public class GameFileTabbedPane extends JTabbedPane {
         UIManager.put("TabbedPane.closeArc", 999);
         UIManager.put("TabbedPane.closeCrossFilledSize", 5.5f);
         putClientProperty("JTabbedPane.tabCloseCallback",
-            (BiConsumer<JTabbedPane, Integer>)(tabbedPane, tabIndex) -> {
-                edisen.closeTab(tabIndex);
-            });
+            (BiConsumer<JTabbedPane, Integer>)(tabbedPane, tabIndex) -> edisen.closeTab(tabIndex));
 
         edisen.addPropertyChangeListener(Edisen.PROPERTY_PROJECT, listener);
         setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);

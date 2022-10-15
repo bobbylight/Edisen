@@ -8,10 +8,10 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class ProcessRunnerThreadTest {
+class ProcessRunnerThreadTest {
 
     @Test
-    public void testConstruct() {
+    void testConstruct() {
 
         ProcessRunner pr = Mockito.mock(ProcessRunner.class);
 

@@ -9,17 +9,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class UIOptionPanelTest {
+class UIOptionPanelTest {
 
     @Test
-    public void testGetTopJComponent() {
+    void testGetTopJComponent() {
         Edisen edisen = Mockito.mock(Edisen.class);
         UIOptionPanel panel = new UIOptionPanel(edisen);
         Assertions.assertNotNull(panel.getTopJComponent());
     }
 
     @Test
-    public void testRestoreDefaults_nothingChanged() {
+    void testRestoreDefaults_nothingChanged() {
 
         Edisen edisen = TestableEdisen.create();
         UIOptionPanel panel = new UIOptionPanel(edisen);

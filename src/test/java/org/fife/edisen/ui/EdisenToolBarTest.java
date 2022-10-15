@@ -13,10 +13,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class EdisenToolBarTest {
+class EdisenToolBarTest {
 
     @Test
-    public void testConstructor() {
+    void testConstructor() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
         Action a = new AbstractAction("testAction") {

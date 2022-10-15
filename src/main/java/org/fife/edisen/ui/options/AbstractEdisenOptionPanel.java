@@ -13,7 +13,7 @@ import java.awt.event.ActionListener;
  */
 abstract class AbstractEdisenOptionPanel extends OptionsDialogPanel {
 
-    protected Edisen parent;
+    protected final Edisen parent;
     protected JButton defaultsButton;
 
     private static final String RESTORE_DEFAULTS = "restoreDefaults";

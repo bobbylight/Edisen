@@ -4,7 +4,7 @@ import org.fife.ui.CustomizableToolBar;
 
 class EdisenToolBar extends CustomizableToolBar {
 
-    private Edisen app;
+    private final Edisen app;
 
     EdisenToolBar(Edisen app) {
         this.app = app;

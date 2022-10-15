@@ -10,7 +10,7 @@ import java.io.File;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doReturn;
 
-public class EdisenConfigFileFilterTest {
+class EdisenConfigFileFilterTest {
 
     private EdisenConfigFileFilter filter;
 
@@ -24,22 +24,22 @@ public class EdisenConfigFileFilterTest {
     }
 
     @Test
-    public void testAccept_edisenConfigFile() {
+    void testAccept_edisenConfigFile() {
         Assertions.assertTrue(filter.accept(new File("test.edisen.json")));
     }
 
     @Test
-    public void testAccept_someOtherFile() {
+    void testAccept_someOtherFile() {
         Assertions.assertFalse(filter.accept(new File("test.s")));
     }
 
     @Test
-    public void testGetDescription() {
+    void testGetDescription() {
         Assertions.assertEquals(TEST_DESCRIPTION, filter.getDescription());
     }
 
     @Test
-    public void testToString() {
+    void testToString() {
         Assertions.assertEquals(TEST_DESCRIPTION, filter.toString());
     }
 }

@@ -9,10 +9,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class OpenFileFromHistoryActionTest {
+class OpenFileFromHistoryActionTest {
 
     @Test
-    public void testActionPerformed() {
+    void testActionPerformed() {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
         OpenFileFromHistoryAction action = new OpenFileFromHistoryAction(mockEdisen);

@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 
-public class CodeEditorTabbedPaneContentTest {
+class CodeEditorTabbedPaneContentTest {
 
     @Test
-    public void testGetFile() throws IOException {
+    void testGetFile() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
         File file = TestUtil.createTempFile();
@@ -23,7 +23,7 @@ public class CodeEditorTabbedPaneContentTest {
     }
 
     @Test
-    public void testGetTabName() throws IOException {
+    void testGetTabName() throws IOException {
 
         Edisen edisen = TestableEdisen.create();
         File file = TestUtil.createTempFile();

@@ -3,16 +3,16 @@ package org.fife.edisen.ui.tabbedpane;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class DummyTabbedPaneContentTest {
+class DummyTabbedPaneContentTest {
 
     @Test
-    public void testGetFile() {
+    void testGetFile() {
         DummyTabbedPaneContent content = new DummyTabbedPaneContent();
         Assertions.assertNull(content.getFile());
     }
 
     @Test
-    public void testGetTabName() {
+    void testGetTabName() {
         DummyTabbedPaneContent content = new DummyTabbedPaneContent();
         Assertions.assertEquals("(dummy)", content.getTabName());
     }

@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.mockito.Mockito.doReturn;
 
-public class EdisenAppContextTest {
+class EdisenAppContextTest {
 
     private EdisenAppContext context;
 
@@ -26,28 +26,28 @@ public class EdisenAppContextTest {
     }
 
     @Test
-    public void testGetPreferencesClassName() {
+    void testGetPreferencesClassName() {
         Assertions.assertNotNull(context.getPreferencesClassName());
     }
 
     @Test
-    public void testGetPreferencesDir() {
+    void testGetPreferencesDir() {
         Assertions.assertNotNull(context.getPreferencesDir());
     }
 
     @Test
-    public void testGetPreferencesFileName() {
+    void testGetPreferencesFileName() {
         Assertions.assertNotNull(context.getPreferencesFileName());
     }
 
     @Test
     @Disabled("Can't call this without starting the app")
-    public void testCreateApplication() {
+    void testCreateApplication() {
         // Do nothing (comment for Sonar)
     }
 
     @Test
-    public void testPopulateFromApplication() throws IOException {
+    void testPopulateFromApplication() throws IOException {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
         EdisenPrefs prefs = new EdisenPrefs();
@@ -73,7 +73,7 @@ public class EdisenAppContextTest {
     }
 
     @Test
-    public void testSavePreferences() throws IOException {
+    void testSavePreferences() throws IOException {
 
         Edisen mockEdisen = Mockito.mock(Edisen.class);
 

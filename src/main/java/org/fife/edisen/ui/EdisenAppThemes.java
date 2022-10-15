@@ -13,7 +13,6 @@ import java.util.List;
 
 
 /**
- * '
  * Manages the application's current theme.
  *
  * @author Robert Futrell

@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SwingRunnerExtension.class)
-public class EdisenTest {
+class EdisenTest {
 
     private TestableEdisen edisen;
 
@@ -31,7 +31,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testCloseTab_validIndex_notDirty() throws IOException {
+    void testCloseTab_validIndex_notDirty() throws IOException {
         edisen = TestableEdisen.create();
 
         File[] files = new File[] {
@@ -46,55 +46,55 @@ public class EdisenTest {
     }
 
     @Test
-    public void testCloseTab_invalid_lessThanZero() {
+    void testCloseTab_invalid_lessThanZero() {
         edisen = TestableEdisen.create();
         Assertions.assertFalse(edisen.closeTab(-1));
     }
 
     @Test
-    public void testCloseTab_invalid_greaterThanTabCount() {
+    void testCloseTab_invalid_greaterThanTabCount() {
         edisen = TestableEdisen.create();
         Assertions.assertFalse(edisen.closeTab(42));
     }
 
     @Test
-    public void testCreateAboutDialog() {
+    void testCreateAboutDialog() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.createAboutDialog());
     }
 
     @Test
-    public void testCreateMenuBar() {
+    void testCreateMenuBar() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.createMenuBar(edisen.getPreferences()));
     }
 
     @Test
-    public void testCreateSplashScreen() {
+    void testCreateSplashScreen() {
         edisen = TestableEdisen.create();
         Assertions.assertNull(edisen.createSplashScreen());
     }
 
     @Test
-    public void testCreateStatusBar() {
+    void testCreateStatusBar() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.createStatusBar(edisen.getPreferences()));
     }
 
     @Test
-    public void testCreateToolBar() {
+    void testCreateToolBar() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.createToolBar(edisen.getPreferences()));
     }
 
     @Test
     @Disabled("Figure out how to implement")
-    public void testDoExit() {
+    void testDoExit() {
         // Do nothing (comment for Sonar)
     }
 
     @Test
-    public void testFind() {
+    void testFind() {
 
         edisen = TestableEdisen.create();
 
@@ -108,7 +108,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testFindAfterReplace() {
+    void testFindAfterReplace() {
 
         edisen = TestableEdisen.create();
 
@@ -121,7 +121,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testGetSetAssemblerCommandLine() throws IOException {
+    void testGetSetAssemblerCommandLine() throws IOException {
 
         edisen = TestableEdisen.create();
 
@@ -142,7 +142,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testGetSetEmulatorCommandLine() throws IOException {
+    void testGetSetEmulatorCommandLine() throws IOException {
 
         edisen = TestableEdisen.create();
 
@@ -163,14 +163,14 @@ public class EdisenTest {
     }
 
     @Test
-    public void testGetFileChooser() {
+    void testGetFileChooser() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getFileChooser());
         Assertions.assertNotNull(edisen.getFileChooser()); // Second time it's cached
     }
 
     @Test
-    public void testGetSetLinkerCommandLine() throws IOException {
+    void testGetSetLinkerCommandLine() throws IOException {
 
         edisen = TestableEdisen.create();
 
@@ -191,20 +191,20 @@ public class EdisenTest {
     }
 
     @Test
-    public void testGetOptionsDialog() {
+    void testGetOptionsDialog() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getOptionsDialog());
         Assertions.assertNotNull(edisen.getOptionsDialog()); // Second time it's cached
     }
 
     @Test
-    public void testGetPreferences() {
+    void testGetPreferences() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getPreferences());
     }
 
     @Test
-    public void testGetProject() throws IOException {
+    void testGetProject() throws IOException {
 
         edisen = TestableEdisen.create();
 
@@ -222,43 +222,43 @@ public class EdisenTest {
     }
 
     @Test
-    public void testGetRecentFiles() {
+    void testGetRecentFiles() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getRecentFiles());
     }
 
     @Test
-    public void testGetRecentProjects() {
+    void testGetRecentProjects() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getRecentProjects());
     }
 
     @Test
-    public void testGetResourceBundleClassName() {
+    void testGetResourceBundleClassName() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getResourceBundleClassName());
     }
 
     @Test
-    public void testGetSelectedTabIndex() {
+    void testGetSelectedTabIndex() {
         edisen = TestableEdisen.create();
         Assertions.assertEquals(-1, edisen.getSelectedTabIndex());
     }
 
     @Test
-    public void testGetTheme() {
+    void testGetTheme() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getTheme());
     }
 
     @Test
-    public void testGetVersionString() {
+    void testGetVersionString() {
         edisen = TestableEdisen.create();
         Assertions.assertNotNull(edisen.getVersionString());
     }
 
     @Test
-    public void testGoToLine_textAreaFocused() throws IOException {
+    void testGoToLine_textAreaFocused() throws IOException {
 
         edisen = TestableEdisen.create();
 
@@ -281,7 +281,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testGoToLine_error_BadLocationException() throws IOException {
+    void testGoToLine_error_BadLocationException() throws IOException {
 
         // Note this scenario doesn't happen in real life, but is here for coverage
         edisen = TestableEdisen.create();
@@ -308,18 +308,18 @@ public class EdisenTest {
 
     @Test
     @Disabled("Figure out how to implement")
-    public void testIsTabOkToClose() {
+    void testIsTabOkToClose() {
         // Do nothing (comment for Sonar)
     }
 
     @Test
-    public void testLog() {
+    void testLog() {
         edisen = TestableEdisen.create();
         edisen.log("stdout", "Test message");
     }
 
     @Test
-    public void testOpenProjectViaFileChooser_openApproved() throws IOException {
+    void testOpenProjectViaFileChooser_openApproved() throws IOException {
 
         Edisen edisen = TestUtil.mockEdisen();
         doCallRealMethod().when(edisen).openProjectViaFileChooser();
@@ -338,7 +338,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testOpenProjectViaFileChooser_openCancelled() {
+    void testOpenProjectViaFileChooser_openCancelled() {
 
         Edisen edisen = TestUtil.mockEdisen();
         doCallRealMethod().when(edisen).openProjectViaFileChooser();
@@ -355,7 +355,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testOpenViaFileChooser_openApproved() throws IOException {
+    void testOpenViaFileChooser_openApproved() throws IOException {
 
         Edisen edisen = TestUtil.mockEdisen();
         doCallRealMethod().when(edisen).openFileViaFileChooser();
@@ -374,7 +374,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testOpenViaFileChooser_openCancelled() {
+    void testOpenViaFileChooser_openCancelled() {
 
         Edisen edisen = TestUtil.mockEdisen();
         doCallRealMethod().when(edisen).openFileViaFileChooser();
@@ -391,7 +391,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testReplace() {
+    void testReplace() {
 
         edisen = TestableEdisen.create();
 
@@ -405,7 +405,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testReplaceAfterFind() {
+    void testReplaceAfterFind() {
 
         edisen = TestableEdisen.create();
 
@@ -418,7 +418,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testSaveAllDirtyFiles_success() throws IOException {
+    void testSaveAllDirtyFiles_success() throws IOException {
 
         edisen = TestableEdisen.create();
 
@@ -440,7 +440,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testSaveCurrentFile() throws IOException {
+    void testSaveCurrentFile() throws IOException {
 
         edisen = TestableEdisen.create();
 
@@ -461,12 +461,12 @@ public class EdisenTest {
 
     @Test
     @Disabled("Figure out how to implement")
-    public void testSaveCurrentFileAs() {
+    void testSaveCurrentFileAs() {
         // Do nothing (comment for Sonar)
     }
 
     @Test
-    public void testSaveProject_success() throws IOException {
+    void testSaveProject_success() throws IOException {
 
         edisen = TestableEdisen.create();
 
@@ -496,7 +496,7 @@ public class EdisenTest {
     }
 
     @Test
-    public void testUpdateLookAndFeel_everythingCreated() {
+    void testUpdateLookAndFeel_everythingCreated() {
 
         edisen = TestableEdisen.create();
 
