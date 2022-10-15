@@ -13,9 +13,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.io.*;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(SwingRunnerExtension.class)
 public class GameFileTabbedPaneTest {
 
@@ -219,8 +216,7 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testSaveCurrentFile() throws IOException {
 
-        Edisen edisen = spy(TestableEdisen.create());
-
+        TestableEdisen edisen = TestableEdisen.create();
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
         File file = TestUtil.createTempFile(".s");
@@ -228,7 +224,7 @@ public class GameFileTabbedPaneTest {
         tabbedPane.getCurrentTextArea().append("Modified");
 
         tabbedPane.saveCurrentFile();
-        verify(edisen, never()).displayException(any(java.awt.Frame.class), any(), any());
+        Assertions.assertEquals(0, edisen.exceptionCount);
 
         String content;
         try (BufferedReader r = new BufferedReader(new FileReader(file))) {
@@ -240,14 +236,13 @@ public class GameFileTabbedPaneTest {
     @Test
     public void testUpdateUI() throws IOException {
 
-        Edisen edisen = spy(TestableEdisen.create());
-
+        TestableEdisen edisen = TestableEdisen.create();
         GameFileTabbedPane tabbedPane = new GameFileTabbedPane(edisen);
 
         tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world"));
         tabbedPane.openFile(TestUtil.createTempFile(".s", "Hello world"));
 
         tabbedPane.updateUI();
-        verify(edisen, never()).displayException(any(java.awt.Frame.class), any(), any());
+        Assertions.assertEquals(0, edisen.exceptionCount);
     }
 }

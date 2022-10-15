@@ -3,6 +3,7 @@ package org.fife.edisen.ui;
 import org.fife.rsta.ui.GoToDialog;
 import org.fife.rsta.ui.search.FindDialog;
 import org.fife.rsta.ui.search.ReplaceDialog;
+import org.fife.ui.rtextfilechooser.RTextFileChooser;
 import org.mockito.Mockito;
 
 import java.awt.*;
@@ -14,6 +15,7 @@ import java.awt.*;
  */
 public class TestableEdisen extends Edisen {
 
+    public RTextFileChooser mockFileChooser;
     public FindDialog mockFindDialog;
     public ReplaceDialog mockReplaceDialog;
     public GoToDialog mockGoToDialog;
@@ -75,5 +77,13 @@ public class TestableEdisen extends Edisen {
     public void displayException(Frame owner, Throwable t, String desc) {
         exceptionCount++;
         t.printStackTrace();
+    }
+
+    @Override
+    public RTextFileChooser getFileChooser() {
+        if (mockFileChooser == null) {
+            mockFileChooser = Mockito.mock(RTextFileChooser.class);
+        }
+        return mockFileChooser;
     }
 }

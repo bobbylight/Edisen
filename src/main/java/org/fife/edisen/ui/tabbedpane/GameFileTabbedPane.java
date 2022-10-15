@@ -282,6 +282,12 @@ public class GameFileTabbedPane extends JTabbedPane {
 
     private class Listener implements SearchListener, PropertyChangeListener {
 
+        private void handleSearchResultIfNotFound(SearchResult result) {
+            if (!result.wasFound()) {
+                UIManager.getLookAndFeel().provideErrorFeedback(getCurrentTextArea());
+            }
+        }
+
         @Override
         public void propertyChange(PropertyChangeEvent e) {
 
@@ -311,21 +317,15 @@ public class GameFileTabbedPane extends JTabbedPane {
                 }
                 case REPLACE -> {
                     SearchResult result = SearchEngine.replace(currentTextArea, context);
-                    if (!result.wasFound()) {
-                        UIManager.getLookAndFeel().provideErrorFeedback(currentTextArea);
-                    }
+                    handleSearchResultIfNotFound(result);
                 }
                 case REPLACE_ALL -> {
                     SearchResult result = SearchEngine.replaceAll(currentTextArea, context);
-                    if (!result.wasFound()) {
-                        UIManager.getLookAndFeel().provideErrorFeedback(currentTextArea);
-                    }
+                    handleSearchResultIfNotFound(result);
                 }
                 case MARK_ALL -> {
                     SearchResult result = SearchEngine.markAll(currentTextArea, context);
-                    if (!result.wasFound()) {
-                        UIManager.getLookAndFeel().provideErrorFeedback(currentTextArea);
-                    }
+                    handleSearchResultIfNotFound(result);
                 }
             }
         }

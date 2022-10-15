@@ -6,7 +6,7 @@
 <suppressions>
     <suppress files=".*org[\\/]fife[\\/]edisen[\\/]ui[\\/]EdisenPrefs" checks="[a-zA-Z0-9]*"/>
 <!--    <suppress files=".*TokenMaker.*\.java" checks="[a-zA-Z0-9]*"/>-->
-<!--    <suppress files=".*src[\\/]test[\\/].*" checks="[a-zA-Z0-9]*"/>-->
+    <suppress files=".*src[\\/]test[\\/].*" checks="[a-zA-Z0-9]*"/>
 
 <!--    &lt;!&ndash; These files are long due to how much functionality we have &ndash;&gt;-->
 <!--    <suppress files="RSyntaxTextArea.java" checks="FileLengthCheck"/>-->

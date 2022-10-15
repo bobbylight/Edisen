@@ -6,7 +6,6 @@ import org.fife.edisen.ui.model.EdisenProject;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,7 +45,7 @@ public class ProjectTreeTest {
     @Test
     public void testOpenProject_contentsDisplayed() throws IOException {
 
-        Edisen mockEdisen = Mockito.spy(TestableEdisen.create());
+        Edisen mockEdisen = TestableEdisen.create();
         ProjectTree tree = new ProjectTree(mockEdisen);
 
         // Open a project, which fires the property change event this tree listens for.
@@ -60,7 +59,7 @@ public class ProjectTreeTest {
     @Test
     public void testCloseProject_contentsRemoved() throws IOException {
 
-        Edisen mockEdisen = Mockito.spy(TestableEdisen.create());
+        Edisen mockEdisen = TestableEdisen.create();
         ProjectTree tree = new ProjectTree(mockEdisen);
 
         // Open a project, which fires the property change event this tree listens for.

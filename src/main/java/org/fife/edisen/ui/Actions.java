@@ -41,6 +41,9 @@ public final class Actions {
         // Do nothing (comment for Sonar)
     }
 
+    /**
+     * Compiles the current project.
+     */
     public static class BuildAction extends AppAction<Edisen> {
 
         public BuildAction(Edisen app) {
@@ -122,6 +125,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Closes the current tab.
+     */
     public static class CloseAction extends AppAction<Edisen> {
 
         public CloseAction(Edisen app) {
@@ -134,6 +140,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Closes the current project.
+     */
     public static class CloseProjectAction extends AppAction<Edisen> {
 
         public CloseProjectAction(Edisen app) {
@@ -146,6 +155,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Launches the current project in an emulator.
+     */
     public static class EmulateAction extends AppAction<Edisen> {
 
         public EmulateAction(Edisen app) {
@@ -197,6 +209,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Opens the Find dialog.
+     */
     public static class FindAction extends AppAction<Edisen> {
 
         public FindAction(Edisen app) {
@@ -209,6 +224,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Opens the "go to line" dialog.
+     */
     public static class GoToAction extends AppAction<Edisen> {
 
         public GoToAction(Edisen app) {
@@ -221,6 +239,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Opens the file chooser to select a file.
+     */
     public static class OpenAction extends AppAction<Edisen> {
 
         public OpenAction(Edisen app) {
@@ -233,6 +254,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Opens the file chooser to select a project.
+     */
     public static class OpenProjectAction extends AppAction<Edisen> {
 
         public OpenProjectAction(Edisen app) {
@@ -245,6 +269,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Opens the Replace dialog.
+     */
     public static class ReplaceAction extends AppAction<Edisen> {
 
         public ReplaceAction(Edisen app) {
@@ -257,6 +284,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Saves the current file.
+     */
     public static class SaveAction extends AppAction<Edisen> {
 
         public SaveAction(Edisen app) {
@@ -269,6 +299,9 @@ public final class Actions {
         }
     }
 
+    /**
+     * Saves the current file with a new name.
+     */
     public static class SaveAsAction extends AppAction<Edisen> {
 
         public SaveAsAction(Edisen app) {

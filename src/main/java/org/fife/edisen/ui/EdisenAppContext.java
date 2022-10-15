@@ -8,6 +8,12 @@ import javax.swing.*;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Basic information needed by the application.
+ *
+ * @author Robert Futrell
+ * @version 1.0
+ */
 public class EdisenAppContext extends AppContext<Edisen, EdisenPrefs> {
 
     @Override
@@ -20,25 +26,21 @@ public class EdisenAppContext extends AppContext<Edisen, EdisenPrefs> {
         return "org.fife.edisen.ui.EdisenPrefs";
     }
 
-
     @Override
     public File getPreferencesDir() {
         return new File(System.getProperty("user.home"), ".edisen");
     }
-
 
     @Override
     public String getPreferencesFileName() {
         return "edisen.properties";
     }
 
-
     @Override
     protected Edisen createApplicationImpl(String[] filesToOpen, EdisenPrefs prefs) {
         UIManager.put("TitlePane.unifiedBackground", true);
         return new Edisen(this, prefs);
     }
-
 
     @Override
     protected void populatePrefsFromApplication(Edisen edisen, EdisenPrefs prefs) {

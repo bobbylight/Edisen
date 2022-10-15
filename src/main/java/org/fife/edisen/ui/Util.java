@@ -20,7 +20,7 @@ public final class Util {
             // .o files, and the generated .nes files don't run in Nestopia
             //return "cl65 -o ${rom} ${gameFile} -t nes";
             return "ca65 -o ${objfile} ${gameFile} -t nes";
-//            return "ca65 -o ${objfile} ${gameFile} -t nes";
+            //return "ca65 -o ${objfile} ${gameFile} -t nes";
         }
         return "D:/cc65-snapshot-win32/bin/ca65 -o ${objfile} ${gameFile} -t nes";
     }
@@ -28,7 +28,7 @@ public final class Util {
     public static String getDefaultLinkerCommandLine() {
         if (OS.get() == OS.MAC_OS_X) {
             return "ld65 -o ${rom} ${objfile} -t nes";
-//            return "ld65 -o ${rom} ${objfile} -C nesfile.ini";
+            //return "ld65 -o ${rom} ${objfile} -C nesfile.ini";
         }
         return "D:/cc65-snapshot-win32/bin/ld65 -o ${rom} ${objfile} -t nes";
     }

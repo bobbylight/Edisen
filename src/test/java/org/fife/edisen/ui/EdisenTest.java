@@ -321,8 +321,8 @@ public class EdisenTest {
     @Test
     public void testOpenProjectViaFileChooser_openApproved() throws IOException {
 
-        // Spy to do partial mocks on our Edisen instance
-        edisen = Mockito.spy(TestableEdisen.create());
+        Edisen edisen = TestUtil.mockEdisen();
+        doCallRealMethod().when(edisen).openProjectViaFileChooser();
         doNothing().when(edisen).openFile(any());
 
         RTextFileChooser mockChooser = Mockito.mock(RTextFileChooser.class);
@@ -340,8 +340,8 @@ public class EdisenTest {
     @Test
     public void testOpenProjectViaFileChooser_openCancelled() {
 
-        // Spy to do partial mocks on our Edisen instance
-        edisen = Mockito.spy(TestableEdisen.create());
+        Edisen edisen = TestUtil.mockEdisen();
+        doCallRealMethod().when(edisen).openProjectViaFileChooser();
         doNothing().when(edisen).openFile(any());
 
         RTextFileChooser mockChooser = Mockito.mock(RTextFileChooser.class);
@@ -357,8 +357,8 @@ public class EdisenTest {
     @Test
     public void testOpenViaFileChooser_openApproved() throws IOException {
 
-        // Spy to do partial mocks on our Edisen instance
-        edisen = Mockito.spy(TestableEdisen.create());
+        Edisen edisen = TestUtil.mockEdisen();
+        doCallRealMethod().when(edisen).openFileViaFileChooser();
         doNothing().when(edisen).openFile(any());
 
         RTextFileChooser mockChooser = Mockito.mock(RTextFileChooser.class);
@@ -376,8 +376,8 @@ public class EdisenTest {
     @Test
     public void testOpenViaFileChooser_openCancelled() {
 
-        // Spy to do partial mocks on our Edisen instance
-        edisen = Mockito.spy(TestableEdisen.create());
+        Edisen edisen = TestUtil.mockEdisen();
+        doCallRealMethod().when(edisen).openFileViaFileChooser();
         doNothing().when(edisen).openFile(any());
 
         RTextFileChooser mockChooser = Mockito.mock(RTextFileChooser.class);
