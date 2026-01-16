@@ -1,6 +1,6 @@
 package org.fife.edisen.ui.options;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.fife.edisen.TestUtil;
 import org.fife.edisen.ui.TestableEdisen;
 import org.fife.edisen.ui.model.EdisenProject;
@@ -32,7 +32,7 @@ class ProjectOptionPanelTest {
         project.setLinkCommandLine(Util.getDefaultLinkerCommandLine());
         project.setEmulatorCommandLine(Util.getDefaultEmulatorCommandLine());
         project.setGameFile("main.s");
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
 
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
@@ -56,7 +56,7 @@ class ProjectOptionPanelTest {
         project.setLinkCommandLine(Util.getDefaultLinkerCommandLine());
         project.setEmulatorCommandLine(Util.getDefaultEmulatorCommandLine());
         project.setGameFile("main.s");
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
 
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 

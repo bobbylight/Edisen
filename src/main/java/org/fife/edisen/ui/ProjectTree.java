@@ -66,7 +66,7 @@ class ProjectTree extends JPanel {
         repaint();
     }
 
-    private class Listener extends MouseAdapter implements PropertyChangeListener {
+    private final class Listener extends MouseAdapter implements PropertyChangeListener {
 
         @Override
         public void mouseClicked(MouseEvent e) {

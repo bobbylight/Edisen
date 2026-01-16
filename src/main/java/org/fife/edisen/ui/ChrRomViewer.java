@@ -82,7 +82,7 @@ public class ChrRomViewer extends JComponent {
         }
         assert count == -1;
 
-        System.out.println("Read " + total + " bytes");
+        //System.out.println("Read " + total + " bytes");
     }
 
     @Override

@@ -8,23 +8,24 @@
   Checkstyle configuration that checks the sun coding conventions from:
 
     - the Java Language Specification at
-      http://java.sun.com/docs/books/jls/second_edition/html/index.html
+      https://docs.oracle.com/javase/specs/jls/se11/html/index.html
 
-    - the Sun Code Conventions at http://java.sun.com/docs/codeconv/
+    - the Sun Code Conventions at https://www.oracle.com/java/technologies/javase/codeconventions-contents.html
 
     - the Javadoc guidelines at
-      http://java.sun.com/j2se/javadoc/writingdoccomments/index.html
+      https://www.oracle.com/technical-resources/articles/java/javadoc-tool.html
 
-    - the JDK Api documentation http://java.sun.com/j2se/docs/api/index.html
+    - the JDK Api documentation https://docs.oracle.com/en/java/javase/11/
 
     - some best practices
 
   Checkstyle is very configurable. Be sure to read the documentation at
-  https://checkstyle.sourceforge.io (or in your downloaded distribution).
+  https://checkstyle.org (or in your downloaded distribution).
 
   Most Checks are configurable, be sure to consult the documentation.
 
   To completely disable a check, just comment it out or delete it from the file.
+  To suppress certain violations please review suppression filters.
 
   Finally, it is worth reading the documentation.
 
@@ -80,6 +81,12 @@
        <property name="maximum" value="0"/>
        <property name="message" value="Line has trailing spaces."/>
     </module>
+    <module name="RegexpSingleline">
+        <property name="format" value="(?&lt;!//)\s*System\.(?:out|err)\.println\("/>
+        <property name="minimum" value="0"/>
+        <property name="maximum" value="0"/>
+        <property name="message" value="Do not use System.out.println or System.err.println"/>
+    </module>
 
     <!-- Checks for Headers                                -->
     <!-- See https://checkstyle.sourceforge.io/config_header.html   -->
@@ -115,6 +122,10 @@
         <module name="JavadocTagContinuationIndentation"/>
         <module name="NonEmptyAtclauseDescription"/>
         <module name="RequireEmptyLineBeforeBlockTagGroup"/>
+<!--        <module name="MissingJavadocMethod">-->
+<!--            <property name="allowMissingPropertyJavadoc" value="true"/>-->
+<!--            <property name="tokens" value="METHOD_DEF, ANNOTATION_FIELD_DEF"/>-->
+<!--        </module>-->
         <module name="MissingJavadocPackage"/>
         <module name="MissingJavadocType"/>
 
@@ -169,8 +180,21 @@
 		</module>
         <module name="ParenPad"/>
         <module name="TypecastParenPad"/>
-        <!--<module name="WhitespaceAround"/>-->
-
+        <module name="WhitespaceAfter">
+            <!-- TODO: Add COMMA and possibly SEMI, but it'll be a big diff -->
+            <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_WHILE, LITERAL_DO, LITERAL_FOR,
+                LITERAL_FINALLY, LITERAL_CATCH, DO_WHILE, LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_TRY,
+                LITERAL_CASE, LAMBDA, LITERAL_WHEN"/>
+        </module>
+        <module name="WhitespaceAround">
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+            <!-- Don't check around boolean comparators as old code didn't follow this convention for them. -->
+            <property name="tokens" value="LCURLY, LITERAL_IF, LITERAL_ELSE, LITERAL_WHILE, LITERAL_DO, LITERAL_FOR,
+                LITERAL_FINALLY, LITERAL_CATCH, DO_WHILE, LITERAL_SWITCH, LITERAL_SYNCHRONIZED, LITERAL_TRY,
+                LAMBDA, LITERAL_WHEN"/>
+        </module>
 
         <!-- Modifier Checks                                    -->
         <!-- See https://checkstyle.sourceforge.io/config_modifiers.html -->
@@ -188,13 +212,14 @@
 		</module>
 		<module name="RightCurly"> <!-- Right curlies should be alone in if/else -->
 			<property name="option" value="alone"/>
-			<property name="tokens" value="LITERAL_ELSE, METHOD_DEF"/>
+            <property name="tokens" value="CLASS_DEF, ENUM_DEF, LITERAL_ELSE, LITERAL_SWITCH, METHOD_DEF"/>
 		</module>
 
         <!-- Checks for common coding problems               -->
         <!-- See https://checkstyle.sourceforge.io/config_coding.html -->
         <!--<module name="AvoidInlineConditionals"/>-->
         <!--<module name="EmptyStatement"/> Removed to allow "while (doSomething());" -->
+        <module name="ConstructorsDeclarationGrouping"/>
         <module name="EqualsAvoidNull"/>
         <module name="EqualsHashCode"/>
         <module name="ExplicitInitialization"/>
@@ -212,8 +237,10 @@
         <!--<module name="MagicNumber"/>-->
         <!--<module name="MissingSwitchDefault"/>-->
         <module name="MultipleVariableDeclarations"/>
+        <module name="PatternVariableAssignment"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
+        <module name="UnnecessaryNullCheckWithInstanceOf"/>
         <!--        <module name="UnnecessaryParentheses"/>-->
         <module name="UnnecessarySemicolonAfterOuterTypeDeclaration"/>
         <module name="UnnecessarySemicolonAfterTypeMemberDeclaration"/>
@@ -251,7 +278,7 @@
     </module>
 
     <module name="Translation">
-        <property name="baseName" value="^(?:FocusableTip|ErrorStrip|RSyntaxTextArea|RTextArea).*"/>
+        <property name="baseName" value="^(?:Edisen).*"/>
     </module>
     <module name="UniqueProperties"/>
 

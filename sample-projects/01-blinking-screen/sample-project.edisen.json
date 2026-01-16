@@ -1,4 +1,7 @@
 {
-  "name": "Sample 1: Blinking Screen",
-  "gameFile": "game.s"
+  "name" : "Sample 1: Blinking Screen",
+  "gameFile" : "game.s",
+  "assemblerCommandLine" : "ca65 -o ${objfile} ${gameFile} -t nes",
+  "linkCommandLine" : "ld65 -o ${rom} ${objfile} -t nes",
+  "emulatorCommandLine" : "open -a Nestopia ${rom}"
 }

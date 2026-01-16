@@ -1,6 +1,6 @@
 package org.fife.edisen.ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import org.fife.edisen.TestUtil;
 import org.fife.edisen.ui.model.EdisenProject;
 import org.junit.jupiter.api.Disabled;
@@ -52,7 +52,7 @@ class ProjectTreeTest {
         EdisenProject project = new EdisenProject();
         project.setGameFile("game.s");
         project.setName("test-project");
-        File file = TestUtil.createTempFile(".edisen.json", new ObjectMapper().writeValueAsString(project));
+        File file = TestUtil.createTempFile(".edisen.json", JsonMapper.builder().build().writeValueAsString(project));
         mockEdisen.openFile(file);
     }
 
@@ -66,7 +66,7 @@ class ProjectTreeTest {
         EdisenProject project = new EdisenProject();
         project.setGameFile("game.s");
         project.setName("test-project");
-        File file = TestUtil.createTempFile(".edisen.json", new ObjectMapper().writeValueAsString(project));
+        File file = TestUtil.createTempFile(".edisen.json", JsonMapper.builder().build().writeValueAsString(project));
         mockEdisen.openFile(file);
 
         // Close the prior project

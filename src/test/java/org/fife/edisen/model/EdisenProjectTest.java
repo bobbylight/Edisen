@@ -3,6 +3,7 @@ package org.fife.edisen.model;
 import org.fife.edisen.ui.model.EdisenProject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.exc.MismatchedInputException;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -44,7 +45,8 @@ class EdisenProjectTest {
         Path tempProject = Files.createTempFile("edisen", ".json");
 
         try {
-            Assertions.assertThrows(IOException.class, () -> EdisenProject.fromFile(tempProject));
+            // "Unexpected end of input"
+            Assertions.assertThrows(MismatchedInputException.class, () -> EdisenProject.fromFile(tempProject));
         } finally {
             Files.delete(tempProject);
         }
