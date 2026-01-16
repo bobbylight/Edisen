@@ -278,7 +278,7 @@ public class GameFileTabbedPane extends JTabbedPane {
         }
     }
 
-    private class Listener implements SearchListener, PropertyChangeListener {
+    private final class Listener implements SearchListener, PropertyChangeListener {
 
         private void handleSearchResultIfNotFound(SearchResult result) {
             if (!result.wasFound()) {

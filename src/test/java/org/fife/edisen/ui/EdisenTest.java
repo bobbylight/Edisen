@@ -1,6 +1,6 @@
 package org.fife.edisen.ui;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import com.formdev.flatlaf.FlatDarkLaf;
 import org.fife.edisen.TestUtil;
 import org.fife.edisen.ui.model.EdisenProject;
@@ -131,7 +131,7 @@ class EdisenTest {
         project.setEmulatorCommandLine("emulator");
         File mainProjectFile = TestUtil.createTempFile(".s");
         project.setGameFile(mainProjectFile.getName());
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         edisen.openFile(projectFile);
@@ -152,7 +152,7 @@ class EdisenTest {
         project.setEmulatorCommandLine("emulator");
         File mainProjectFile = TestUtil.createTempFile(".s");
         project.setGameFile(mainProjectFile.getName());
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         edisen.openFile(projectFile);
@@ -180,7 +180,7 @@ class EdisenTest {
         project.setEmulatorCommandLine("emulator");
         File mainProjectFile = TestUtil.createTempFile(".s");
         project.setGameFile(mainProjectFile.getName());
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         edisen.openFile(projectFile);
@@ -214,7 +214,7 @@ class EdisenTest {
         project.setEmulatorCommandLine("emulator");
         File mainProjectFile = TestUtil.createTempFile(".s");
         project.setGameFile(mainProjectFile.getName());
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         edisen.openFile(projectFile);
@@ -268,7 +268,7 @@ class EdisenTest {
         project.setEmulatorCommandLine("emulator");
         File mainProjectFile = TestUtil.createTempFile(".s", "line 1\nline 2");
         project.setGameFile(mainProjectFile.getName());
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         // Opening a project will open its "main" source file
@@ -292,7 +292,7 @@ class EdisenTest {
         project.setEmulatorCommandLine("emulator");
         File mainProjectFile = TestUtil.createTempFile(".s", "line 1\nline 2");
         project.setGameFile(mainProjectFile.getName());
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         // Opening a project will open its "main" source file
@@ -428,7 +428,7 @@ class EdisenTest {
         project.setEmulatorCommandLine("emulator");
         File mainProjectFile = TestUtil.createTempFile(".s");
         project.setGameFile(mainProjectFile.getName());
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         // Opening a project will open its "main" source file
@@ -450,7 +450,7 @@ class EdisenTest {
         project.setEmulatorCommandLine("emulator");
         File mainProjectFile = TestUtil.createTempFile(".s");
         project.setGameFile(mainProjectFile.getName());
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         // Opening a project will open its "main" source file
@@ -476,7 +476,7 @@ class EdisenTest {
         project.setEmulatorCommandLine("emulator");
         File mainProjectFile = TestUtil.createTempFile(".s");
         project.setGameFile(mainProjectFile.getName());
-        String json = new ObjectMapper().writeValueAsString(project);
+        String json = JsonMapper.builder().build().writeValueAsString(project);
         File projectFile = TestUtil.createTempFile(".edisen.json", json);
 
         edisen.openFile(projectFile);
@@ -487,7 +487,7 @@ class EdisenTest {
 
         edisen.saveProject();
 
-        EdisenProject newProject = new ObjectMapper().readValue(projectFile, EdisenProject.class);
+        EdisenProject newProject = JsonMapper.builder().build().readValue(projectFile, EdisenProject.class);
         Assertions.assertEquals(edisen.getAssemblerCommandLine(), newProject.getAssemblerCommandLine());
         Assertions.assertEquals(edisen.getLinkerCommandLine(), newProject.getLinkCommandLine());
         Assertions.assertEquals(edisen.getEmulatorCommandLine(), newProject.getEmulatorCommandLine());

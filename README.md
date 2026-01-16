@@ -8,7 +8,7 @@ The beginnings of a simple NES IDE.
 ![Example screenshot](images/readme-screenshot-main.png)
 
 ## Compiling
-`Edisen` requires Java 17 or later to compile and run.
+`Edisen` requires Java 25 or later to compile and run.
 
 ```bash
 ./gradlew clean build --warning-mode all

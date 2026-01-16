@@ -104,7 +104,7 @@ class UIOptionPanel extends AbstractEdisenOptionPanel {
         themeCombo.setSelectedValue(app.getTheme());
     }
 
-    private class Listener implements ActionListener {
+    private final class Listener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {

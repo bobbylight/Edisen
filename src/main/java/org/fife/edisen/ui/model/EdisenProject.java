@@ -1,7 +1,7 @@
 package org.fife.edisen.ui.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -63,7 +63,8 @@ public class EdisenProject {
         EdisenProject project;
 
         try (BufferedReader br = new BufferedReader(r)) {
-            project = new ObjectMapper().readerFor(EdisenProject.class).readValue(br);
+            project = JsonMapper.builder()
+                .build().readerFor(EdisenProject.class).readValue(br);
         }
 
         return project;
@@ -77,7 +78,7 @@ public class EdisenProject {
      * @see #load(Reader)
      */
     public void save() throws IOException {
-        new ObjectMapper().writerFor(EdisenProject.class)
+        JsonMapper.builder().build().writerFor(EdisenProject.class)
             .withDefaultPrettyPrinter()
             .writeValue(getProjectFile().toFile(), this);
     }

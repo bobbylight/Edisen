@@ -125,7 +125,7 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
             edisen.displayException(ioe);
         }
 
-        System.out.println("Couldn't find dictionary for spell checking");
+        //System.out.println("Couldn't find dictionary for spell checking");
     }
 
     @Override
@@ -159,7 +159,7 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
     /**
      * Listens for events in this component.
      */
-    private class Listener implements PropertyChangeListener {
+    private final class Listener implements PropertyChangeListener {
 
         @Override
         public void propertyChange(PropertyChangeEvent e) {
