@@ -3,10 +3,7 @@ package org.fife.edisen.ui.tabbedpane;
 import org.fife.edisen.ui.Edisen;
 import org.fife.ui.UIUtil;
 import org.fife.ui.app.AppTheme;
-import org.fife.ui.rsyntaxtextarea.FileLocation;
-import org.fife.ui.rsyntaxtextarea.FileTypeUtil;
-import org.fife.ui.rsyntaxtextarea.TextEditorPane;
-import org.fife.ui.rsyntaxtextarea.Theme;
+import org.fife.ui.rsyntaxtextarea.*;
 import org.fife.ui.rsyntaxtextarea.spell.SpellingParser;
 import org.fife.ui.rtextarea.RTextScrollPane;
 
@@ -79,6 +76,21 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
         }
     }
 
+    /**
+     * Checks for file extensions that are specific to NES game development.
+     *
+     * @param file The file being opened.
+     * @return The syntax style, or {@code SYNTAX_STYLE_NONE} if none.
+     */
+    private static String checkAppSpecificFileExtensions(File file) {
+        // RSTA's FileTypeUtil doesn't check for .inc files because it's a little generic, and
+        // would more commonly be use for e.g. PHP file includes than NES ASM :)
+        if (file.getName().endsWith(".inc")) {
+            return SyntaxConstants.SYNTAX_STYLE_ASSEMBLER_6502;
+        }
+        return SyntaxConstants.SYNTAX_STYLE_NONE;
+    }
+
     private static Color getSpellingErrorSquiggleColor() {
         return UIUtil.isDarkLookAndFeel() ?
                 SPELLING_ERROR_SQUIGGLE_COLOR_DARK :
@@ -140,8 +152,13 @@ class CodeEditorTabbedPaneContent extends TabbedPaneContent {
 
     private static void setSyntaxEditingStyle(TextEditorPane textArea, File file) {
         String style = FileTypeUtil.get().guessContentType(file);
-        if (style == null) {
-            style = FileTypeUtil.get().guessContentType(textArea);
+        if (SyntaxConstants.SYNTAX_STYLE_NONE.equals(style)) {
+            style = checkAppSpecificFileExtensions(file);
+            // This is really a fallback for file types not commonly opened in this app, such as
+            // shell scripts with no extension.
+            if (SyntaxConstants.SYNTAX_STYLE_NONE.equals(style)) {
+                style = FileTypeUtil.get().guessContentType(textArea);
+            }
         }
         textArea.setSyntaxEditingStyle(style);
     }
